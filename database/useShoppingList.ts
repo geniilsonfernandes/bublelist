@@ -275,6 +275,27 @@ async function checkProduct(product: Pick<Product, "id" | "checked">) {
   }
 }
 
+async function editProduct(product: Product) {
+  const statement = await db.prepareAsync(
+    `UPDATE product SET name = $name, quantity = $quantity, value = $value, checked = $checked WHERE id = $id`
+  );
+  try {
+    const result = statement.executeAsync({
+      $name: product.name,
+      $quantity: product.quantity,
+      $value: product.value,
+      $checked: product.checked,
+      $id: product.id,
+    });
+
+    return result;
+  } catch (error) {
+    throw error;
+  } finally {
+    await statement.finalizeAsync();
+  }
+}
+
 export const useGetList = () => {
   return useQuery({
     queryKey: ["list"],
@@ -308,6 +329,18 @@ export const useCheckProduct = () => {
       checkProduct(product),
     onSuccess: () => {
       checkProduct;
+      queryClient.invalidateQueries({
+        queryKey: ["list"],
+      });
+    },
+  });
+};
+
+export const useEditProduct = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (product: Product) => editProduct(product),
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["list"],
       });

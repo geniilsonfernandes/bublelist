@@ -2,11 +2,12 @@ import { ThemedText } from "@/components/ThemedText";
 import {
   Product as ProductType,
   useCheckProduct,
-  useShoppingList,
 } from "@/database/useShoppingList";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { useModals } from "@/store/useModals";
+import { formatValue } from "@/utils/calculateTotal";
 import { Feather } from "@expo/vector-icons";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import Animated, { BounceIn, FadeIn } from "react-native-reanimated";
@@ -19,53 +20,44 @@ const DeleteAction = () => (
 );
 
 type ProductProps = {
-  invalidateList?: () => void;
   onSelect?: () => void;
 } & ProductType;
 
 export const Product: React.FC<ProductProps> = React.memo(
-  ({ id, name, quantity, checked, value, invalidateList, onSelect }) => {
+  ({ id, name, quantity, checked, value, list_id }) => {
     const { mutate } = useCheckProduct();
-    const shoppingList = useShoppingList();
-    const [isChecked, setIsChecked] = useState(checked);
+    const { setSelectedProduct } = useModals();
 
+    const [isChecked, setIsChecked] = useState(checked);
     const checkedBorderColor = useThemeColor({}, "success");
     const uncheckedBorderColor = useThemeColor({}, "text.7");
 
-    const toggleCheckStatus = useCallback(async () => {
-      try {
-        mutate({
-          id,
-          checked: !isChecked,
-        });
-        setIsChecked((prev) => !prev);
-      } catch (error) {
-        console.error("Erro ao atualizar produto:", error);
-      }
+    const toggleCheckStatus = useCallback(() => {
+      mutate({
+        id,
+        checked: !isChecked,
+      });
+      setIsChecked((prev) => !prev);
     }, [id, isChecked]);
 
-    const deleteProduct = useCallback(async () => {
-      try {
-        await shoppingList.removeProduct(id);
-        invalidateList?.();
-      } catch (error) {
-        console.error("Erro ao remover produto:", error);
-      }
-    }, [id]);
+    const deleteProduct = useCallback(() => {}, [id]);
 
-    const handleSelect = useCallback(() => {
-      // selectProduct(id);
-    }, []);
-
-    const formatValue = (value: number) => {
-      if (!value) return "";
-      return value.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
+    const handleSelect = () => {
+      setSelectedProduct({
+        id,
+        name,
+        quantity,
+        value,
+        checked,
+        list_id,
       });
     };
 
-    const valueFormatted = formatValue(value * quantity);
+    const valueFormatted = useMemo(() => {
+      return formatValue(value * quantity);
+    }, [value]);
+
+    console.log("rendering product", name);
 
     return (
       <ReanimatedSwipeable

@@ -1,19 +1,29 @@
 import { QuantitySelector } from "@/components/QuantitySelector";
 import { ThemedView } from "@/components/ThemedView";
 import { ValueInput } from "@/components/ValueInput";
-import { useAppContext } from "@/context/AppProvider";
-import { List, useAddProduct } from "@/database/useShoppingList";
+import {
+  List,
+  useAddProduct,
+  useEditProduct,
+} from "@/database/useShoppingList";
 import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { useModals } from "@/store/useModals";
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import React, { useMemo, useRef, useState } from "react";
-import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import React, { forwardRef, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Pressable,
+  StyleSheet,
+  TextInput,
+  TextInputProps,
+  View,
+} from "react-native";
 import Animated, {
   Easing,
+  FadeIn,
   FadeInDown,
-  FadeInUp,
-  FadeOutDown,
+  FadeOut,
 } from "react-native-reanimated";
 import { Suggestions } from "./Suggestions";
 
@@ -104,9 +114,54 @@ const ProdutDetails: React.FC<ProductEntryData> = ({
   );
 };
 
+type ProductInputProps = {
+  onActionClick: () => void;
+} & TextInputProps;
+
+export const ProductInput = forwardRef<TextInput, ProductInputProps>(
+  ({ onActionClick, ...rest }, ref) => {
+    const textColor = useThemeColor({}, "text");
+    const placeholderTextColor = useThemeColor({}, "text.3");
+
+    return (
+      <ThemedView
+        backgroundColor="background"
+        borderColor="background.3"
+        style={styles.createSheet}
+      >
+        <View style={styles.inputContainer}>
+          <TextInput
+            ref={ref}
+            placeholder="Digite o nome do produto"
+            style={[styles.textInput, { color: textColor }]}
+            placeholderTextColor={placeholderTextColor}
+            {...rest}
+          />
+          {rest.value && (
+            <Animated.View
+              entering={FadeIn.delay(300)
+                .duration(300)
+                .easing(Easing.inOut(Easing.quad))}
+              exiting={FadeOut.duration(300).easing(Easing.inOut(Easing.quad))}
+            >
+              <Pressable
+                onPress={onActionClick}
+                style={styles.addButton}
+                disabled={!rest.value}
+              >
+                <Feather name="check" size={16} color="#DEDEDE" />
+              </Pressable>
+            </Animated.View>
+          )}
+        </View>
+      </ThemedView>
+    );
+  }
+);
+
 export const ProductEditEntry = () => {
-  const { updateProductInList, selectedProduct, clearSelectedProduct } =
-    useAppContext();
+  const { setSelectedProduct, selectedProduct } = useModals();
+  const { mutate } = useEditProduct();
   const inputRef = useRef<TextInput | null>(null);
 
   const [product, setProduct] = useState(selectedProduct?.name || "");
@@ -115,34 +170,29 @@ export const ProductEditEntry = () => {
     selectedProduct?.value || null
   );
 
-  const textColor = useThemeColor({}, "text");
-  const placeholderTextColor = useThemeColor({}, "text.3");
-
-  const clearProduct = () => {
-    setProduct("");
-    setQuantity(INITIAL_QUANTITY);
-    setValue(null);
-  };
-
-  const handleAddItem = () => {
-    if (!product.trim()) return;
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    updateProductInList(
-      {
-        name: product,
-        quantity: quantity,
-        value: value || 0,
-        checked: false,
-        id: selectedProduct?.id || "",
-      },
-      {
-        onSuccess: () => {
-          clearProduct();
-          clearSelectedProduct();
+  const handleEditProduct = () => {
+    if (selectedProduct) {
+      mutate(
+        {
+          ...selectedProduct,
+          name: product,
+          quantity,
+          value: value || 0,
         },
-      }
-    );
+        {
+          onSuccess: () => {
+            setSelectedProduct(null);
+          },
+        }
+      );
+    }
   };
+
+  useEffect(() => {
+    if (selectedProduct) {
+      inputRef.current?.focus();
+    }
+  }, [selectedProduct]);
 
   return (
     <View style={styles.container}>
@@ -157,44 +207,13 @@ export const ProductEditEntry = () => {
         onChangeValue={setValue}
       />
 
-      <ThemedView
-        backgroundColor="background"
-        borderColor="background.3"
-        style={styles.createSheet}
-      >
-        <View style={styles.inputContainer}>
-          <TextInput
-            placeholder="Digite o nome do produto"
-            value={product}
-            onChangeText={setProduct}
-            style={[styles.textInput, { color: textColor }]}
-            placeholderTextColor={placeholderTextColor}
-            ref={inputRef}
-          />
-          {product && (
-            <Animated.View
-              entering={FadeInUp.delay(300)
-                .duration(300)
-                .easing(Easing.inOut(Easing.quad))}
-              exiting={FadeOutDown.duration(300).easing(
-                Easing.inOut(Easing.quad)
-              )}
-            >
-              <Pressable
-                onPress={handleAddItem}
-                style={styles.addButton}
-                disabled={!product}
-              >
-                <Feather
-                  name={product ? "check" : "shopping-bag"}
-                  size={16}
-                  color="#DEDEDE"
-                />
-              </Pressable>
-            </Animated.View>
-          )}
-        </View>
-      </ThemedView>
+      <ProductInput
+        placeholder="Digite o nome do produto"
+        ref={inputRef}
+        value={product}
+        onChangeText={setProduct}
+        onActionClick={handleEditProduct}
+      />
     </View>
   );
 };
@@ -204,15 +223,11 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
   currentList,
 }) => {
   const { mutate } = useAddProduct();
-  const inputRef = useRef<TextInput | null>(null);
   const isKeyboardVisible = useKeyboardVisibility();
 
   const [product, setProduct] = useState("");
   const [quantity, setQuantity] = useState(INITIAL_QUANTITY);
   const [value, setValue] = useState<number | null>(null);
-
-  const textColor = useThemeColor({}, "text");
-  const placeholderTextColor = useThemeColor({}, "text.3");
 
   const clearProduct = () => {
     setProduct("");
@@ -278,40 +293,13 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
           onChangeValue={setValue}
         />
       )}
-      <ThemedView
-        backgroundColor="background"
-        borderColor="background.3"
-        style={styles.createSheet}
-      >
-        <View style={styles.inputContainer}>
-          <TextInput
-            placeholder="Digite o nome do produto"
-            value={product}
-            onChangeText={setProduct}
-            style={[styles.textInput, { color: textColor }]}
-            placeholderTextColor={placeholderTextColor}
-            ref={inputRef}
-          />
-          {product && (
-            <Animated.View
-              entering={FadeInUp.delay(300)
-                .duration(300)
-                .easing(Easing.inOut(Easing.quad))}
-              exiting={FadeOutDown.duration(300).easing(
-                Easing.inOut(Easing.quad)
-              )}
-            >
-              <Pressable onPress={handleAddItem} style={styles.addButton}>
-                <Feather
-                  name={product ? "check" : "shopping-bag"}
-                  size={16}
-                  color="#DEDEDE"
-                />
-              </Pressable>
-            </Animated.View>
-          )}
-        </View>
-      </ThemedView>
+
+      <ProductInput
+        placeholder="Digite o nome do produto"
+        value={product}
+        onChangeText={setProduct}
+        onActionClick={handleAddItem}
+      />
     </View>
   );
 };

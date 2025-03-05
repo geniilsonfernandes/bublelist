@@ -1,4 +1,5 @@
 import { useAppContext } from "@/context/AppProvider";
+import { useModals } from "@/store/useModals";
 import React, { useEffect } from "react";
 import {
   BackHandler,
@@ -6,19 +7,38 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import Animated, { FadeInDown } from "react-native-reanimated";
+import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
 import { ProductEditEntry } from "./ProductEntry";
 
+type ModalProps = {
+  children: React.ReactNode;
+  onClose: () => void;
+};
+
+const Modal: React.FC<ModalProps> = ({ children, onClose }) => {
+  return (
+    <Animated.View
+      entering={FadeInDown.duration(300)}
+      exiting={FadeOutDown.duration(300)}
+      style={styles.container}
+    >
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View style={{ flex: 1 }}></View>
+      </TouchableWithoutFeedback>
+      <Animated.View style={styles.content}>{children}</Animated.View>
+    </Animated.View>
+  );
+};
+
 const EditModal = () => {
-  const { selectedProduct: productSelected, clearSelectedProduct } =
-    useAppContext();
+  const { setSelectedProduct, selectedProduct } = useModals();
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       () => {
-        if (productSelected) {
-          clearSelectedProduct();
+        if (selectedProduct) {
+          setSelectedProduct(null);
           return true;
         }
         return false;
@@ -26,16 +46,11 @@ const EditModal = () => {
     );
 
     return () => backHandler.remove();
-  }, [productSelected]);
+  }, [selectedProduct]);
   return (
-    <Animated.View entering={FadeInDown.duration(300)} style={styles.container}>
-      <TouchableWithoutFeedback onPress={clearSelectedProduct}>
-        <View style={{ flex: 1 }}></View>
-      </TouchableWithoutFeedback>
-      <Animated.View style={styles.content}>
-        <ProductEditEntry />
-      </Animated.View>
-    </Animated.View>
+    <Modal onClose={() => setSelectedProduct(null)}>
+      <ProductEditEntry />
+    </Modal>
   );
 };
 
@@ -55,7 +70,7 @@ const ListEditModal = () => {
 };
 
 export const Modals = () => {
-  const { selectedProduct } = useAppContext();
+  const { selectedProduct } = useModals();
 
   return <>{selectedProduct && <EditModal />}</>;
 };
