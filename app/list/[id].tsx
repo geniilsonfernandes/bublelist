@@ -7,8 +7,9 @@ import {
   Product as ProductType,
   useGetListById,
 } from "@/database/useShoppingList";
+import { calculateTotal } from "@/utils/calculateTotal";
 import { Stack, useLocalSearchParams } from "expo-router";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, { LinearTransition } from "react-native-reanimated";
 
@@ -21,9 +22,9 @@ export default function ListView() {
     []
   );
 
-  const valuesSum = data?.products.reduce((acc, product) => {
-    return acc + product.value;
-  }, 0);
+  const valuesSum = useMemo(() => {
+    return calculateTotal(data?.products || []);
+  }, []);
 
   return (
     <View style={styles.container}>
