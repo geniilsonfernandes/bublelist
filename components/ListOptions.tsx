@@ -1,3 +1,4 @@
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { Feather } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
@@ -8,14 +9,16 @@ import {
   View,
 } from "react-native";
 import { ThemedText } from "./ThemedText";
+import { Input } from "./ui/Input";
 
 type ListOptionsProps = {
   onOpenSheet?: () => void;
 };
 
 export const ListOptions: React.FC<ListOptionsProps> = ({ onOpenSheet }) => {
+  const trashIconColor = useThemeColor({}, "danger");
   const [modalVisible, setModalVisible] = useState(false);
-
+  const iconColor = useThemeColor({}, "text.2");
   return (
     <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
       {/* <Pressable>
@@ -29,12 +32,12 @@ export const ListOptions: React.FC<ListOptionsProps> = ({ onOpenSheet }) => {
           setModalVisible(true);
         }}
       >
-        <Feather name="trash" size={18} color="#F96868" />
+        <Feather name="edit" size={18} color={iconColor} />
       </Pressable>
 
       <Modal
         statusBarTranslucent={true}
-        animationType="fade" // Tipo de animação, pode ser "fade" ou "slide"
+        animationType="slide" // Tipo de animação, pode ser "fade" ou "slide"
         transparent={true} // Torna o fundo transparente
         visible={modalVisible} // Controla a visibilidade do Modal
         onRequestClose={() => setModalVisible(false)} // Fecha o Modal
@@ -52,18 +55,11 @@ export const ListOptions: React.FC<ListOptionsProps> = ({ onOpenSheet }) => {
             }}
           ></TouchableOpacity>
           <View style={styles.modalContainer}>
-            <ThemedText>Tem certeza que deseja excluir essa lista?</ThemedText>
-            <View style={styles.modalFooter}>
-              <Pressable
-                onPress={() => setModalVisible(false)}
-                style={styles.modalButton}
-              >
-                <ThemedText colorName="text.2">Cancelar</ThemedText>
-              </Pressable>
-              <Pressable style={styles.modalButton}>
-                <ThemedText colorName="danger">Excluir</ThemedText>
-              </Pressable>
-            </View>
+            <Input placeholder="Nome da lista" iconName="repeat" />
+            <Pressable style={[styles.option]}>
+              <Feather name="trash" size={18} color={trashIconColor} />
+              <ThemedText colorName="danger">Apagar</ThemedText>
+            </Pressable>
           </View>
         </View>
       </Modal>
@@ -79,13 +75,14 @@ const styles = StyleSheet.create({
   },
   modalBackground: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-end",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
+    padding: 16,
   },
   modalContainer: {
-    width: 300,
-    padding: 16,
+    width: "100%",
+    padding: 8,
     backgroundColor: "white",
     borderRadius: 24,
   },
@@ -100,5 +97,15 @@ const styles = StyleSheet.create({
   },
   modalButton: {
     padding: 10,
+  },
+
+  option: {
+    paddingHorizontal: 16,
+    borderRadius: 16,
+    backgroundColor: "rgb(243, 243, 243)",
+    flexDirection: "row",
+    alignItems: "center",
+    height: 48,
+    gap: 12,
   },
 });

@@ -2,9 +2,11 @@ import { QuantitySelector } from "@/components/QuantitySelector";
 import { ThemedView } from "@/components/ThemedView";
 import { ValueInput } from "@/components/ValueInput";
 import { useAppContext } from "@/context/AppProvider";
+import { List, useAddProduct } from "@/database/useShoppingList";
 import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Feather } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import React, { useMemo, useRef, useState } from "react";
 import { Pressable, StyleSheet, TextInput, View } from "react-native";
 import Animated, {
@@ -72,6 +74,7 @@ const INITIAL_QUANTITY = 1;
 
 type ProductEntryProps = {
   showSuggestions?: boolean;
+  currentList?: List;
 };
 
 type ProductEntryData = {
@@ -102,7 +105,8 @@ const ProdutDetails: React.FC<ProductEntryData> = ({
 };
 
 export const ProductEditEntry = () => {
-  const { updateProductInList, selectedProduct,clearSelectedProduct  } = useAppContext();
+  const { updateProductInList, selectedProduct, clearSelectedProduct } =
+    useAppContext();
   const inputRef = useRef<TextInput | null>(null);
 
   const [product, setProduct] = useState(selectedProduct?.name || "");
@@ -122,6 +126,7 @@ export const ProductEditEntry = () => {
 
   const handleAddItem = () => {
     if (!product.trim()) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     updateProductInList(
       {
         name: product,
@@ -196,8 +201,9 @@ export const ProductEditEntry = () => {
 
 export const ProductEntry: React.FC<ProductEntryProps> = ({
   showSuggestions = true,
+  currentList,
 }) => {
-  const { addProductToList, currentList } = useAppContext();
+  const { mutate } = useAddProduct();
   const inputRef = useRef<TextInput | null>(null);
   const isKeyboardVisible = useKeyboardVisibility();
 
@@ -215,9 +221,11 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
   };
 
   const handleAddItem = () => {
-    if (!product.trim()) return;
-    addProductToList(
+    if (currentList?.id === undefined) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    mutate(
       {
+        list_id: currentList.id,
         name: product,
         quantity: quantity,
         value: value || 0,
@@ -293,11 +301,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
                 Easing.inOut(Easing.quad)
               )}
             >
-              <Pressable
-                onPress={handleAddItem}
-                style={styles.addButton}
-                disabled={!product}
-              >
+              <Pressable onPress={handleAddItem} style={styles.addButton}>
                 <Feather
                   name={product ? "check" : "shopping-bag"}
                   size={16}

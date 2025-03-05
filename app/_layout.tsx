@@ -17,6 +17,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { SQLiteProvider } from "expo-sqlite";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   configureReanimatedLogger,
   ReanimatedLogLevel,
@@ -27,6 +28,9 @@ configureReanimatedLogger({
   level: ReanimatedLogLevel.warn,
   strict: false, // Reanimated runs in strict mode by default
 });
+
+// Create a client
+const queryClient = new QueryClient();
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -50,23 +54,28 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SQLiteProvider databaseName="tlist.db" onInit={initializeDatabase}>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
-          <AppProvider>
-            <Stack>
-              {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
-              <Stack.Screen name="index" />
-              <Stack.Screen
-                name="list"
-                options={{ headerShown: false, animation: "slide_from_bottom" }}
-              />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-            <Modals />
-            <StatusBar style="auto" />
-          </AppProvider>
-        </ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider
+            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+          >
+            <AppProvider>
+              <Stack>
+                {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+                <Stack.Screen name="index" />
+                <Stack.Screen
+                  name="list"
+                  options={{
+                    headerShown: false,
+                    animation: "slide_from_bottom",
+                  }}
+                />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+              <Modals />
+              <StatusBar style="auto" />
+            </AppProvider>
+          </ThemeProvider>
+        </QueryClientProvider>
       </SQLiteProvider>
     </GestureHandlerRootView>
   );

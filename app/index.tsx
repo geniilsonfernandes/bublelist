@@ -2,11 +2,11 @@ import { List } from "@/components/List";
 import { ListModal } from "@/components/ListModal";
 import { Search } from "@/components/Search";
 import { ThemedView } from "@/components/ThemedView";
-import { List as ListType, useShoppingList } from "@/database/useShoppingList";
+import { List as ListType, useGetList } from "@/database/useShoppingList";
 import { useKeyboard } from "@/hooks/useKeyboard";
 import { Feather } from "@expo/vector-icons";
 import { Stack, useFocusEffect, useRouter } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   BackHandler,
   FlatList,
@@ -19,28 +19,12 @@ import {
 export default function HomeScreen() {
   const keyboardVisible = useKeyboard();
   const [listSelected, setListSelected] = useState<ListType>();
-  const [data, setData] = useState<ListType[]>([]);
   const [query, setQuery] = useState("");
   const router = useRouter();
-  const shoppingList = useShoppingList();
-
-  async function list() {
-    try {
-      const response = await shoppingList.list();
-      console.log("response");
-
-      setData(response);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  useEffect(() => {
-    list();
-  }, []);
+  const { data } = useGetList();
 
   const filteredLists = useMemo(() => {
-    return data.filter((list) =>
+    return data?.filter((list) =>
       list.name.toLowerCase().includes(query.toLowerCase())
     );
   }, [data, query]);
@@ -85,7 +69,8 @@ export default function HomeScreen() {
         renderItem={({ item }) => (
           <List
             title={item.name}
-            quantity={9}
+            list={item}
+            quantity={item.products.length}
             onPress={() => {
               router.push(`/list/${item.id}`);
             }}

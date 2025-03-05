@@ -15,7 +15,7 @@ type Options = {
 // Definição do tipo do contexto
 interface AppContextType {
   selectedProduct: Product | null;
-  selectProduct: (product: Product) => void;
+  selectProduct: (id: string) => void;
   clearSelectedProduct: () => void;
 
   loadListById: (id: string) => Promise<void>;
@@ -53,8 +53,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const shoppingList = useShoppingList();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  const selectProduct = (product: Product) => {
-    setSelectedProduct(product);
+  const selectProduct = (id: string) => {
+    setSelectedProduct(
+      currentList?.products.find((product) => product.id === id) || null
+    );
   };
 
   const clearSelectedProduct = () => {

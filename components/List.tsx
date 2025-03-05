@@ -1,3 +1,4 @@
+import { List as LisType } from "@/database/useShoppingList";
 import * as Haptics from "expo-haptics";
 import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
@@ -9,6 +10,7 @@ type ListProps = {
   quantity: number;
   onPress: () => void;
   onLongPress: () => void;
+  list: LisType;
 };
 
 export const List: React.FC<ListProps> = ({
@@ -16,13 +18,15 @@ export const List: React.FC<ListProps> = ({
   quantity,
   onPress,
   onLongPress,
+  list,
 }) => {
-  const progress = (25 / 30) * 100;
-
   const handlePressLong = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
     onLongPress();
   };
+
+  const itemsChecked = list.products.filter((item) => item.checked).length;
+  const progress = Math.round((itemsChecked / quantity) * 100);
 
   return (
     <TouchableOpacity onLongPress={handlePressLong} onPress={onPress}>
@@ -30,7 +34,7 @@ export const List: React.FC<ListProps> = ({
         <ThemedView style={styles.header}>
           <ThemedText style={styles.title}>{title}</ThemedText>
           <ThemedText style={styles.quantity} colorName="text.3">
-            0/{quantity}
+            {itemsChecked}/{list.products.length}
           </ThemedText>
         </ThemedView>
         <ThemedView colorName="background.2" style={styles.progress}>

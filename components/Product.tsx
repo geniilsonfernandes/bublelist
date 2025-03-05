@@ -1,7 +1,7 @@
 import { ThemedText } from "@/components/ThemedText";
-import { useAppContext } from "@/context/AppProvider";
 import {
   Product as ProductType,
+  useCheckProduct,
   useShoppingList,
 } from "@/database/useShoppingList";
 import { useThemeColor } from "@/hooks/useThemeColor";
@@ -9,10 +9,7 @@ import { Feather } from "@expo/vector-icons";
 import React, { useCallback, useState } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
-import Animated, {
-  BounceIn,
-  FadeIn
-} from "react-native-reanimated";
+import Animated, { BounceIn, FadeIn } from "react-native-reanimated";
 import { ThemedView } from "./ThemedView";
 
 const DeleteAction = () => (
@@ -23,12 +20,12 @@ const DeleteAction = () => (
 
 type ProductProps = {
   invalidateList?: () => void;
-  onSelect: () => void;
+  onSelect?: () => void;
 } & ProductType;
 
 export const Product: React.FC<ProductProps> = React.memo(
   ({ id, name, quantity, checked, value, invalidateList, onSelect }) => {
-    const { updateProductInList } = useAppContext();
+    const { mutate } = useCheckProduct();
     const shoppingList = useShoppingList();
     const [isChecked, setIsChecked] = useState(checked);
 
@@ -37,11 +34,8 @@ export const Product: React.FC<ProductProps> = React.memo(
 
     const toggleCheckStatus = useCallback(async () => {
       try {
-        await updateProductInList({
+        mutate({
           id,
-          name,
-          quantity,
-          value,
           checked: !isChecked,
         });
         setIsChecked((prev) => !prev);
@@ -59,8 +53,19 @@ export const Product: React.FC<ProductProps> = React.memo(
       }
     }, [id]);
 
-    console.log("Product rendered", id);
-    
+    const handleSelect = useCallback(() => {
+      // selectProduct(id);
+    }, []);
+
+    const formatValue = (value: number) => {
+      if (!value) return "";
+      return value.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      });
+    };
+
+    const valueFormatted = formatValue(value * quantity);
 
     return (
       <ReanimatedSwipeable
@@ -71,7 +76,7 @@ export const Product: React.FC<ProductProps> = React.memo(
         onSwipeableWillOpen={deleteProduct}
         renderRightActions={() => <DeleteAction />}
       >
-        <Pressable onPress={onSelect}>
+        <Pressable onPress={handleSelect}>
           <ThemedView backgroundColor="background" style={styles.container}>
             <Pressable
               style={[
@@ -110,10 +115,10 @@ export const Product: React.FC<ProductProps> = React.memo(
               {name}
             </ThemedText>
             <ThemedText colorName="text.3" type="body">
-              {quantity || 1}
+              {quantity > 1 ? `${quantity}` : ""}
             </ThemedText>
             <ThemedText colorName="text.3" type="body">
-              {value || 0}
+              {valueFormatted}
             </ThemedText>
           </ThemedView>
         </Pressable>
@@ -128,7 +133,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     paddingVertical: 8,
-    paddingRight: 8,
   },
   check: {
     height: 28,

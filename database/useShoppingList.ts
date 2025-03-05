@@ -1,3 +1,5 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import * as SQLite from "expo-sqlite";
 import { useSQLiteContext } from "expo-sqlite";
 
 export type List = {
@@ -102,6 +104,7 @@ export function useShoppingList() {
       await statement.finalizeAsync();
     }
   }
+
   async function removeProduct(id: string) {
     const statement = await database.prepareAsync(
       `DELETE FROM product WHERE id = $id`
@@ -173,3 +176,141 @@ export function useShoppingList() {
     deleteList,
   };
 }
+
+const db = SQLite.openDatabaseSync("tlist.db");
+
+async function getList(): Promise<List[]> {
+  try {
+    const query = "SELECT * FROM list";
+    let response: List[] = [];
+
+    await db.withTransactionAsync(async () => {
+      const lists = await db.getAllAsync<List>(query);
+      const listWithProducts = await Promise.all(
+        lists.map(async (list) => {
+          const products = await db.getAllAsync<Product>(
+            "SELECT * FROM product WHERE list_id = $id",
+            {
+              $id: list.id,
+            }
+          );
+          return {
+            ...list,
+            products,
+          };
+        })
+      );
+      response = listWithProducts;
+    });
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findListById(id: string): Promise<List> {
+  try {
+    const querylist = "SELECT * FROM list WHERE id = $id";
+    const qeryProducts = "SELECT * FROM product WHERE list_id = $id";
+
+    const listResponse = await db.getFirstAsync<List>(querylist, {
+      $id: id,
+    });
+    if (!listResponse) {
+      throw new Error("List not found");
+    }
+
+    const productResponse = await db.getAllAsync<Product>(qeryProducts, {
+      $id: id,
+    });
+
+    return {
+      ...listResponse,
+      products: productResponse,
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function addProduct(product: Omit<Product, "id">) {
+  console.log(product);
+
+  const statement = await db.prepareAsync(
+    `INSERT INTO product (list_id, name, quantity, value, checked) VALUES ($list_id, $name, $quantity, $value, $checked)`
+  );
+  try {
+    const result = await statement.executeAsync({
+      $list_id: product.list_id,
+      $name: product.name,
+      $quantity: product.quantity,
+      $value: product.value,
+      $checked: product.checked,
+    });
+
+    return result;
+  } catch (error) {
+    throw error;
+  } finally {
+    await statement.finalizeAsync();
+  }
+}
+
+async function checkProduct(product: Pick<Product, "id" | "checked">) {
+  const statement = await db.prepareAsync(
+    `UPDATE product SET checked = $checked WHERE id = $id`
+  );
+  try {
+    const result = statement.executeAsync({
+      $checked: product.checked,
+      $id: product.id,
+    });
+
+    return result;
+  } catch (error) {
+    throw error;
+  } finally {
+    await statement.finalizeAsync();
+  }
+}
+
+export const useGetList = () => {
+  return useQuery({
+    queryKey: ["list"],
+    queryFn: () => getList(),
+  });
+};
+
+export const useGetListById = (id: string) => {
+  return useQuery({
+    queryKey: ["list", id],
+    queryFn: () => findListById(id),
+  });
+};
+
+export const useAddProduct = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (product: Omit<Product, "id">) => addProduct(product),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["list"],
+      });
+    },
+  });
+};
+
+export const useCheckProduct = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (product: Pick<Product, "id" | "checked">) =>
+      checkProduct(product),
+    onSuccess: () => {
+      checkProduct;
+      queryClient.invalidateQueries({
+        queryKey: ["list"],
+      });
+    },
+  });
+};

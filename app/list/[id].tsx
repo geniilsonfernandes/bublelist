@@ -3,46 +3,36 @@ import { Product } from "@/components/Product";
 import { ProductEntry } from "@/components/ProductEntry";
 import { ThemedText } from "@/components/ThemedText";
 import { BackButton } from "@/components/ui/BackButton";
-import { useAppContext } from "@/context/AppProvider";
-import { Product as ProductType } from "@/database/useShoppingList";
+import {
+  Product as ProductType,
+  useGetListById,
+} from "@/database/useShoppingList";
 import { Stack, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, { LinearTransition } from "react-native-reanimated";
 
 export default function ListView() {
-  const { loadListById, selectProduct, refreshList, currentList } =
-    useAppContext();
-
   const { id } = useLocalSearchParams() as { id: string };
-
-  const productList = useMemo(
-    () => currentList?.products || [],
-    [currentList?.products]
-  );
+  const { data } = useGetListById(id);
 
   const renderList = useCallback(
-    ({ item }: { item: ProductType }) => (
-      <Product
-        {...item}
-        onSelect={() => selectProduct(item)}
-        invalidateList={refreshList}
-      />
-    ),
+    ({ item }: { item: ProductType }) => <Product {...item} />,
     []
   );
 
-  useEffect(() => {
-    loadListById(id);
-  }, [loadListById]);
-
-  console.log(currentList);
+  const valuesSum = data?.products.reduce((acc, product) => {
+    return acc + product.value;
+  }, 0);
 
   return (
     <View style={styles.container}>
       <Stack.Screen
         options={{
-          title: "",
+          title: data?.name,
+          headerTitleStyle: { fontSize: 18 },
+          headerTitleAlign: "center",
+          headerBackTitle: "Voltar",
           headerShadowVisible: false,
           headerLeft: () => <BackButton to="Home" />,
           headerRight: () => <ListOptions />,
@@ -50,30 +40,26 @@ export default function ListView() {
       />
 
       <View style={styles.header}>
-        <ThemedText colorName="text.1" type="subtitle">
-          {currentList?.name}
-        </ThemedText>
         <View style={styles.stats}>
           <ThemedText colorName="text.3" type="body">
-            {currentList?.products.length || 0} produtos
+            {data?.products.length || 0} produtos
           </ThemedText>
-          {currentList?.budget ? (
-            <ThemedText colorName="text.3" type="body">
-              {currentList.budget} / 120,00
-            </ThemedText>
-          ) : null}
+
+          <ThemedText colorName="text.3" type="body">
+            {data?.budget} /{valuesSum}
+          </ThemedText>
         </View>
       </View>
 
       <Animated.FlatList
-        data={productList}
+        data={data?.products || []}
         keyExtractor={(item) => item.id}
         itemLayoutAnimation={LinearTransition}
         renderItem={renderList}
       />
 
       <View style={styles.productEntry}>
-        <ProductEntry />
+        <ProductEntry currentList={data} />
       </View>
     </View>
   );
@@ -86,7 +72,6 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   header: {
-    paddingTop: 12,
     paddingBottom: 16,
   },
   stats: {
