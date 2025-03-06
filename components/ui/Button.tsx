@@ -34,7 +34,9 @@ export const Button: React.FC<ButtonProps> = ({
       accessibilityRole="button"
       onPress={onPress}
     >
-      <ThemedText colorName="gray.100">{children}</ThemedText>
+      <ThemedText colorName={variant === "solid" ? "gray.100" : "text.2"}>
+        {children}
+      </ThemedText>
     </Pressable>
   );
 };
