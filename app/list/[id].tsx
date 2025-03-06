@@ -1,12 +1,13 @@
 import { ListOptions } from "@/components/ListOptions";
 import { Product } from "@/components/Product";
 import { ProductEntry } from "@/components/ProductEntry";
-import { ThemedText } from "@/components/ThemedText";
 import { BackButton } from "@/components/ui/BackButton";
+import { ThemedText } from "@/components/ui/ThemedText";
 import {
   Product as ProductType,
   useGetListById,
 } from "@/database/useShoppingList";
+import { useModals } from "@/store/useModals";
 import { calculateTotal } from "@/utils/calculateTotal";
 import { Stack, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useMemo } from "react";
@@ -14,6 +15,7 @@ import { StyleSheet, View } from "react-native";
 import Animated, { LinearTransition } from "react-native-reanimated";
 
 export default function ListView() {
+  const { setSelectedList } = useModals();
   const { id } = useLocalSearchParams() as { id: string };
   const { data } = useGetListById(id);
 
@@ -26,6 +28,12 @@ export default function ListView() {
     return calculateTotal(data?.products || []);
   }, []);
 
+  const handleOpenListDetails = () => {
+    if (data) {
+      setSelectedList(data);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Stack.Screen
@@ -36,7 +44,9 @@ export default function ListView() {
           headerBackTitle: "Voltar",
           headerShadowVisible: false,
           headerLeft: () => <BackButton to="Home" />,
-          headerRight: () => <ListOptions />,
+          headerRight: () => (
+            <ListOptions openListDetails={handleOpenListDetails} />
+          ),
         }}
       />
 
@@ -45,7 +55,6 @@ export default function ListView() {
           <ThemedText colorName="text.3" type="body">
             {data?.products.length || 0} produtos
           </ThemedText>
-
           <ThemedText colorName="text.3" type="body">
             {data?.budget} /{valuesSum}
           </ThemedText>

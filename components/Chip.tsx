@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { ThemedText } from "./ThemedText";
-import { ThemedView } from "./ThemedView";
+import { ThemedText } from "./ui/ThemedText";
+import { ThemedView } from "./ui/ThemedView";
 
 type ChipProps = {
   label: string;

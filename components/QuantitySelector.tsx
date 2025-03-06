@@ -3,7 +3,7 @@ import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import React from "react";
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
-import { ThemedView } from "./ThemedView";
+import { ThemedView } from "./ui/ThemedView";
 
 type QuantitySelectorProps = {
   quantity: number | null;

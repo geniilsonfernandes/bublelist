@@ -1,7 +1,7 @@
 import { List } from "@/components/List";
 import { ListModal } from "@/components/ListModal";
 import { Search } from "@/components/Search";
-import { ThemedView } from "@/components/ThemedView";
+import { ThemedView } from "@/components/ui/ThemedView";
 import { List as ListType, useGetList } from "@/database/useShoppingList";
 import { useKeyboard } from "@/hooks/useKeyboard";
 import { Feather } from "@expo/vector-icons";

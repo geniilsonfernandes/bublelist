@@ -179,6 +179,29 @@ export function useShoppingList() {
 
 const db = SQLite.openDatabaseSync("tlist.db");
 
+async function createList(
+  data: Omit<List, "id" | "products">
+): Promise<Omit<List, "products">> {
+  const statement = await db.prepareAsync(
+    `INSERT INTO list (name, budget) VALUES ($name, $budget)`
+  );
+
+  try {
+    const result = await statement.executeAsync({
+      $name: data.name,
+      $budget: data.budget || 0,
+    });
+
+    const insertedRowId = result.lastInsertRowId;
+
+    return { ...data, id: insertedRowId.toString() };
+  } catch (error) {
+    throw error;
+  } finally {
+    await statement.finalizeAsync();
+  }
+}
+
 async function getList(): Promise<List[]> {
   try {
     const query = "SELECT * FROM list";
@@ -300,6 +323,18 @@ export const useGetList = () => {
   return useQuery({
     queryKey: ["list"],
     queryFn: () => getList(),
+  });
+};
+
+export const useCreateList = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Omit<List, "id" | "products">) => createList(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["list"],
+      });
+    },
   });
 };
 

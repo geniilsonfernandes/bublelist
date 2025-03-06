@@ -1,4 +1,4 @@
-import { ThemedText } from "@/components/ThemedText";
+import { ThemedText } from "@/components/ui/ThemedText";
 import {
   Product as ProductType,
   useCheckProduct,
@@ -11,7 +11,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import Animated, { BounceIn, FadeIn } from "react-native-reanimated";
-import { ThemedView } from "./ThemedView";
+import { ThemedView } from "./ui/ThemedView";
 
 const DeleteAction = () => (
   <ThemedView backgroundColor="danger" style={styles.rightAction}>

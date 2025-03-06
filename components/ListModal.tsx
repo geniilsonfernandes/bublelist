@@ -3,8 +3,8 @@ import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import React from "react";
 import { Modal, Pressable, StyleSheet, View } from "react-native";
-import { ThemedText } from "./ThemedText";
-import { ThemedView } from "./ThemedView";
+import { ThemedText } from "./ui/ThemedText";
+import { ThemedView } from "./ui/ThemedView";
 
 type ListModalProps = {
   opened: boolean;

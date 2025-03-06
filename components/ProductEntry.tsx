@@ -1,5 +1,4 @@
 import { QuantitySelector } from "@/components/QuantitySelector";
-import { ThemedView } from "@/components/ThemedView";
 import { ValueInput } from "@/components/ValueInput";
 import {
   List,
@@ -7,25 +6,13 @@ import {
   useEditProduct,
 } from "@/database/useShoppingList";
 import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import { useModals } from "@/store/useModals";
-import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import React, { forwardRef, useEffect, useMemo, useRef, useState } from "react";
-import {
-  Pressable,
-  StyleSheet,
-  TextInput,
-  TextInputProps,
-  View,
-} from "react-native";
-import Animated, {
-  Easing,
-  FadeIn,
-  FadeInDown,
-  FadeOut,
-} from "react-native-reanimated";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { StyleSheet, TextInput, View } from "react-native";
+import Animated, { Easing, FadeInDown } from "react-native-reanimated";
 import { Suggestions } from "./Suggestions";
+import { Input } from "./ui/Input";
 
 const PRODUCT_DATA = [
   "Arroz",
@@ -114,51 +101,6 @@ const ProdutDetails: React.FC<ProductEntryData> = ({
   );
 };
 
-type ProductInputProps = {
-  onActionClick: () => void;
-} & TextInputProps;
-
-export const ProductInput = forwardRef<TextInput, ProductInputProps>(
-  ({ onActionClick, ...rest }, ref) => {
-    const textColor = useThemeColor({}, "text");
-    const placeholderTextColor = useThemeColor({}, "text.3");
-
-    return (
-      <ThemedView
-        backgroundColor="background"
-        borderColor="background.3"
-        style={styles.createSheet}
-      >
-        <View style={styles.inputContainer}>
-          <TextInput
-            ref={ref}
-            placeholder="Digite o nome do produto"
-            style={[styles.textInput, { color: textColor }]}
-            placeholderTextColor={placeholderTextColor}
-            {...rest}
-          />
-          {rest.value && (
-            <Animated.View
-              entering={FadeIn.delay(300)
-                .duration(300)
-                .easing(Easing.inOut(Easing.quad))}
-              exiting={FadeOut.duration(300).easing(Easing.inOut(Easing.quad))}
-            >
-              <Pressable
-                onPress={onActionClick}
-                style={styles.addButton}
-                disabled={!rest.value}
-              >
-                <Feather name="check" size={16} color="#DEDEDE" />
-              </Pressable>
-            </Animated.View>
-          )}
-        </View>
-      </ThemedView>
-    );
-  }
-);
-
 export const ProductEditEntry = () => {
   const { setSelectedProduct, selectedProduct } = useModals();
   const { mutate } = useEditProduct();
@@ -207,7 +149,7 @@ export const ProductEditEntry = () => {
         onChangeValue={setValue}
       />
 
-      <ProductInput
+      <Input
         placeholder="Digite o nome do produto"
         ref={inputRef}
         value={product}
@@ -294,7 +236,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
         />
       )}
 
-      <ProductInput
+      <Input
         placeholder="Digite o nome do produto"
         value={product}
         onChangeText={setProduct}

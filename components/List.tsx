@@ -2,8 +2,8 @@ import { List as LisType } from "@/database/useShoppingList";
 import * as Haptics from "expo-haptics";
 import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
-import { ThemedText } from "./ThemedText";
-import { ThemedView } from "./ThemedView";
+import { ThemedText } from "./ui/ThemedText";
+import { ThemedView } from "./ui/ThemedView";
 
 type ListProps = {
   title: string;

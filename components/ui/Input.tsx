@@ -1,102 +1,95 @@
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { Feather } from "@expo/vector-icons";
-import { useState } from "react";
-import { StyleSheet, TextInput, TextInputProps, View } from "react-native";
+import { forwardRef } from "react";
+import { Pressable, StyleSheet, TextInput, TextInputProps } from "react-native";
+import { ThemedView } from "./ThemedView";
 
 type InputProps = {
-  onIconPress?: () => void;
-  iconName?: keyof typeof Feather.glyphMap;
-  capBorder?: "top" | "bottom";
+  onActionClick?: () => void;
   rightSection?: React.ReactNode;
-  isError?: boolean;
+  iconName?: keyof typeof Feather.glyphMap;
+  showActions?: boolean;
 } & TextInputProps;
-export const Input: React.FC<InputProps> = ({
-  iconName,
-  onChangeText,
-  onIconPress,
-  value,
-  placeholder,
-  capBorder,
-  rightSection,
-  isError,
-  ...props
-}) => {
-  const [isFocused, setIsFocused] = useState(false);
-  return (
-    <View
-      style={[
-        styles.inputContainer,
-        isFocused && styles.focus,
-        capBorder === "top" && styles.capBorderTop,
-        capBorder === "bottom" && styles.capBorderBottom,
-        isError && styles.isError,
-      ]}
-    >
-      <TextInput
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        style={[styles.input]}
-        onChangeText={onChangeText}
-        placeholder={placeholder}
-        value={value}
-        {...props}
-      />
-      {rightSection ? (
-        rightSection 
-      ) : (
-        <Feather
-          name={iconName}
-          size={18}
-          style={styles.inputIcon}
-          color="rgb(140, 140, 140)"
-          onPress={onIconPress}
+
+export const Input = forwardRef<TextInput, InputProps>(
+  (
+    {
+      onActionClick,
+      rightSection,
+      iconName = "check",
+      showActions = true,
+      ...rest
+    },
+    ref
+  ) => {
+    const textColor = useThemeColor({}, "text");
+    const placeholderTextColor = useThemeColor({}, "text.3");
+    const iconColor = useThemeColor({}, "tint");
+
+    return (
+      <ThemedView borderColor={"background.2"} style={styles.container}>
+        <TextInput
+          ref={ref}
+          placeholder="Digite o nome do produto"
+          style={[
+            styles.input,
+            {
+              color: textColor,
+            },
+          ]}
+          placeholderTextColor={placeholderTextColor}
+          {...rest}
         />
-      )}
-    </View>
-  );
-};
+        {showActions ? (
+          <>
+            {rightSection ? (
+              rightSection
+            ) : (
+              <>
+                {rest.value ? (
+                  <Pressable
+                    onPress={onActionClick}
+                    style={[
+                      styles.icon,
+                      {
+                        backgroundColor: iconColor,
+                      },
+                    ]}
+                    disabled={!rest.value}
+                  >
+                    <Feather name={iconName} size={16} color="#fff" />
+                  </Pressable>
+                ) : null}
+              </>
+            )}
+          </>
+        ) : null}
+      </ThemedView>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
-  inputContainer: {
+  container: {
     flexDirection: "row",
-    height: 48,
-    borderRadius: 16,
-    paddingHorizontal: 4,
-    backgroundColor: "rgb(243, 243, 243)",
-    borderWidth: 1,
-    borderColor: "transparent",
     alignItems: "center",
+    gap: 8,
+    borderRadius: 8,
+    padding: 4,
+    backgroundColor: "white",
+    borderWidth: 1,
   },
   input: {
-    paddingHorizontal: 8,
     flex: 1,
-    height: "100%",
-
+    fontSize: 16,
+    height: 40,
+    padding: 8,
   },
-  inputIcon: {
-    position: "absolute",
+  icon: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
-    right: 16,
-    alignSelf: "center",
-  },
-  rightSection: {
-    right: 16,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  focus: {
-    borderColor: "rgb(220, 220, 220)",
-  },
-  isError: {
-    borderColor: " rgb(242, 144, 144)",
-  },
-  capBorderTop: {
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-  },
-  capBorderBottom: {
-    borderBottomLeftRadius: 8,
-    borderBottomRightRadius: 8,
   },
 });

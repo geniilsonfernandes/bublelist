@@ -1,9 +1,10 @@
 import { Chip } from "@/components/Chip";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
+import { Header } from "@/components/Header";
 import { BackButton } from "@/components/ui/BackButton";
 import { Input } from "@/components/ui/Input";
-import { useShoppingList } from "@/database/useShoppingList";
+import { ThemedText } from "@/components/ui/ThemedText";
+import { ThemedView } from "@/components/ui/ThemedView";
+import { useCreateList } from "@/database/useShoppingList";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import dayjs from "dayjs";
@@ -37,12 +38,11 @@ const LIST_NAME_SUGGESTIONS = [
 
 export default function List() {
   const [showMore, { toggle: toggleShowMore }] = useDisclosure();
+  const { mutate } = useCreateList();
   const router = useRouter();
 
   const [listName, setListName] = useState("");
   const [listBudget, setListBudget] = useState("");
-
-  const shoppingList = useShoppingList();
 
   const handleGetRandomName = useCallback(() => {
     const randomName =
@@ -65,18 +65,18 @@ export default function List() {
     });
   }, []);
 
-  const handleCreateList = async () => {
-    try {
-      const id = await shoppingList.create({
+  const handleCreateList = () => {
+    mutate(
+      {
         name: listName,
         budget: Number(listBudget),
-        
-      });
-
-      router.push(`/list/${id.id}`);
-    } catch (error) {
-      console.log(error);
-    }
+      },
+      {
+        onSuccess: (data) => {
+          router.replace(`/list/${data.id}`);
+        },
+      }
+    );
   };
 
   return (
@@ -89,12 +89,10 @@ export default function List() {
         }}
       />
       <View>
-        <View style={styles.header}>
-          <ThemedText type="title.2">Criar lista</ThemedText>
-          <ThemedText type="body" colorName="text.4">
-            Escolha um nome para a sua lista de compras
-          </ThemedText>
-        </View>
+        <Header
+          title="Criar lista"
+          subtitle="Escolha um nome para a sua lista de compras"
+        />
 
         <Input
           placeholder="Nome da lista"
@@ -103,7 +101,7 @@ export default function List() {
             setListName(text);
           }}
           iconName="repeat"
-          onIconPress={handleGetRandomName}
+          onActionClick={handleGetRandomName}
         />
         <ThemedText
           type="body"
@@ -161,13 +159,15 @@ export default function List() {
             />
           </Animated.View>
         )}
-        <Feather
-          name={showMore ? "chevron-up" : "chevron-down"}
-          size={24}
-          style={styles.icon}
-          onPress={toggleShowMore}
-          color="#C5C5C5"
-        />
+        {!showMore ? (
+          <Feather
+            name={showMore ? "chevron-up" : "chevron-down"}
+            size={24}
+            style={styles.icon}
+            onPress={toggleShowMore}
+            color="#C5C5C5"
+          />
+        ) : null}
       </View>
       <Pressable
         style={styles.createButton}

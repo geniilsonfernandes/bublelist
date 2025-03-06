@@ -2,7 +2,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { Feather } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, TextInput, TextInputProps, View } from "react-native";
-import { ThemedView } from "./ThemedView";
+import { ThemedView } from "./ui/ThemedView";
 
 export const Search: React.FC<TextInputProps> = (props) => {
   const textColor = useThemeColor({}, "text.2");

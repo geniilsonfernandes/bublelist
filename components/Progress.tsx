@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { ThemedView } from "./ThemedView";
+import { ThemedView } from "./ui/ThemedView";
 
 type ProgressProps = {
     progress: number;

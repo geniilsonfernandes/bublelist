@@ -1,29 +1,27 @@
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Feather } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import CurrencyInput from "react-native-currency-input";
 
-import { ThemedView } from "./ThemedView";
+import { ThemedView } from "./ui/ThemedView";
 
 type ValueInputProps = {
   value: number | null;
   onChangeValue: (value: number | null) => void;
+  controlButtons?: boolean;
 };
 
 export const ValueInput: React.FC<ValueInputProps> = ({
   onChangeValue,
   value,
+  controlButtons,
 }) => {
   const iconColor = useThemeColor({}, "text.3");
   const textColor = useThemeColor({}, "text");
 
   return (
-    <ThemedView
-      backgroundColor="background.1"
-      borderColor="background.2"
-      style={styles.input}
-    >
+    <ThemedView borderColor="background.2" style={styles.input}>
       <Feather name="dollar-sign" size={18} color={iconColor} />
       <CurrencyInput
         placeholder="0,00"
@@ -31,6 +29,7 @@ export const ValueInput: React.FC<ValueInputProps> = ({
           flex: 1,
           color: textColor,
           fontSize: 16,
+          height: 48,
         }}
         keyboardType="numeric"
         autoCorrect={false}
@@ -42,6 +41,22 @@ export const ValueInput: React.FC<ValueInputProps> = ({
 
         // {...props}
       />
+      {controlButtons ? (
+        <View style={styles.budgetButtonContainer}>
+          <Pressable
+            style={styles.budgetButton}
+            // onPress={() => handleBudgetChange(false)}
+          >
+            <Feather name="minus" size={16} color="#121212" />
+          </Pressable>
+          <Pressable
+            style={styles.budgetButton}
+            // onPress={() => handleBudgetChange(true)}
+          >
+            <Feather name="plus" size={16} color="#121212" />
+          </Pressable>
+        </View>
+      ) : null}
     </ThemedView>
   );
 };
@@ -52,7 +67,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     flex: 1,
-    borderRadius: 10,
+    borderRadius: 8,
     paddingHorizontal: 8,
+  },
+  budgetButtonContainer: { flexDirection: "row", gap: 8 },
+  budgetButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

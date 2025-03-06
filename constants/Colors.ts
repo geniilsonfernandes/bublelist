@@ -9,6 +9,11 @@ const tintColorDark = "#fff";
 export const backgroundDark = {
   100: "#151718",
 };
+const primary = {
+  100: "#0a7ea4",
+  200: "#0077b6",
+  300: "#0068a5",
+};
 
 const gray = {
   "gray.100": "#F2F2F2",
@@ -53,6 +58,7 @@ export const Colors = {
     danger: "#F96868",
     success: "rgb(87, 206, 87)",
     ...gray,
+    ...primary,
   },
   dark: {
     text: "#444444",
@@ -84,6 +90,7 @@ export const Colors = {
     danger: "#F96868",
     success: "rgb(87, 206, 87)",
     ...gray,
+    ...primary,
   },
 };
 
