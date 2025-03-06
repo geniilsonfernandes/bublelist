@@ -13,7 +13,8 @@ export type ThemedTextProps = TextProps & {
     | "subtitle"
     | "link"
     | "body"
-    | "title.2";
+    | "title.2"
+    | "title.3";
   colorName?: keyof typeof Colors.light;
 };
 
@@ -38,6 +39,7 @@ export function ThemedText({
         type === "title" ? styles.title : undefined,
         type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,
         type === "title.2" ? styles["title.2"] : undefined,
+        type === "title.3" ? styles["title.3"] : undefined,
         type === "subtitle" ? styles.subtitle : undefined,
         type === "link" ? styles.link : undefined,
         type === "body" ? styles.body : undefined,
@@ -60,6 +62,11 @@ const styles = StyleSheet.create({
   },
   "title.2": {
     fontSize: 24,
+    fontWeight: "bold",
+    lineHeight: 32,
+  },
+  "title.3": {
+    fontSize: 18,
     fontWeight: "bold",
     lineHeight: 32,
   },

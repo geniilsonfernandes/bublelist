@@ -1,64 +1,73 @@
-import { ListOptions } from "@/components/ListOptions";
 import { Product } from "@/components/Product";
 import { ProductEntry } from "@/components/ProductEntry";
-import { BackButton } from "@/components/ui/BackButton";
 import { ThemedText } from "@/components/ui/ThemedText";
 import {
   Product as ProductType,
   useGetListById,
 } from "@/database/useShoppingList";
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { useModals } from "@/store/useModals";
-import { calculateTotal } from "@/utils/calculateTotal";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { calculateTotal, formatValue } from "@/utils/calculateTotal";
+import { Feather } from "@expo/vector-icons";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo } from "react";
-import { StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  View,
+} from "react-native";
 import Animated, { LinearTransition } from "react-native-reanimated";
 
 export default function ListView() {
+  const iconColor = useThemeColor({}, "text.2");
   const { setSelectedList } = useModals();
-  const { id } = useLocalSearchParams() as { id: string };
-  const { data } = useGetListById(id);
+  const router = useRouter();
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { data, isLoading } = useGetListById(id);
+
+  const valuesSum = useMemo(
+    () => calculateTotal(data?.products || []),
+    [data?.products]
+  );
+  const budget = useMemo(() => formatValue(data?.budget || 0), [data?.budget]);
+
+  const handleOpenListDetails = () => {
+    if (data) setSelectedList(data);
+  };
 
   const renderList = useCallback(
     ({ item }: { item: ProductType }) => <Product {...item} />,
     []
   );
 
-  const valuesSum = useMemo(() => {
-    return calculateTotal(data?.products || []);
-  }, []);
-
-  const handleOpenListDetails = () => {
-    if (data) {
-      setSelectedList(data);
-    }
-  };
+  if (isLoading) {
+    return (
+      <View style={styles.centeredContainer}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <Stack.Screen
-        options={{
-          title: data?.name,
-          headerTitleStyle: { fontSize: 18 },
-          headerTitleAlign: "center",
-          headerBackTitle: "Voltar",
-          headerShadowVisible: false,
-          headerLeft: () => <BackButton to="Home" />,
-          headerRight: () => (
-            <ListOptions openListDetails={handleOpenListDetails} />
-          ),
-        }}
-      />
-
       <View style={styles.header}>
-        <View style={styles.stats}>
-          <ThemedText colorName="text.3" type="body">
-            {data?.products.length || 0} produtos
-          </ThemedText>
-          <ThemedText colorName="text.3" type="body">
-            {data?.budget} /{valuesSum}
-          </ThemedText>
-        </View>
+        <Pressable style={styles.iconButton} onPress={router.back}>
+          <Feather name="chevron-left" size={24} color={iconColor} />
+        </Pressable>
+        <ThemedText type="title.3">{data?.name}</ThemedText>
+        <Pressable style={styles.iconButton} onPress={handleOpenListDetails}>
+          <Feather name="edit" size={18} color={iconColor} />
+        </Pressable>
+      </View>
+      <View style={styles.stats}>
+        <ThemedText colorName="text.3" type="body">
+          {data?.products.length || 0} produtos
+        </ThemedText>
+        <ThemedText colorName="text.3" type="body">
+          {budget} / {valuesSum}
+        </ThemedText>
       </View>
 
       <Animated.FlatList
@@ -79,45 +88,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
-    position: "relative",
+    paddingTop: StatusBar.currentHeight,
+  },
+  centeredContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
-    paddingBottom: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 16,
+  },
+  iconButton: {
+    padding: 4,
   },
   stats: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
     justifyContent: "space-between",
-    marginTop: 8,
+    marginBottom: 8,
   },
   productEntry: {
     marginVertical: 8,
-    bottom: 0,
-  },
-
-  modalBackground: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContainer: {
-    width: 300,
-    padding: 16,
-    backgroundColor: "white",
-    borderRadius: 24,
-  },
-  modalText: {
-    fontSize: 18,
-    marginBottom: 20,
-  },
-  modalFooter: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    marginTop: 20,
-  },
-  modalButton: {
-    padding: 10,
   },
 });

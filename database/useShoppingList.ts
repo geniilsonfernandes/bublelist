@@ -232,6 +232,25 @@ async function getList(): Promise<List[]> {
   }
 }
 
+async function editList(data: Omit<List, "products">) {
+  const statement = await db.prepareAsync(
+    `UPDATE list SET name = $name, budget = $budget WHERE id = $id`
+  );
+  try {
+    const result = await statement.executeAsync({
+      $name: data.name,
+      $budget: data.budget || 0,
+      $id: data.id,
+    });
+
+    return result;
+  } catch (error) {
+    throw error;
+  } finally {
+    await statement.finalizeAsync();
+  }
+}
+
 async function findListById(id: string): Promise<List> {
   try {
     const querylist = "SELECT * FROM list WHERE id = $id";
@@ -266,7 +285,7 @@ async function addProduct(product: Omit<Product, "id">) {
   try {
     const result = await statement.executeAsync({
       $list_id: product.list_id,
-      $name: product.name,
+      $name: product.name.trim(),
       $quantity: product.quantity,
       $value: product.value,
       $checked: product.checked,
@@ -304,7 +323,7 @@ async function editProduct(product: Product) {
   );
   try {
     const result = statement.executeAsync({
-      $name: product.name,
+      $name: product.name.trim(),
       $quantity: product.quantity,
       $value: product.value,
       $checked: product.checked,
@@ -330,6 +349,18 @@ export const useCreateList = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: Omit<List, "id" | "products">) => createList(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["list"],
+      });
+    },
+  });
+};
+
+export const useEditList = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Omit<List, "products">) => editList(data),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["list"],

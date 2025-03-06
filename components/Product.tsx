@@ -57,7 +57,6 @@ export const Product: React.FC<ProductProps> = React.memo(
       return formatValue(value * quantity);
     }, [value]);
 
-    console.log("rendering product", name);
 
     return (
       <ReanimatedSwipeable
@@ -90,7 +89,7 @@ export const Product: React.FC<ProductProps> = React.memo(
                 }
               >
                 <Feather
-                  name={isChecked ? "check" : "circle"}
+                  name={isChecked ? "check" : "x"}
                   size={16}
                   color="#fff"
                 />

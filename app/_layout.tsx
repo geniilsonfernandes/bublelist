@@ -61,7 +61,12 @@ export default function RootLayout() {
             <AppProvider>
               <Stack>
                 {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
-                <Stack.Screen name="index" />
+                <Stack.Screen
+                  name="index"
+                  options={{
+                    headerShown: false,
+                  }}
+                />
                 <Stack.Screen
                   name="list"
                   options={{

@@ -1,40 +1,18 @@
-import { Chip } from "@/components/Chip";
 import { Header } from "@/components/Header";
+import { ListNameSuggestions } from "@/components/ListNameSuggestions";
 import { BackButton } from "@/components/ui/BackButton";
+import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
+import { ValueInput } from "@/components/ValueInput";
 import { useCreateList } from "@/database/useShoppingList";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { Feather, Ionicons } from "@expo/vector-icons";
-import dayjs from "dayjs";
-import * as Haptics from "expo-haptics";
-import { Stack, useRouter } from "expo-router";
-import React, { useCallback, useState } from "react";
-import {
-  FlatList,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import Animated, { FadeInUp } from "react-native-reanimated";
+import { Feather } from "@expo/vector-icons";
 
-const LIST_NAME_SUGGESTIONS = [
-  "Feira da Semana",
-  `Lista de ${dayjs().locale("pt-br").format("MMMM")}`,
-  `${dayjs().format("DD/MM/YYYY")}`,
-  "Compras Mensais",
-  "Itens de Padaria",
-  "Carnes e Frios",
-  "Produtos de Limpeza",
-  "Farmácia",
-  "Lanches e Snacks",
-  "Café da Manhã",
-  "Churrasco",
-  "Jantar Especial",
-];
+import { Stack, useRouter } from "expo-router";
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
+import Animated, { FadeInUp } from "react-native-reanimated";
 
 export default function List() {
   const [showMore, { toggle: toggleShowMore }] = useDisclosure();
@@ -42,28 +20,7 @@ export default function List() {
   const router = useRouter();
 
   const [listName, setListName] = useState("");
-  const [listBudget, setListBudget] = useState("");
-
-  const handleGetRandomName = useCallback(() => {
-    const randomName =
-      LIST_NAME_SUGGESTIONS[
-        Math.floor(Math.random() * LIST_NAME_SUGGESTIONS.length)
-      ];
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    setListName(randomName);
-  }, []);
-
-  const handleBudgetChange = useCallback((increment: boolean) => {
-    setListBudget((prev) => {
-      const newValue = Math.max(Number(prev) + (increment ? 50 : -50), 0);
-      if (!increment && newValue === 0) {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-      } else {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      }
-      return String(newValue);
-    });
-  }, []);
+  const [listBudget, setListBudget] = useState<number | null>(null);
 
   const handleCreateList = () => {
     mutate(
@@ -92,73 +49,30 @@ export default function List() {
         <Header
           title="Criar lista"
           subtitle="Escolha um nome para a sua lista de compras"
+          style={styles.header}
         />
-
         <Input
           placeholder="Nome da lista"
           value={listName}
-          onChangeText={(text) => {
-            setListName(text);
-          }}
-          iconName="repeat"
-          onActionClick={handleGetRandomName}
+          onChangeText={setListName}
+          showActions={false}
         />
-        <ThemedText
-          type="body"
-          style={styles.suggestionTitle}
-          colorName="text.4"
-        >
-          Sugestões:
-        </ThemedText>
-        <FlatList
-          data={LIST_NAME_SUGGESTIONS}
-          horizontal
-          contentContainerStyle={styles.suggestionContainer}
-          showsHorizontalScrollIndicator={false}
-          keyboardShouldPersistTaps="always"
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                setListName(item);
-              }}
-            >
-              <Chip label={item} active={item === listName} />
-            </TouchableOpacity>
-          )}
-          keyExtractor={(item) => item}
-        />
+        <ListNameSuggestions onAcceptSuggestion={setListName} />
 
         {showMore && (
           <Animated.View
             entering={FadeInUp.duration(300)}
             style={styles.budgetContainer}
           >
-            <Input
+            <ValueInput
               placeholder="Orçamento da lista"
+              controlButtons
               value={listBudget}
-              onChangeText={setListBudget}
-              keyboardType="numeric"
-              rightSection={
-                <View style={styles.budgetButtonContainer}>
-                  <Pressable
-                    style={styles.budgetButton}
-                    onPress={() => handleBudgetChange(false)}
-                  >
-                    <Feather name="minus" size={16} color="#121212" />
-                  </Pressable>
-                  <Pressable
-                    style={styles.budgetButton}
-                    onPress={() => handleBudgetChange(true)}
-                  >
-                    <Feather name="plus" size={16} color="#121212" />
-                  </Pressable>
-                </View>
-              }
+              onChangeValue={setListBudget}
             />
           </Animated.View>
         )}
+
         {!showMore ? (
           <Feather
             name={showMore ? "chevron-up" : "chevron-down"}
@@ -169,21 +83,16 @@ export default function List() {
           />
         ) : null}
       </View>
-      <Pressable
-        style={styles.createButton}
-        onPress={handleCreateList}
-        accessibilityRole="button"
-      >
-        <Ionicons name="sparkles" size={16} color="#dddddd" />
-        <Text style={styles.createButtonText}>Criar lista</Text>
-      </Pressable>
+      <Button variant="solid" onPress={handleCreateList}>
+        Criar lista
+      </Button>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, justifyContent: "space-between" },
-  header: { marginBottom: 48 },
+  header: { marginBottom: 16 },
   suggestionContainer: { marginTop: 8 },
   suggestionTitle: { marginTop: 8 },
 

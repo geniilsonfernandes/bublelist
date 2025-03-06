@@ -22,9 +22,9 @@ export const Input = forwardRef<TextInput, InputProps>(
     },
     ref
   ) => {
-    const textColor = useThemeColor({}, "text");
+    const textColor = useThemeColor({}, "text.2");
     const placeholderTextColor = useThemeColor({}, "text.3");
-    const iconColor = useThemeColor({}, "tint");
+    const iconColor = useThemeColor({}, "primary.100");
 
     return (
       <ThemedView borderColor={"background.2"} style={styles.container}>
@@ -76,7 +76,6 @@ const styles = StyleSheet.create({
     gap: 8,
     borderRadius: 8,
     padding: 4,
-    backgroundColor: "white",
     borderWidth: 1,
   },
   input: {

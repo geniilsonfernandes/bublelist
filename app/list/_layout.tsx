@@ -12,8 +12,7 @@ export default function RootLayout() {
       }}
     >
       <Stack.Screen name="index" options={{ headerShadowVisible: false }} />
-      <Stack.Screen name="[id]" />
-      
+      <Stack.Screen name="[id]" options={{ headerShown: false }} />
     </Stack>
   );
 }

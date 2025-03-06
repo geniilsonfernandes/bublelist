@@ -10,7 +10,9 @@ export const formatValue = (value: number) => {
 
 export const calculateTotal = (products: Product[]) => {
   const total = products.reduce((acc, product) => {
-    return acc + (product.value || 0) * (product.quantity || 0);
+    if (!product.value || !product.quantity || !product.checked) return acc;
+    const sum = acc + product.value * product.quantity;
+    return acc + product.value * product.quantity;
   }, 0);
 
   return formatValue(total);

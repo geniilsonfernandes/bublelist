@@ -92,7 +92,14 @@ const ProdutDetails: React.FC<ProductEntryData> = ({
       entering={FadeInDown.duration(200).easing(Easing.inOut(Easing.quad))}
       style={styles.optionsContainer}
     >
-      <ValueInput value={value} onChangeValue={onChangeValue} />
+      <ValueInput
+        value={value}
+        onChangeValue={onChangeValue}
+        style={{
+          flex: 1,
+        }}
+      />
+
       <QuantitySelector
         quantity={quantity}
         onChangeQuantity={onChangeQuantity}

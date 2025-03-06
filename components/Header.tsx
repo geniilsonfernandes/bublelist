@@ -1,26 +1,27 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 import { ThemedText } from "./ui/ThemedText";
 
 type HeaderProps = {
   title: string;
   subtitle?: string;
+  children?: React.ReactNode;
+  containerStyle?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
 };
 
-export const Header: React.FC<HeaderProps> = ({ subtitle, title }) => {
+export const Header: React.FC<HeaderProps> = ({
+  subtitle,
+  title,
+  children,
+  containerStyle,
+  style,
+}) => {
   return (
-    <View style={styles.header}>
+    <View style={style}>
       <ThemedText type="title.2">{title}</ThemedText>
-      <ThemedText type="body" colorName="text.4">
-        {subtitle}
-      </ThemedText>
+      {subtitle ? <ThemedText type="body">{subtitle}</ThemedText> : null}
+      <View style={containerStyle}>{children}</View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, justifyContent: "space-between" },
-  header: { marginBottom: 48 },
-  suggestionContainer: { marginTop: 8 },
-  suggestionTitle: { marginTop: 8 },
-});

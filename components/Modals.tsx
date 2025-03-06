@@ -1,17 +1,12 @@
 import { useBackHandler } from "@/hooks/useBackHandler";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useModals } from "@/store/useModals";
-import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState } from "react";
-import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
+import React from "react";
+import { StyleSheet, TouchableWithoutFeedback } from "react-native";
 import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
-import { Header } from "./Header";
+import { EditList } from "./modals/EditList";
 import { ProductEditEntry } from "./ProductEntry";
-import { Input } from "./ui/Input";
-import { ThemedText } from "./ui/ThemedText";
-import { ThemedView } from "./ui/ThemedView";
-import { ValueInput } from "./ValueInput";
 
 type ModalProps = {
   children: React.ReactNode;
@@ -57,66 +52,13 @@ const EditModal = () => {
   );
 };
 
-const ListEditModal = () => {
-  const { selectedList, clearSelectedList } = useModals();
-
-  const [value, setValue] = useState(selectedList?.budget || null);
-
-  useBackHandler({
-    condition: !!selectedList,
-    onBackPress: clearSelectedList,
-  });
-
-  return (
-    <Modal onClose={() => clearSelectedList()}>
-      <View
-        style={{
-          flexDirection: "column",
-          gap: 8,
-        }}
-      >
-        <Header title={selectedList?.name || "Nova lista"} />
-        <Input value={selectedList?.name} showActions={false} />
-        <ValueInput
-          value={value}
-          onChangeValue={(value) => setValue(value)}
-          controlButtons
-        />
-        <ThemedView
-          backgroundColor={"background.2"}
-          style={{
-            height: 1,
-            marginHorizontal: 12,
-            marginVertical: 8,
-          }}
-        />
-        <ThemedView
-          borderColor={"background.2"}
-          backgroundColor={"background.1"}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 16,
-            padding: 12,
-            borderRadius: 8,
-            height: 48,
-          }}
-        >
-          <Feather name="trash" size={18} />
-          <ThemedText>Apagar lista</ThemedText>
-        </ThemedView>
-      </View>
-    </Modal>
-  );
-};
-
 export const Modals = () => {
   const { selectedProduct, selectedList } = useModals();
 
   return (
     <>
       {selectedProduct && <EditModal />}
-      {selectedList && <ListEditModal />}
+      {selectedList && <EditList />}
     </>
   );
 };
@@ -139,4 +81,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     zIndex: 101,
   },
+
+  fill: {
+    backgroundColor: "#4E4E4E",
+    height: 48,
+    borderRadius: 8,
+    width: "100%",
+
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 8,
+  },
+  outline: {
+    backgroundColor: "transparent",
+    height: 48,
+    borderRadius: 8,
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#dddddd",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 8,
+  },
+  budgetContainer: { marginTop: 16 },
+  createButtonText: { color: "#dddddd", fontSize: 16, fontWeight: "500" },
 });

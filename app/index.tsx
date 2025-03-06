@@ -1,22 +1,18 @@
 import { List } from "@/components/List";
 import { ListModal } from "@/components/ListModal";
 import { Search } from "@/components/Search";
+import { Button } from "@/components/ui/Button";
 import { ThemedView } from "@/components/ui/ThemedView";
 import { List as ListType, useGetList } from "@/database/useShoppingList";
 import { useKeyboard } from "@/hooks/useKeyboard";
-import { Feather } from "@expo/vector-icons";
-import { Stack, useFocusEffect, useRouter } from "expo-router";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { LinearGradient } from "expo-linear-gradient";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useMemo, useState } from "react";
-import {
-  BackHandler,
-  FlatList,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { BackHandler, FlatList, StyleSheet, View } from "react-native";
 
 export default function HomeScreen() {
+  const backgroundColor = useThemeColor({}, "background");
   const keyboardVisible = useKeyboard();
   const [listSelected, setListSelected] = useState<ListType>();
   const [query, setQuery] = useState("");
@@ -45,19 +41,6 @@ export default function HomeScreen() {
 
   return (
     <ThemedView colorName="background" style={styles.container}>
-      <Stack.Screen
-        options={{
-          headerTitle: "Tsily",
-          headerTitleStyle: { fontSize: 24, fontWeight: "bold" },
-          headerShadowVisible: false,
-          headerBackVisible: false,
-          headerRight: () => (
-            <Pressable style={styles.avatar}>
-              <Feather name="user" size={24} />
-            </Pressable>
-          ),
-        }}
-      />
       <View style={styles.header}>
         <Search value={query} onChangeText={setQuery} />
       </View>
@@ -81,31 +64,20 @@ export default function HomeScreen() {
         )}
         keyExtractor={({ id }, index) => id}
       />
-      {/* {keyboardVisible && (
-        <View style={styles.filters}>
-          <FlatList
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-            data={["Todos", "Este mês", "Mês passado", "Outros"]}
-            renderItem={({ item }) => (
-              <Pressable style={styles.filter}>
-                <Text style={styles.filterText}>{item}</Text>
-              </Pressable>
-            )}
-          />
-        </View>
-      )} */}
+
       {!keyboardVisible && (
-        <Pressable
-          style={styles.createButton}
-          accessibilityRole="button"
-          onPress={() => {
-            router.push(`/list`);
-          }}
+        <LinearGradient
+          colors={["transparent", backgroundColor]}
+          style={[styles.buttonContainer]}
         >
-          <Text style={styles.createButtonText}>Criar lista</Text>
-        </Pressable>
+          <Button
+            onPress={() => {
+              router.push(`/list`);
+            }}
+          >
+            Criar lista
+          </Button>
+        </LinearGradient>
       )}
 
       <ListModal
@@ -128,58 +100,14 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   list: {
-    flexGrow: 1,
-    paddingBottom: 48,
+    paddingBottom: 72,
     paddingHorizontal: 16,
   },
-
-  filters: {
-    flexDirection: "row",
+  buttonContainer: {
     position: "absolute",
-    bottom: 16,
-    gap: 8,
-    paddingHorizontal: 16,
-  },
-  filter: {
-    padding: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    backgroundColor: "rgb(234, 234, 234)",
-    borderWidth: 1,
-    borderColor: "#DBDBDB",
-    marginRight: 8,
-  },
-  filterText: {
-    color: "rgb(78, 78, 78)",
-    fontSize: 16,
-  },
-
-  avatar: {
-    borderRadius: 24,
-    height: 48,
-    width: 48,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  createButton: {
-    backgroundColor: "rgb(78, 78, 78)",
-    height: 48,
-    borderRadius: 16,
-    justifyContent: "center",
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    marginHorizontal: 16,
-    position: "absolute",
-
-    bottom: 16,
-    alignSelf: "center",
-    paddingHorizontal: 48,
-    alignItems: "center",
-  },
-  createButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "500",
+    width: "100%",
+    padding: 16,
+    paddingTop: 48,
+    bottom: 0,
   },
 });

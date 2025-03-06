@@ -4,15 +4,15 @@
  */
 
 const tintColorLight = "#0a7ea4";
-const tintColorDark = "#fff";
+const tintColorDark = "#0a7ea4";
 
 export const backgroundDark = {
   100: "#151718",
 };
 const primary = {
-  100: "#0a7ea4",
-  200: "#0077b6",
-  300: "#0068a5",
+  "primary.100": "#0a7ea4",
+  "primary.200": "#0077b6",
+  "primary.300": "#0068a5",
 };
 
 const gray = {
@@ -49,7 +49,7 @@ export const Colors = {
     "background.6": "#B2B2B2",
     "background.7": "#868686",
     "background.8": "#5A595A",
-    "background.9": "#2D2E2F",
+    "background.9": "#222222",
 
     tint: tintColorLight,
     icon: "#687076",
@@ -61,27 +61,27 @@ export const Colors = {
     ...primary,
   },
   dark: {
-    text: "#444444",
-    "text.1": "#444444",
-    "text.2": "#555555",
-    "text.3": "#666666",
-    "text.4": "#777777",
-    "text.5": "#888888",
+    text: "#F2F2F2",
+    "text.1": "#F2F2F2",
+    "text.2": "#E6E6E6",
+    "text.3": "#DBDBDB",
+    "text.4": "#D0D0D0",
+    "text.5": "#B2B2B2",
     "text.6": "#999999",
-    "text.7": "#bbbbbb",
-    "text.8": "#cccccc",
-    "text.9": "#dddddd",
+    "text.7": "#868686",
+    "text.8": "#4E4E4E",
+    "text.9": "#4E4E4E",
 
-    background: "#FCFDFC",
-    "background.1": "#F2F2F2",
-    "background.2": "#E6E6E6",
-    "background.3": "#DBDBDB",
+    background: "#444444",
+    "background.1": "#555555",
+    "background.2": "#666666",
+    "background.3": "#777777",
     "background.4": "#D0D0D0",
     "background.5": "#C4C4C4",
     "background.6": "#B2B2B2",
-    "background.7": "#868686",
-    "background.8": "#4E4E4E",
-    "background.9": "#2D2E2F",
+    "background.7": "#D0D0D0",
+    "background.8": "#DBDBDB",
+    "background.9": "#999999",
 
     tint: tintColorDark,
     icon: "#9BA1A6",
