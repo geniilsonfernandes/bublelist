@@ -40,7 +40,7 @@ export const Colors = {
     "text.8": "#cccccc",
     "text.9": "#dddddd",
 
-    background: "#FCFDFC",
+    background: "#FFFFFF",
     "background.1": "#F2F2F2",
     "background.2": "#E6E6E6",
     "background.3": "#DBDBDB",

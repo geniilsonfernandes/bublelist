@@ -1,6 +1,5 @@
 import { Header } from "@/components/Header";
 import { ListNameSuggestions } from "@/components/ListNameSuggestions";
-import { BackButton } from "@/components/ui/BackButton";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { ThemedView } from "@/components/ui/ThemedView";
@@ -38,13 +37,7 @@ export default function List() {
 
   return (
     <ThemedView colorName="background" style={styles.container}>
-      <Stack.Screen
-        options={{
-          headerTitle: "",
-          headerShadowVisible: false,
-          headerLeft: () => <BackButton />,
-        }}
-      />
+      <Stack.Screen />
       <View>
         <Header
           title="Criar lista"

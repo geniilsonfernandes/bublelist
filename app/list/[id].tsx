@@ -1,6 +1,7 @@
 import { Product } from "@/components/Product";
 import { ProductEntry } from "@/components/ProductEntry";
 import { ThemedText } from "@/components/ui/ThemedText";
+import { ThemedView } from "@/components/ui/ThemedView";
 import {
   Product as ProductType,
   useGetListById,
@@ -51,7 +52,7 @@ export default function ListView() {
   }
 
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
       <View style={styles.header}>
         <Pressable style={styles.iconButton} onPress={router.back}>
           <Feather name="chevron-left" size={24} color={iconColor} />
@@ -81,7 +82,7 @@ export default function ListView() {
       <View style={styles.productEntry}>
         <ProductEntry currentList={data} />
       </View>
-    </View>
+    </ThemedView>
   );
 }
 

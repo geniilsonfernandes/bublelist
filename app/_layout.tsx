@@ -7,6 +7,7 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
+import * as SystemUI from "expo-system-ui";
 import { useEffect } from "react";
 import "react-native-reanimated";
 
@@ -41,6 +42,9 @@ export default function RootLayout() {
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
+      SystemUI.setBackgroundColorAsync(
+        colorScheme === "dark" ? "#444444" : "#FFFFFF"
+      );
     }
   }, [loaded]);
 
@@ -54,20 +58,17 @@ export default function RootLayout() {
         <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
-          <Stack>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: {
+                backgroundColor: "red",
+              },
+            }}
+          >
             {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
-            <Stack.Screen
-              name="index"
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="list"
-              options={{
-                headerShown: false,
-              }}
-            />
+            <Stack.Screen name="index" />
+            <Stack.Screen name="list" />
             <Stack.Screen name="+not-found" />
           </Stack>
           <Modals />

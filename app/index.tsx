@@ -2,17 +2,27 @@ import { List } from "@/components/List";
 import { ListModal } from "@/components/ListModal";
 import { Search } from "@/components/Search";
 import { Button } from "@/components/ui/Button";
+import { Icon } from "@/components/ui/Icon";
+import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
 import { List as ListType, useGetList } from "@/database/useShoppingList";
 import { useKeyboard } from "@/hooks/useKeyboard";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { Feather } from "@expo/vector-icons";
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetScrollView,
+} from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
-import { useFocusEffect, useRouter } from "expo-router";
-import { useMemo, useState } from "react";
-import { BackHandler, FlatList, StyleSheet, View } from "react-native";
+import { useRouter } from "expo-router";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { FlatList, Pressable, StatusBar, StyleSheet, View } from "react-native";
 
 export default function HomeScreen() {
   const backgroundColor = useThemeColor({}, "background");
+  const backgroundColorSheet = useThemeColor({}, "background.1");
+  const iconColor = useThemeColor({}, "text.2");
   const keyboardVisible = useKeyboard();
   const [listSelected, setListSelected] = useState<ListType>();
   const [query, setQuery] = useState("");
@@ -24,24 +34,60 @@ export default function HomeScreen() {
       list.name.toLowerCase().includes(query.toLowerCase())
     );
   }, [data, query]);
+  const sheetRef = useRef<BottomSheet>(null);
 
-  useFocusEffect(() => {
-    // disable back button only on home screen
-    const backButtonHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      () => {
-        BackHandler.exitApp();
-        return true;
-      }
-    );
-    return () => backButtonHandler.remove();
-  });
+  // variables
+  const datal = useMemo(
+    () =>
+      Array(50)
+        .fill(0)
+        .map((_, index) => `index-${index}`),
+    []
+  );
+  const snapPoints = useMemo(() => ["25%", "50%", "90%"], []);
 
-  //TODO: IMPLEMENTAR O FILTRO POR LABEL
+  // callbacks
+  const handleSheetChange = useCallback((index: number) => {
+    console.log("handleSheetChange", index);
+  }, []);
+
+  const handleSnapPress = useCallback((index: number) => {
+    sheetRef.current?.snapToIndex(index);
+  }, []);
+
+  // renders
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        pressBehavior="close"
+      />
+    ),
+    []
+  );
 
   return (
     <ThemedView colorName="background" style={styles.container}>
       <View style={styles.header}>
+        <View
+          style={{
+            marginVertical: 16,
+            marginBottom: 48,
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Feather name="settings" size={24} color={iconColor} />
+          <Pressable
+            onPress={() => {
+              handleSnapPress(2);
+            }}
+          >
+            <Feather name="settings" size={24} color={iconColor} />
+          </Pressable>
+        </View>
         <Search value={query} onChangeText={setQuery} />
       </View>
 
@@ -72,7 +118,7 @@ export default function HomeScreen() {
         >
           <Button
             onPress={() => {
-              router.push(`/list`);
+              router.push("/list");
             }}
           >
             Criar lista
@@ -86,6 +132,73 @@ export default function HomeScreen() {
           setListSelected(undefined);
         }}
       />
+
+      <BottomSheet
+        ref={sheetRef}
+        index={-1}
+        snapPoints={snapPoints}
+        handleIndicatorStyle={{ backgroundColor: iconColor }}
+        enablePanDownToClose
+        enableDynamicSizing={false}
+        onChange={handleSheetChange}
+        backdropComponent={renderBackdrop}
+        backgroundStyle={{ backgroundColor: backgroundColorSheet }}
+      >
+        <BottomSheetScrollView style={{ flex: 1, padding: 16 }}>
+          <ThemedText>Seus dados:</ThemedText>
+          <ThemedView
+            colorName="background.2"
+            style={{ borderRadius: 16, marginTop: 8 }}
+          >
+            <View style={{ borderRadius: 16, overflow: "hidden" }}>
+              <Pressable
+                onPress={() => {}}
+                android_ripple={{
+                  color: "#E6E6E610",
+                  foreground: true,
+                }}
+                style={{
+                  flexDirection: "row",
+                  padding: 16,
+                  paddingHorizontal: 18,
+                  gap: 16,
+                  alignItems: "center",
+                }}
+              >
+                <Icon name="trash" size={18} />
+                <ThemedText type="defaultSemiBold">Apagar dados</ThemedText>
+              </Pressable>
+              <ThemedView
+                colorName="background.3"
+                style={{ height: 1, marginLeft: 50 }}
+              />
+              <Pressable
+                onPress={() => {}}
+                android_ripple={{
+                  color: "#E6E6E610",
+                  foreground: true,
+                }}
+                style={{
+                  flexDirection: "row",
+                  padding: 16,
+                  paddingHorizontal: 18,
+                  gap: 16,
+                  alignItems: "center",
+                }}
+              >
+                <Icon name="trash" size={18} />
+                <ThemedText type="defaultSemiBold">Apagar dados</ThemedText>
+              </Pressable>
+            </View>
+          </ThemedView>
+          <ThemedText>Lista:</ThemedText>
+          <ThemedText>user precos sugeridos</ThemedText>
+          <ThemedText>ver listas de produtos</ThemedText>
+          <ThemedText>Sobre nós:</ThemedText>
+          <ThemedText>Avaliações</ThemedText>
+          <ThemedText>Enviar feedback</ThemedText>
+        </BottomSheetScrollView>
+      </BottomSheet>
     </ThemedView>
   );
 }
@@ -96,7 +209,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 16,
-    marginTop: 48,
+    marginTop: StatusBar.currentHeight,
     marginBottom: 16,
   },
   list: {

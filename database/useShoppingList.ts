@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as SQLite from "expo-sqlite";
+import { initializeDatabase } from "./initializeDatabase";
 
 export type List = {
   id: string;
@@ -19,12 +20,15 @@ export type Product = {
 
 const db = SQLite.openDatabaseSync("tlist.db");
 
+initializeDatabase(db);
+
 async function createList(
   data: Omit<List, "id" | "products">
 ): Promise<Omit<List, "products">> {
   const statement = await db.prepareAsync(
     `INSERT INTO list (name, budget) VALUES ($name, $budget)`
   );
+  console.log(data);
 
   try {
     const result = await statement.executeAsync({
@@ -36,6 +40,8 @@ async function createList(
 
     return { ...data, id: insertedRowId.toString() };
   } catch (error) {
+    console.log(error);
+
     throw error;
   } finally {
     await statement.finalizeAsync();
