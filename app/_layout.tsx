@@ -11,10 +11,7 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { Modals } from "@/components/Modals";
-import { AppProvider } from "@/context/AppProvider";
-import { initializeDatabase } from "@/database/initializeDatabase";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { SQLiteProvider } from "expo-sqlite";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -53,35 +50,30 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SQLiteProvider databaseName="tlist.db" onInit={initializeDatabase}>
-        <QueryClientProvider client={queryClient}>
-          <ThemeProvider
-            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-          >
-            <AppProvider>
-              <Stack>
-                {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
-                <Stack.Screen
-                  name="index"
-                  options={{
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="list"
-                  options={{
-                    headerShown: false,
-                    animation: "slide_from_bottom",
-                  }}
-                />
-                <Stack.Screen name="+not-found" />
-              </Stack>
-              <Modals />
-              <StatusBar style="auto" />
-            </AppProvider>
-          </ThemeProvider>
-        </QueryClientProvider>
-      </SQLiteProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <Stack>
+            {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+            <Stack.Screen
+              name="index"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="list"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+          <Modals />
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </QueryClientProvider>
     </GestureHandlerRootView>
   );
 }

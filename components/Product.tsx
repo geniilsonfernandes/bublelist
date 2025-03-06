@@ -2,6 +2,7 @@ import { ThemedText } from "@/components/ui/ThemedText";
 import {
   Product as ProductType,
   useCheckProduct,
+  useDeleteProduct,
 } from "@/database/useShoppingList";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useModals } from "@/store/useModals";
@@ -25,22 +26,24 @@ type ProductProps = {
 
 export const Product: React.FC<ProductProps> = React.memo(
   ({ id, name, quantity, checked, value, list_id }) => {
-    const { mutate } = useCheckProduct();
+    const { mutate: checkProduct } = useCheckProduct();
+    const { mutate: deleteProduct } = useDeleteProduct();
     const { setSelectedProduct } = useModals();
-
     const [isChecked, setIsChecked] = useState(checked);
     const checkedBorderColor = useThemeColor({}, "success");
     const uncheckedBorderColor = useThemeColor({}, "text.7");
 
     const toggleCheckStatus = useCallback(() => {
-      mutate({
+      checkProduct({
         id,
         checked: !isChecked,
       });
       setIsChecked((prev) => !prev);
     }, [id, isChecked]);
 
-    const deleteProduct = useCallback(() => {}, [id]);
+    const handledeleteProduct = useCallback(() => {
+      deleteProduct(id);
+    }, [id]);
 
     const handleSelect = () => {
       setSelectedProduct({
@@ -57,14 +60,13 @@ export const Product: React.FC<ProductProps> = React.memo(
       return formatValue(value * quantity);
     }, [value]);
 
-
     return (
       <ReanimatedSwipeable
         friction={2}
         enableTrackpadTwoFingerGesture
         leftThreshold={0}
         rightThreshold={100}
-        onSwipeableWillOpen={deleteProduct}
+        onSwipeableWillOpen={handledeleteProduct}
         renderRightActions={() => <DeleteAction />}
       >
         <Pressable onPress={handleSelect}>
@@ -145,8 +147,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: "center",
     paddingHorizontal: 16,
-    alignItems: "center",
-    width: 80,
+    alignItems: "flex-end",
+    width: 180,
     height: "100%",
   },
 });
