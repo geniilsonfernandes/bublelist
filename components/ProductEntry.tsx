@@ -98,6 +98,7 @@ const ProdutDetails: React.FC<ProductEntryData> = ({
         style={{
           flex: 1,
         }}
+        cap="top"
       />
 
       <QuantitySelector
@@ -248,6 +249,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
         value={product}
         onChangeText={setProduct}
         onActionClick={handleAddItem}
+        cap="bottom"
       />
     </View>
   );

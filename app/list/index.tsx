@@ -56,6 +56,7 @@ export default function List() {
           value={listName}
           onChangeText={setListName}
           showActions={false}
+          cap="bottom"
         />
         <ListNameSuggestions onAcceptSuggestion={setListName} />
 
@@ -69,6 +70,7 @@ export default function List() {
               controlButtons
               value={listBudget}
               onChangeValue={setListBudget}
+              cap="top"
             />
           </Animated.View>
         )}

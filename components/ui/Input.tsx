@@ -9,6 +9,7 @@ type InputProps = {
   rightSection?: React.ReactNode;
   iconName?: keyof typeof Feather.glyphMap;
   showActions?: boolean;
+  cap?: "top" | "bottom";
 } & TextInputProps;
 
 export const Input = forwardRef<TextInput, InputProps>(
@@ -18,6 +19,7 @@ export const Input = forwardRef<TextInput, InputProps>(
       rightSection,
       iconName = "check",
       showActions = true,
+      cap,
       ...rest
     },
     ref
@@ -27,7 +29,14 @@ export const Input = forwardRef<TextInput, InputProps>(
     const iconColor = useThemeColor({}, "primary.100");
 
     return (
-      <ThemedView borderColor={"background.2"} style={styles.container}>
+      <ThemedView
+        borderColor={"background.2"}
+        style={[
+          styles.container,
+          cap === "bottom" && styles.capBottom,
+          cap === "top" && styles.capTop,
+        ]}
+      >
         <TextInput
           ref={ref}
           placeholder="Digite o nome do produto"
@@ -74,7 +83,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    borderRadius: 8,
+    borderRadius: 16,
+
     padding: 4,
     borderWidth: 1,
   },
@@ -90,5 +100,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
+  },
+  capBottom: {
+    borderBottomEndRadius: 8,
+    borderBottomStartRadius: 8,
+  },
+  capTop: {
+    borderTopEndRadius: 8,
+    borderTopStartRadius: 8,
   },
 });

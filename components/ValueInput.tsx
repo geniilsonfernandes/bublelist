@@ -19,6 +19,7 @@ type ValueInputProps = {
   placeholder?: string;
   increment?: number;
   style?: StyleProp<ViewStyle>;
+  cap?: "top" | "bottom";
 };
 
 export const ValueInput: React.FC<ValueInputProps> = ({
@@ -28,6 +29,7 @@ export const ValueInput: React.FC<ValueInputProps> = ({
   placeholder = "0,00",
   increment = 50,
   style,
+  cap,
 }) => {
   const textColor = useThemeColor({}, "text.2");
 
@@ -43,7 +45,15 @@ export const ValueInput: React.FC<ValueInputProps> = ({
   };
 
   return (
-    <ThemedView borderColor="background.2" style={[styles.container, style]}>
+    <ThemedView
+      borderColor="background.2"
+      style={[
+        styles.container,
+        style,
+        cap === "bottom" && styles.capBottom,
+        cap === "top" && styles.capTop,
+      ]}
+    >
       <Feather name="dollar-sign" size={18} color={textColor} />
       <CurrencyInput
         placeholder={placeholder}
@@ -83,7 +93,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    borderRadius: 8,
+    borderRadius: 16,
     paddingHorizontal: 8,
 
     height: 48,
@@ -99,5 +109,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
+  },
+  capBottom: {
+    borderBottomEndRadius: 8,
+    borderBottomStartRadius: 8,
+  },
+  capTop: {
+    borderTopEndRadius: 8,
+    borderTopStartRadius: 8,
   },
 });

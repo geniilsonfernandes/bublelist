@@ -36,16 +36,12 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={[styles.button, { backgroundColor }]}
+        style={[styles.button, { backgroundColor }, styles.capRight]}
         onPress={handleDecrease}
       >
         <Feather name="minus" size={18} color={iconColor} />
       </TouchableOpacity>
-      <ThemedView
-        backgroundColor="background.1"
-        borderColor="background.2"
-        style={styles.input}
-      >
+      <ThemedView backgroundColor="background.1" style={styles.input}>
         <TextInput
           placeholder="quant."
           autoCorrect={false}
@@ -64,7 +60,7 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
         />
       </ThemedView>
       <TouchableOpacity
-        style={[styles.button, { backgroundColor }]}
+        style={[styles.button, { backgroundColor }, styles.capLeft]}
         onPress={handleIncrease}
       >
         <Feather name="plus" size={18} color={iconColor} />
@@ -77,23 +73,31 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: 4,
   },
   input: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
     width: 60,
-    borderRadius: 10,
-    height: 42,
+    borderRadius: 8,
+    height: 48,
     paddingHorizontal: 8,
   },
   button: {
     justifyContent: "center",
     alignItems: "center",
-    width: 42,
-    height: 42,
-    borderRadius: 100,
+    width: 48,
+    height: 48,
+    borderRadius: 16,
     backgroundColor: "#5B5B5B",
+  },
+  capLeft: {
+    borderTopLeftRadius: 8,
+    borderBottomLeftRadius: 8,
+  },
+  capRight: {
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
   },
 });

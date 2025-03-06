@@ -75,6 +75,7 @@ export default function ListView() {
         keyExtractor={(item) => item.id}
         itemLayoutAnimation={LinearTransition}
         renderItem={renderList}
+        keyboardShouldPersistTaps="always"
       />
 
       <View style={styles.productEntry}>

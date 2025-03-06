@@ -39,7 +39,7 @@ export const Suggestions: React.FC<SuggestionsProps> = ({
         />
       </Pressable> */}
       {mode === "vertical" && (
-        <ScrollView >
+        <ScrollView>
           <Animated.View
             entering={FadeInUp.duration(300).easing(Easing.inOut(Easing.quad))}
             style={{
@@ -64,12 +64,11 @@ export const Suggestions: React.FC<SuggestionsProps> = ({
       {mode === "horizontal" && (
         <Animated.FlatList
           entering={FadeInUp.duration(300).easing(Easing.inOut(Easing.quad))}
-        
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           keyboardShouldPersistTaps="always"
           keyExtractor={(item) => item}
-          ItemSeparatorComponent={() => <View style={{ width: 8 }} />}
+          ItemSeparatorComponent={() => <View style={{ width: 4 }} />}
           data={suggestions}
           renderItem={({ item, index }) => (
             <Animated.View

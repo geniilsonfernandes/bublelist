@@ -15,7 +15,7 @@ export const Button: React.FC<ButtonProps> = ({
   children,
   variant = "solid",
   onPress,
-  style
+  style,
 }) => {
   const backgroundColor = useThemeColor({}, "primary.200");
   const borderColor = useThemeColor({}, "background.2");
@@ -28,11 +28,13 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <Pressable
-      style={[containerStyle, style]}
+      style={(state) => {
+        return [containerStyle, style, state.pressed && { opacity: 0.8 }];
+      }}
       accessibilityRole="button"
       onPress={onPress}
     >
-      <ThemedText colorName="text.2">{children}</ThemedText>
+      <ThemedText colorName="gray.100">{children}</ThemedText>
     </Pressable>
   );
 };
@@ -53,5 +55,4 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     borderWidth: 1,
   },
-
 });
