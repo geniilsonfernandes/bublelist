@@ -10,9 +10,9 @@ export const backgroundDark = {
   100: "#151718",
 };
 const primary = {
-  "primary.100": "#0a7ea4",
-  "primary.200": "#0077b6",
-  "primary.300": "#0068a5",
+  "primary.100": "#3954FB",
+  "primary.200": "#3954FB",
+  "primary.300": "#3954FB",
 };
 
 const gray = {
@@ -72,13 +72,13 @@ export const Colors = {
     "text.8": "#4E4E4E",
     "text.9": "#4E4E4E",
 
-    background: "#444444",
-    "background.1": "#555555",
-    "background.2": "#666666",
-    "background.3": "#777777",
-    "background.4": "#D0D0D0",
-    "background.5": "#C4C4C4",
-    "background.6": "#B2B2B2",
+    background: "#1e1e1e",
+    "background.1": "#2E2E2E",
+    "background.2": "#3E3E3E",
+    "background.3": "#4D4D4D",
+    "background.4": "#5D5D5D",
+    "background.5": "#6D6D6D",
+    "background.6": "#7D7D7D",
     "background.7": "#D0D0D0",
     "background.8": "#DBDBDB",
     "background.9": "#999999",

@@ -8,9 +8,9 @@ import { useCreateList } from "@/database/useShoppingList";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { Feather } from "@expo/vector-icons";
 
-import { Stack, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StatusBar, StyleSheet, View } from "react-native";
 import Animated, { FadeInUp } from "react-native-reanimated";
 
 export default function List() {
@@ -37,12 +37,12 @@ export default function List() {
 
   return (
     <ThemedView colorName="background" style={styles.container}>
-      <Stack.Screen />
       <View>
         <Header
           title="Criar lista"
           subtitle="Escolha um nome para a sua lista de compras"
           style={styles.header}
+          showBackButton
         />
         <Input
           placeholder="Nome da lista"
@@ -86,7 +86,12 @@ export default function List() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, justifyContent: "space-between" },
+  container: {
+    flex: 1,
+    padding: 16,
+    justifyContent: "space-between",
+    paddingTop: StatusBar.currentHeight,
+  },
   header: { marginBottom: 16 },
   suggestionContainer: { marginTop: 8 },
   suggestionTitle: { marginTop: 8 },

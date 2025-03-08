@@ -1,6 +1,5 @@
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { LinearGradient } from "expo-linear-gradient";
-import { StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
 
 type ModalProps = {
@@ -18,10 +17,16 @@ export const Modal: React.FC<ModalProps> = ({ children, onClose }) => {
       style={styles.container}
     >
       <TouchableWithoutFeedback onPress={onClose}>
-        <LinearGradient
+        {/* <LinearGradient
           // Background Linear Gradient
           colors={["transparent", background]}
           end={{ x: 0.3, y: 0.6 }}
+          style={{
+            flex: 1,
+          }}
+        /> */}
+        <View
+          // Background Linear Gradient
           style={{
             flex: 1,
           }}
@@ -40,6 +45,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     zIndex: 100,
+    backgroundColor: "rgba(0, 0, 0, 0.78)",
   },
   content: {
     position: "absolute",

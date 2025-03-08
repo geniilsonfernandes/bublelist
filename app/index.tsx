@@ -8,14 +8,12 @@ import { ThemedView } from "@/components/ui/ThemedView";
 import { List as ListType, useGetList } from "@/database/useShoppingList";
 import { useKeyboard } from "@/hooks/useKeyboard";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { Feather } from "@expo/vector-icons";
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { FlatList, Pressable, StatusBar, StyleSheet, View } from "react-native";
 
@@ -37,13 +35,6 @@ export default function HomeScreen() {
   const sheetRef = useRef<BottomSheet>(null);
 
   // variables
-  const datal = useMemo(
-    () =>
-      Array(50)
-        .fill(0)
-        .map((_, index) => `index-${index}`),
-    []
-  );
   const snapPoints = useMemo(() => ["25%", "50%", "90%"], []);
 
   // callbacks
@@ -70,24 +61,14 @@ export default function HomeScreen() {
 
   return (
     <ThemedView colorName="background" style={styles.container}>
+      <Stack.Screen
+        options={{
+          headerTitle: "Minhas listas",
+          headerShown: true,
+          headerShadowVisible: false,
+        }}
+      />
       <View style={styles.header}>
-        <View
-          style={{
-            marginVertical: 16,
-            marginBottom: 48,
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <Feather name="settings" size={24} color={iconColor} />
-          <Pressable
-            onPress={() => {
-              handleSnapPress(2);
-            }}
-          >
-            <Feather name="settings" size={24} color={iconColor} />
-          </Pressable>
-        </View>
         <Search value={query} onChangeText={setQuery} />
       </View>
 
@@ -112,9 +93,10 @@ export default function HomeScreen() {
       />
 
       {!keyboardVisible && (
-        <LinearGradient
-          colors={["transparent", backgroundColor]}
-          style={[styles.buttonContainer]}
+        <View
+          style={{
+            padding: 16,
+          }}
         >
           <Button
             onPress={() => {
@@ -123,7 +105,7 @@ export default function HomeScreen() {
           >
             Criar lista
           </Button>
-        </LinearGradient>
+        </View>
       )}
 
       <ListModal
@@ -192,7 +174,7 @@ export default function HomeScreen() {
             </View>
           </ThemedView>
           <ThemedText>Lista:</ThemedText>
-          <ThemedText>user precos sugeridos</ThemedText>
+          <ThemedText>user precos sugeridos:</ThemedText>
           <ThemedText>ver listas de produtos</ThemedText>
           <ThemedText>Sobre nós:</ThemedText>
           <ThemedText>Avaliações</ThemedText>

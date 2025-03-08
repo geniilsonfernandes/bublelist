@@ -9,9 +9,14 @@ import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
 import { useModals } from "@/store/useModals";
 import * as Haptics from "expo-haptics";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
-import Animated, { Easing, FadeInDown } from "react-native-reanimated";
+import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import Animated, {
+  Easing,
+  FadeInDown,
+  FadeOutDown,
+} from "react-native-reanimated";
 import { Suggestions } from "./Suggestions";
+import { Icon } from "./ui/Icon";
 import { Input } from "./ui/Input";
 
 const PRODUCT_DATA = [
@@ -172,6 +177,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
   showSuggestions = true,
   currentList,
 }) => {
+  const [showDetails, setShowDetails] = useState(false);
   const { mutate } = useAddProduct();
   const isKeyboardVisible = useKeyboardVisibility();
 
@@ -231,17 +237,41 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
 
   return (
     <View style={styles.container}>
-      {showSuggestions && (
-        <Suggestions onSelect={findProductInList} suggestions={filterData} />
-      )}
+      <Pressable
+        onPress={() => {
+          setShowDetails(!showDetails);
+        }}
+        style={{
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
+        <Icon name={!showDetails ? "chevron-up" : "chevron-down"} size={18} />
+      </Pressable>
+      {showDetails && (
+        <Animated.View
+          entering={FadeInDown.duration(200).easing(Easing.inOut(Easing.quad))}
+          exiting={FadeOutDown.duration(200).easing(Easing.inOut(Easing.quad))}
+          style={{
+            gap: 8,
+          }}
+        >
+          {showSuggestions && (
+            <Suggestions
+              onSelect={findProductInList}
+              suggestions={filterData}
+            />
+          )}
 
-      {isKeyboardVisible && (
-        <ProdutDetails
-          value={value}
-          quantity={quantity}
-          onChangeQuantity={setQuantity}
-          onChangeValue={setValue}
-        />
+          {isKeyboardVisible && (
+            <ProdutDetails
+              value={value}
+              quantity={quantity}
+              onChangeQuantity={setQuantity}
+              onChangeValue={setValue}
+            />
+          )}
+        </Animated.View>
       )}
 
       <Input

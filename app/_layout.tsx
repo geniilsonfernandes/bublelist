@@ -35,6 +35,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -43,7 +44,7 @@ export default function RootLayout() {
     if (loaded) {
       SplashScreen.hideAsync();
       SystemUI.setBackgroundColorAsync(
-        colorScheme === "dark" ? "#444444" : "#FFFFFF"
+        colorScheme === "dark" ? "#1e1e1e" : "#FFFFFF"
       );
     }
   }, [loaded]);
@@ -61,9 +62,7 @@ export default function RootLayout() {
           <Stack
             screenOptions={{
               headerShown: false,
-              contentStyle: {
-                backgroundColor: "red",
-              },
+              contentStyle: {},
             }}
           >
             {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}

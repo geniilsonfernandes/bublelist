@@ -1,41 +1,10 @@
 import { useBackHandler } from "@/hooks/useBackHandler";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import { useModals } from "@/store/useModals";
-import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { StyleSheet, TouchableWithoutFeedback } from "react-native";
-import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
+import { StyleSheet } from "react-native";
 import { EditList } from "./modals/EditList";
+import { Modal } from "./modals/Modal";
 import { ProductEditEntry } from "./ProductEntry";
-
-type ModalProps = {
-  children: React.ReactNode;
-  onClose: () => void;
-};
-
-const Modal: React.FC<ModalProps> = ({ children, onClose }) => {
-  const background = useThemeColor({}, "background");
-
-  return (
-    <Animated.View
-      entering={FadeInDown.duration(300)}
-      exiting={FadeOutDown.duration(300)}
-      style={styles.container}
-    >
-      <TouchableWithoutFeedback onPress={onClose}>
-        <LinearGradient
-          // Background Linear Gradient
-          colors={["transparent", background]}
-          end={{ x: 0.3, y: 0.6 }}
-          style={{
-            flex: 1,
-          }}
-        />
-      </TouchableWithoutFeedback>
-      <Animated.View style={styles.content}>{children}</Animated.View>
-    </Animated.View>
-  );
-};
 
 const EditModal = () => {
   const { clearSelectedProduct, selectedProduct } = useModals();
