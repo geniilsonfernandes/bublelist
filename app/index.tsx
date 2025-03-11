@@ -51,7 +51,7 @@ export default function HomeScreen() {
               flex: 1,
             }}
           >
-            Xlisty
+            listeiro +
           </ThemedText>
           <Icon name="user" size={24} colorName="text.2" />
           <Icon

@@ -9,6 +9,7 @@ type InputProps = {
   rightSection?: React.ReactNode;
   iconName?: keyof typeof Feather.glyphMap;
   showActions?: boolean;
+
   cap?: "top" | "bottom";
 } & TextInputProps;
 
@@ -39,14 +40,13 @@ export const Input = forwardRef<TextInput, InputProps>(
       >
         <TextInput
           ref={ref}
-          placeholder="Digite o nome do produto"
           style={[
             styles.input,
             {
               color: textColor,
             },
           ]}
-          placeholderTextColor={placeholderTextColor}
+          placeholderTextColor={placeholderTextColor + "80"}
           {...rest}
         />
         {showActions ? (

@@ -71,6 +71,11 @@ const PRODUCT_DATA = [
   "Desodorante",
 ];
 
+function extractNumber(text: string): number | null {
+  const match = text.match(/(\d+)\s*\S+/);
+  return match ? parseInt(match[1], 10) : null;
+}
+
 const INITIAL_QUANTITY = 1;
 
 type ProductEntryProps = {
@@ -172,11 +177,36 @@ export const ProductEditEntry = () => {
   );
 };
 
+function extractNumberAndClean(text: string): {
+  name: string;
+  quantity: number | null;
+} {
+  // Match number at the start of the string
+  const matchStart = text.match(/^(\d+)\s*(\S.*)/);
+  // Match number at the end of the string
+  const matchEnd = text.match(/(\S.*)\s*(\d+)$/);
+
+  if (matchStart) {
+    return {
+      name: matchStart[2], // The remaining part after the number at the start
+      quantity: parseInt(matchStart[1], 10), // The number at the start
+    };
+  } else if (matchEnd) {
+    return {
+      name: matchEnd[1], // The remaining part before the number at the end
+      quantity: parseInt(matchEnd[2], 10), // The number at the end
+    };
+  }
+
+  // If no valid number is found, return the original string and null for quantity
+  return { name: text, quantity: null };
+}
+
 export const ProductEntry: React.FC<ProductEntryProps> = ({
   showSuggestions = true,
   currentList,
 }) => {
-  const [showDetails, setShowDetails] = useState(true);
+  const [showDetails, setShowDetails] = useState(false);
   const { mutate } = useAddProduct();
 
   const [product, setProduct] = useState("");
@@ -192,11 +222,14 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
   const handleAddItem = () => {
     if (currentList?.id === undefined) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const extracted = extractNumberAndClean(product);
+    console.log(extracted);
+
     mutate(
       {
         list_id: currentList.id,
-        name: product,
-        quantity: quantity,
+        name: extracted.name,
+        quantity: extracted.quantity || quantity,
         value: value || 0,
         checked: false,
       },
@@ -273,7 +306,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
       )}
 
       <Input
-        placeholder="Digite o nome do produto"
+        placeholder="10 Laranjas"
         value={product}
         onChangeText={setProduct}
         onActionClick={handleAddItem}
