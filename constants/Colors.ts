@@ -11,8 +11,12 @@ export const backgroundDark = {
 };
 const primary = {
   "primary.100": "#3954FB",
-  "primary.200": "#3954FB",
-  "primary.300": "#3954FB",
+  "primary.200": "#4782FE",
+  "primary.300": "#55ADFF",
+  "primary.400": "#63D3FF",
+  "primary.500": "#72F4FF",
+  "primary.600": "#82FFFD",
+  "primary.700": "#92FFE9",
 };
 
 const gray = {

@@ -2,7 +2,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import React from "react";
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, TextInput, View } from "react-native";
 import { ThemedView } from "./ui/ThemedView";
 
 type QuantitySelectorProps = {
@@ -35,12 +35,17 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={[styles.button, { backgroundColor }, styles.capRight]}
+      <Pressable
+        style={({ pressed }) => [
+          styles.button,
+          { backgroundColor },
+          styles.capRight,
+          pressed && { opacity: 0.5 },
+        ]}
         onPress={handleDecrease}
       >
         <Feather name="minus" size={18} color={iconColor} />
-      </TouchableOpacity>
+      </Pressable>
       <ThemedView backgroundColor="background.1" style={styles.input}>
         <TextInput
           placeholder="quant."
@@ -59,12 +64,17 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
           keyboardType="numeric"
         />
       </ThemedView>
-      <TouchableOpacity
-        style={[styles.button, { backgroundColor }, styles.capLeft]}
+      <Pressable
+        style={({ pressed }) => [
+          styles.button,
+          { backgroundColor },
+          styles.capLeft,
+          pressed && { opacity: 0.5 },
+        ]}
         onPress={handleIncrease}
       >
         <Feather name="plus" size={18} color={iconColor} />
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 };
@@ -82,12 +92,12 @@ const styles = StyleSheet.create({
     width: 60,
     borderRadius: 8,
     height: 48,
-    paddingHorizontal: 8,
+    paddingHorizontal: 2,
   },
   button: {
     justifyContent: "center",
     alignItems: "center",
-    width: 48,
+    width: 38,
     height: 48,
     borderRadius: 16,
     backgroundColor: "#5B5B5B",

@@ -1,35 +1,62 @@
-import { Header } from "@/components/Header";
-import { ListNameSuggestions } from "@/components/ListNameSuggestions";
+import { LIST_NAME_SUGGESTIONS, ListNameSuggestions } from "@/components/ListNameSuggestions";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
 import { ValueInput } from "@/components/ValueInput";
-import { useCreateList } from "@/database/useShoppingList";
+import {
+  useCreateList,
+  useEditList,
+  useGetListById,
+} from "@/database/useShoppingList";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { Feather } from "@expo/vector-icons";
 
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { StatusBar, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Animated, { FadeInUp } from "react-native-reanimated";
 
-export default function List() {
-  const [showMore, { toggle: toggleShowMore }] = useDisclosure();
-  const { mutate } = useCreateList();
+export default function ListCreateScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const isEdit = id !== undefined;
+
+  const { data } = useGetListById(id);
+
+  const [showMore, { toggle: toggleShowMore }] = useDisclosure(isEdit);
+  const { mutate: createList } = useCreateList();
+  const { mutate: editList } = useEditList();
   const router = useRouter();
 
-  const [listName, setListName] = useState("");
-  const [listBudget, setListBudget] = useState<number | null>(null);
+  const [listName, setListName] = useState(data?.name || "");
+  const [listBudget, setListBudget] = useState<number | null>(
+    data?.budget || null
+  );
 
   const handleCreateList = () => {
-    mutate(
+    if (isEdit) {
+      editList(
+        {
+          id: id,
+          name: listName || LIST_NAME_SUGGESTIONS[0],
+          budget: Number(listBudget),
+        },
+        {
+          onSuccess: () => {
+            router.back();
+          },
+        }
+      );
+      return;
+    }
+    createList(
       {
-        name: listName,
+        name: listName || LIST_NAME_SUGGESTIONS[0],
         budget: Number(listBudget),
       },
       {
         onSuccess: (data) => {
-          router.replace(`/list/${data.id}`);
+          router.replace(`/(main)/lista/${data.id}`);
         },
       }
     );
@@ -38,12 +65,14 @@ export default function List() {
   return (
     <ThemedView colorName="background" style={styles.container}>
       <View>
-        <Header
-          title="Criar lista"
-          subtitle="Escolha um nome para a sua lista de compras"
-          style={styles.header}
-          showBackButton
-        />
+        <ThemedText
+          type="body"
+          style={{
+            marginVertical: 16,
+          }}
+        >
+          Escolha um nome para a sua lista de compras
+        </ThemedText>
         <Input
           placeholder="Nome da lista"
           value={listName}
@@ -78,9 +107,25 @@ export default function List() {
           />
         ) : null}
       </View>
-      <Button variant="solid" onPress={handleCreateList}>
-        Criar lista
-      </Button>
+      <View
+        style={{
+          gap: 8,
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <Button
+          variant="outline"
+          fullWidth
+          cap="bottom"
+          onPress={() => router.back()}
+        >
+          Cancelar
+        </Button>
+        <Button fullWidth variant="solid" cap="top" onPress={handleCreateList}>
+          {isEdit ? "Salvar" : "Criar lista"}
+        </Button>
+      </View>
     </ThemedView>
   );
 }
@@ -90,7 +135,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     justifyContent: "space-between",
-    paddingTop: StatusBar.currentHeight,
   },
   header: { marginBottom: 16 },
   suggestionContainer: { marginTop: 8 },

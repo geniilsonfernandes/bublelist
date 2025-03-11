@@ -97,6 +97,21 @@ async function editList(data: Omit<List, "products">) {
   }
 }
 
+async function deleteList(id: string) {
+  const statement = await db.prepareAsync(`DELETE FROM list WHERE id = $id`);
+  try {
+    const result = await statement.executeAsync({
+      $id: id,
+    });
+
+    return result;
+  } catch (error) {
+    throw error;
+  } finally {
+    await statement.finalizeAsync();
+  }
+}
+
 async function findListById(id: string): Promise<List> {
   try {
     const querylist = "SELECT * FROM list WHERE id = $id";
@@ -123,11 +138,10 @@ async function findListById(id: string): Promise<List> {
 }
 
 async function addProduct(product: Omit<Product, "id">) {
-  console.log(product);
-
   const statement = await db.prepareAsync(
     `INSERT INTO product (list_id, name, quantity, value, checked) VALUES ($list_id, $name, $quantity, $value, $checked)`
   );
+
   try {
     const result = await statement.executeAsync({
       $list_id: product.list_id,
@@ -231,6 +245,7 @@ export const useEditList = () => {
 };
 
 export const useGetListById = (id: string) => {
+  const queryClient = useQueryClient();
   return useQuery({
     queryKey: ["list", id],
     queryFn: () => findListById(id),
@@ -241,7 +256,7 @@ export const useAddProduct = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (product: Omit<Product, "id">) => addProduct(product),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: ["list"],
       });
@@ -279,6 +294,18 @@ export const useDeleteProduct = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => deleteProduct(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["list"],
+      });
+    },
+  });
+};
+
+export const useDeleteList = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => deleteList(id),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["list"],

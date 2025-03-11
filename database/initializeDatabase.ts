@@ -19,7 +19,7 @@ export async function initializeDatabase(database: SQLiteDatabase) {
       checked BOOLEAN NOT NULL,
       value INTEGER,
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY(list_id) REFERENCES list(id)
+      FOREIGN KEY(list_id) REFERENCES list(id) ON DELETE CASCADE
     );
   `);
 }

@@ -2,7 +2,6 @@ import { useBackHandler } from "@/hooks/useBackHandler";
 import { useModals } from "@/store/useModals";
 import React from "react";
 import { StyleSheet } from "react-native";
-import { EditList } from "./modals/EditList";
 import { Modal } from "./modals/Modal";
 import { ProductEditEntry } from "./ProductEntry";
 
@@ -22,14 +21,9 @@ const EditModal = () => {
 };
 
 export const Modals = () => {
-  const { selectedProduct, selectedList } = useModals();
+  const { selectedProduct } = useModals();
 
-  return (
-    <>
-      {selectedProduct && <EditModal />}
-      {selectedList && <EditList />}
-    </>
-  );
+  return <>{selectedProduct && <EditModal />}</>;
 };
 
 const styles = StyleSheet.create({

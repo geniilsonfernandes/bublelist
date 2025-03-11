@@ -5,7 +5,10 @@
 TODO:
 
 HOME: 
-AO PRECIONAR A LISTA, ABRIR AS OPCES EM ICONES, EDITAR, ABRIR, ARQUIVAR, AAGAR
+
+[] criar rota para editar lista
+[] criar sheet para apagar lista
+[] criar sheet para compartilhar lista
 
 
 LISTA:

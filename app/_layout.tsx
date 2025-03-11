@@ -63,11 +63,30 @@ export default function RootLayout() {
             screenOptions={{
               headerShown: false,
               contentStyle: {},
+              presentation: "transparentModal",
             }}
           >
             {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
-            <Stack.Screen name="index" />
-            <Stack.Screen name="list" />
+            <Stack.Screen
+              name="(main)"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="index"
+              options={{
+                animation: "fade_from_bottom",
+              }}
+            />
+
+            <Stack.Screen
+              name="list"
+              options={{
+                animation: "fade_from_bottom",
+                presentation: "containedModal",
+              }}
+            />
             <Stack.Screen name="+not-found" />
           </Stack>
           <Modals />

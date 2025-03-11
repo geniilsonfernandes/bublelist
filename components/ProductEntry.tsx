@@ -5,7 +5,6 @@ import {
   useAddProduct,
   useEditProduct,
 } from "@/database/useShoppingList";
-import useKeyboardVisibility from "@/hooks/useKeyboardVisibility";
 import { useModals } from "@/store/useModals";
 import * as Haptics from "expo-haptics";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -177,9 +176,8 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
   showSuggestions = true,
   currentList,
 }) => {
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(true);
   const { mutate } = useAddProduct();
-  const isKeyboardVisible = useKeyboardVisibility();
 
   const [product, setProduct] = useState("");
   const [quantity, setQuantity] = useState(INITIAL_QUANTITY);
@@ -220,7 +218,6 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
     [product]
   );
 
-  // TODO: OPTIMIZE THIS
   const findProductInList = (productName: string) => {
     const existingProduct = currentList?.products.find(
       (p) => p.name.toLowerCase() === productName.toLowerCase()
@@ -244,6 +241,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
         style={{
           alignItems: "center",
           gap: 8,
+          height: 18,
         }}
       >
         <Icon name={!showDetails ? "chevron-up" : "chevron-down"} size={18} />
@@ -253,7 +251,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
           entering={FadeInDown.duration(200).easing(Easing.inOut(Easing.quad))}
           exiting={FadeOutDown.duration(200).easing(Easing.inOut(Easing.quad))}
           style={{
-            gap: 8,
+            gap: 4,
           }}
         >
           {showSuggestions && (
@@ -263,7 +261,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
             />
           )}
 
-          {isKeyboardVisible && (
+          {product && (
             <ProdutDetails
               value={value}
               quantity={quantity}
@@ -287,7 +285,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    gap: 8,
+    gap: 4,
   },
   createSheet: {
     width: "100%",

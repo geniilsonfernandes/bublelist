@@ -63,6 +63,8 @@ export const Input = forwardRef<TextInput, InputProps>(
                       {
                         backgroundColor: iconColor,
                       },
+                      cap === "bottom" && styles.capBottom,
+                      cap === "top" && styles.capTop,
                     ]}
                     disabled={!rest.value}
                   >

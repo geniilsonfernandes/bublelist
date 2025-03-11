@@ -11,14 +11,20 @@ import { Feather } from "@expo/vector-icons";
 import React, { useCallback, useMemo, useState } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
-import Animated, { BounceIn, FadeIn } from "react-native-reanimated";
+import Animated, {
+  BounceIn,
+  FadeIn,
+  SharedValue,
+} from "react-native-reanimated";
 import { ThemedView } from "./ui/ThemedView";
 
-const DeleteAction = () => (
-  <ThemedView backgroundColor="danger" style={styles.rightAction}>
-    <Feather name="trash-2" size={18} color="white" />
-  </ThemedView>
-);
+const DeleteAction = ({ progress }: { progress: SharedValue<number> }) => {
+  return (
+    <ThemedView backgroundColor="danger" style={styles.rightAction}>
+      <Feather name="trash-2" size={18} color="white" />
+    </ThemedView>
+  );
+};
 
 type ProductProps = {
   onSelect?: () => void;
@@ -30,6 +36,7 @@ export const Product: React.FC<ProductProps> = React.memo(
     const { mutate: deleteProduct } = useDeleteProduct();
     const { setSelectedProduct } = useModals();
     const [isChecked, setIsChecked] = useState(checked);
+    const backgroundColor = useThemeColor({}, "background");
     const checkedBorderColor = useThemeColor({}, "success");
     const uncheckedBorderColor = useThemeColor({}, "text.7");
 
@@ -67,9 +74,17 @@ export const Product: React.FC<ProductProps> = React.memo(
         leftThreshold={0}
         rightThreshold={100}
         onSwipeableWillOpen={handledeleteProduct}
-        renderRightActions={() => <DeleteAction />}
+        renderRightActions={(progressAnimatedValue) => (
+          <DeleteAction progress={progressAnimatedValue} />
+        )}
       >
-        <Pressable onPress={handleSelect}>
+        <Pressable
+          onPress={handleSelect}
+          android_ripple={{
+            color: "#E6E6E610",
+            foreground: true,
+          }}
+        >
           <ThemedView backgroundColor="background" style={styles.container}>
             <Pressable
               style={[
@@ -90,11 +105,9 @@ export const Product: React.FC<ProductProps> = React.memo(
                   isChecked ? BounceIn.duration(300) : FadeIn.duration(300)
                 }
               >
-                <Feather
-                  name={isChecked ? "check" : "x"}
-                  size={16}
-                  color="#fff"
-                />
+                {isChecked ? (
+                  <Feather name="check" size={16} color="#fff" />
+                ) : null}
               </Animated.View>
             </Pressable>
             <ThemedText
@@ -144,7 +157,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   rightAction: {
-    borderRadius: 8,
+    borderRadius: 16,
     justifyContent: "center",
     paddingHorizontal: 16,
     alignItems: "flex-end",
