@@ -28,15 +28,15 @@ const DeleteAction = ({ progress }: { progress: SharedValue<number> }) => {
 
 type ProductProps = {
   onSelect?: () => void;
+  onRemove?: () => void;
 } & ProductType;
 
 export const Product: React.FC<ProductProps> = React.memo(
-  ({ id, name, quantity, checked, value, list_id }) => {
+  ({ id, name, quantity, checked, value, list_id, onRemove }) => {
     const { mutate: checkProduct } = useCheckProduct();
     const { mutate: deleteProduct } = useDeleteProduct();
     const { setSelectedProduct } = useModals();
     const [isChecked, setIsChecked] = useState(checked);
-    const backgroundColor = useThemeColor({}, "background");
     const checkedBorderColor = useThemeColor({}, "success");
     const uncheckedBorderColor = useThemeColor({}, "text.7");
 
@@ -50,6 +50,7 @@ export const Product: React.FC<ProductProps> = React.memo(
 
     const handledeleteProduct = useCallback(() => {
       deleteProduct(id);
+      onRemove?.();
     }, [id]);
 
     const handleSelect = () => {
@@ -138,7 +139,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    paddingVertical: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
   },
   check: {
     height: 28,
@@ -157,7 +159,6 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   rightAction: {
-    borderRadius: 16,
     justifyContent: "center",
     paddingHorizontal: 16,
     alignItems: "flex-end",

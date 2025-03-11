@@ -8,19 +8,23 @@ import {
 } from "@/database/useShoppingList";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { calculateTotal, formatValue } from "@/utils/calculateTotal";
+import { FlashList } from "@shopify/flash-list";
 import { Stack, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useMemo } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
-import Animated, {
-  Easing,
-  FadeIn,
-  LinearTransition,
-} from "react-native-reanimated";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  LayoutAnimation,
+  StyleSheet,
+  View,
+} from "react-native";
+import Animated, { LinearTransition } from "react-native-reanimated";
 
 export default function ListShowScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data, isLoading } = useGetListById(id);
   const iconColor = useThemeColor({}, "primary.100");
+
+  const [data2, setData] = useState([1, 2, 3, 4, 5]);
 
   const valuesSum = useMemo(
     () => calculateTotal(data?.products || []),
@@ -28,18 +32,31 @@ export default function ListShowScreen() {
   );
   const budget = useMemo(() => formatValue(data?.budget || 0), [data?.budget]);
 
+  const list = useRef<FlashList<ProductType> | null>(null);
+
+  const prepareForLayoutAnimation = () => {
+    // This must be called before `LayoutAnimation.configureNext` in order for the animation to run properly.
+    list.current?.prepareForLayoutAnimationRender();
+    // After removing the item, we can start the animation.
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+  };
+
   const renderList = useCallback(
-    ({ item }: { item: ProductType }) => <Product {...item} />,
+    ({ item }: { item: ProductType }) => (
+      <Product {...item} onRemove={prepareForLayoutAnimation} />
+    ),
     []
   );
 
   if (isLoading) {
     return (
-      <ThemedView style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center"
-      }}>
+      <ThemedView
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <ActivityIndicator size="large" color={iconColor} />
       </ThemedView>
     );
@@ -52,19 +69,18 @@ export default function ListShowScreen() {
         flex: 1,
       }}
     >
-        <Stack.Screen
-          options={{
-            title: data?.name,
-            headerShown: true,
-          }}
-        />
+      <Stack.Screen
+        options={{
+          title: data?.name,
+          headerShown: true,
+        }}
+      />
       <ThemedView
         style={{
-          flex: 1,
-
           borderBottomEndRadius: 24,
           borderBottomStartRadius: 24,
           paddingBottom: 16,
+          flex: 1,
         }}
       >
         <View style={styles.stats}>
@@ -76,15 +92,29 @@ export default function ListShowScreen() {
           </ThemedText>
         </View>
 
+        {/* <FlashList
+          ref={list}
+          data={data?.products || []}
+          renderItem={renderList}
+          keyExtractor={(item) => item.id}
+          estimatedItemSize={100}
+          keyboardShouldPersistTaps="always"
+          ItemSeparatorComponent={() => (
+            <ThemedView
+              style={styles.separator}
+              backgroundColor="background.1"
+            />
+          )}
+        /> */}
+
         <Animated.FlatList
           style={{
-            paddingHorizontal: 16,
             paddingBottom: 16,
+            flex: 1,
           }}
           data={data?.products || []}
           keyExtractor={(item) => item.id}
           itemLayoutAnimation={LinearTransition}
-          entering={FadeIn.duration(200).easing(Easing.inOut(Easing.quad))}
           renderItem={renderList}
           keyboardShouldPersistTaps="always"
         />
@@ -102,6 +132,11 @@ const styles = StyleSheet.create({
     borderBottomEndRadius: 24,
     borderBottomStartRadius: 24,
     paddingBottom: 16,
+  },
+
+  separator: {
+    height: 1,
+    marginHorizontal: 16,
   },
 
   iconButton: {

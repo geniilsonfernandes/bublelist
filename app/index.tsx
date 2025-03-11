@@ -53,7 +53,6 @@ export default function HomeScreen() {
           >
             listeiro +
           </ThemedText>
-          <Icon name="user" size={24} colorName="text.2" />
           <Icon
             name="settings"
             size={24}

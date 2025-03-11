@@ -294,14 +294,12 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
             />
           )}
 
-          {product && (
-            <ProdutDetails
-              value={value}
-              quantity={quantity}
-              onChangeQuantity={setQuantity}
-              onChangeValue={setValue}
-            />
-          )}
+          <ProdutDetails
+            value={value}
+            quantity={quantity}
+            onChangeQuantity={setQuantity}
+            onChangeValue={setValue}
+          />
         </Animated.View>
       )}
 
