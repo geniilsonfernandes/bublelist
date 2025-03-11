@@ -140,6 +140,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     paddingVertical: 10,
+    height: 50,
     paddingHorizontal: 16,
   },
   check: {

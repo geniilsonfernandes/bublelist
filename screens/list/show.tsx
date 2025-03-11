@@ -116,7 +116,21 @@ export default function ListShowScreen() {
           keyExtractor={(item) => item.id}
           itemLayoutAnimation={LinearTransition}
           renderItem={renderList}
+          ItemSeparatorComponent={() => (
+            <ThemedView
+              style={styles.separator}
+              backgroundColor="background.1"
+            />
+          )}
+          initialNumToRender={20} // Number of items to render initially
+          maxToRenderPerBatch={20} // Number of items to render per batch while scrolling
+          windowSize={5} // Number of items to keep in memory
           keyboardShouldPersistTaps="always"
+          getItemLayout={(data, index) => ({
+            length: 50, // height of your list item
+            offset: 50 * index,
+            index,
+          })}
         />
       </ThemedView>
       <ThemedView backgroundColor="background.1" style={styles.productEntry}>
