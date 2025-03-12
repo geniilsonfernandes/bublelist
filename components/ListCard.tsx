@@ -1,4 +1,5 @@
 import { type List } from "@/database/useShoppingList";
+import { useThemeColor } from "@/hooks/useThemeColor";
 import React, { useEffect, useState } from "react";
 import {
   Pressable,
@@ -30,12 +31,14 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   style,
   ...props
 }) => {
+  const backgroundColor = useThemeColor({}, "background.2");
   return (
     <Pressable
       style={({ pressed }) => [
         {
           ...styles.actionButton,
           opacity: pressed ? 0.5 : 1,
+          backgroundColor: pressed ? backgroundColor : "transparent",
           transform: [{ scale: pressed ? 0.88 : 1 }],
         },
         style,
@@ -52,10 +55,11 @@ type ListProps = {
   onClickToDelete?: () => void;
   onClickToEdit?: () => void;
   onClickToShare?: () => void;
+  onClickToOptions?: () => void;
 } & List;
 
-const HEIGHT = 70;
-const HEIGHT_EXPANDED = 120;
+const HEIGHT = 80;
+const HEIGHT_EXPANDED = 130;
 
 export const ListCard: React.FC<ListProps> = ({
   name,
@@ -64,6 +68,7 @@ export const ListCard: React.FC<ListProps> = ({
   onClickToDelete,
   onClickToEdit,
   onClickToShare,
+  onClickToOptions,
 }) => {
   const scale = useSharedValue(1);
   const height = useSharedValue(HEIGHT);
@@ -81,6 +86,10 @@ export const ListCard: React.FC<ListProps> = ({
   const handleUncollapse = () => {
     setExpanded(false);
     height.value = HEIGHT;
+  };
+  const handleCollapse = () => {
+    height.value = HEIGHT_EXPANDED;
+    setExpanded(true);
   };
 
   let timeoutRef: NodeJS.Timeout | null = null;
@@ -112,9 +121,10 @@ export const ListCard: React.FC<ListProps> = ({
         <View>
           <ThemedView style={styles.header}>
             <ThemedText style={styles.title}>{name}</ThemedText>
-            <ThemedText style={styles.quantity} colorName="text.3">
-              {itemsChecked}/{totalOfProducts}
-            </ThemedText>
+
+            <ActionButton onPress={handleCollapse}>
+              <Icon name="more-vertical" size={18} />
+            </ActionButton>
           </ThemedView>
           <Progress progress={progress} />
         </View>
@@ -166,9 +176,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "row",
     backgroundColor: "transparent",
+    alignItems: "center",
   },
   title: {
-    fontSize: 16,
+    fontSize: 18,
   },
   quantity: {
     fontSize: 12,
