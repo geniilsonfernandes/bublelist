@@ -5,9 +5,10 @@ import {
   useAddProduct,
   useEditProduct,
 } from "@/database/useShoppingList";
+import { useFilteredProducts } from "@/hooks/useFilteredProducts";
 import { useModals } from "@/store/useModals";
 import * as Haptics from "expo-haptics";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, TextInput, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -73,7 +74,6 @@ const PRODUCT_DATA = [
   "Sabonete",
   "Desodorante",
 ];
-
 
 const INITIAL_QUANTITY = 1;
 
@@ -239,17 +239,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
     );
   };
 
-  const filterData = useMemo(() => {
-    const filtered = PRODUCT_DATA.filter((item) =>
-      item.toLowerCase().includes(product.toLowerCase())
-    );
-
-    if (filtered.length > 0) {
-      return filtered;
-    }
-
-    return PRODUCT_DATA.slice(0, 5);
-  }, [product]);
+  const filterData = useFilteredProducts(product, PRODUCT_DATA);
 
   const findProductInList = (productName: string) => {
     const existingProduct = currentList?.products.find(
@@ -268,6 +258,12 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
   const height = useSharedValue(70);
   const opacity = useSharedValue(0);
 
+  const SHOW_SUGGESTIONS = false;
+  const OPEN_HEIGHT = 158;
+  const OPEN_HEIGHT_WITHOUT_SUGGESTIONS = 120;
+
+  const CLOSED_HEIGHT = 70;
+
   const pan = Gesture.Pan()
     .onChange((event) => {
       const offsetDelta = height.value - event.changeY;
@@ -277,11 +273,13 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
       opacity.value = (clampedValue - 60) / (200 - 60);
     })
     .onFinalize(() => {
-      if (height.value > (200 + 70) / 2) {
-        height.value = withTiming(158);
+      if (height.value > (200 + CLOSED_HEIGHT) / 2) {
+        height.value = withTiming(
+          SHOW_SUGGESTIONS ? OPEN_HEIGHT : OPEN_HEIGHT_WITHOUT_SUGGESTIONS
+        );
         opacity.value = withTiming(1);
       } else {
-        height.value = withTiming(70);
+        height.value = withTiming(CLOSED_HEIGHT);
         opacity.value = withTiming(0);
       }
     });
@@ -326,7 +324,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
           animatedOpacity,
         ]}
       >
-        {showSuggestions && (
+        {SHOW_SUGGESTIONS && (
           <Suggestions onSelect={findProductInList} suggestions={filterData} />
         )}
 
