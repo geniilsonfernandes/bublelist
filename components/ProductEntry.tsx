@@ -13,7 +13,6 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   Easing,
   FadeInDown,
-  FadeOutDown,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -75,10 +74,6 @@ const PRODUCT_DATA = [
   "Desodorante",
 ];
 
-function extractNumber(text: string): number | null {
-  const match = text.match(/(\d+)\s*\S+/);
-  return match ? parseInt(match[1], 10) : null;
-}
 
 const INITIAL_QUANTITY = 1;
 
@@ -210,7 +205,6 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
   showSuggestions = true,
   currentList,
 }) => {
-  const [showDetails, setShowDetails] = useState(true);
   const { mutate } = useAddProduct();
 
   const [product, setProduct] = useState("");
@@ -245,15 +239,17 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
     );
   };
 
-  const filterData = useMemo(
-    () =>
-      product
-        ? PRODUCT_DATA.filter((item) =>
-            item.toLowerCase().includes(product.toLowerCase())
-          )
-        : PRODUCT_DATA.slice(0, 10),
-    [product]
-  );
+  const filterData = useMemo(() => {
+    const filtered = PRODUCT_DATA.filter((item) =>
+      item.toLowerCase().includes(product.toLowerCase())
+    );
+
+    if (filtered.length > 0) {
+      return filtered;
+    }
+
+    return PRODUCT_DATA.slice(0, 5);
+  }, [product]);
 
   const findProductInList = (productName: string) => {
     const existingProduct = currentList?.products.find(
@@ -274,17 +270,18 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
 
   const pan = Gesture.Pan()
     .onChange((event) => {
-      const offsetDelta = height.value - event.changeY; // Inverte o cálculo
-      const clampedValue = Math.min(200, Math.max(60, offsetDelta)); // Garante que fique entre 70 e 200
+      const offsetDelta = height.value - event.changeY;
+      const clampedValue = Math.min(200, Math.max(60, offsetDelta));
 
       height.value = clampedValue;
+      opacity.value = (clampedValue - 60) / (200 - 60);
     })
     .onFinalize(() => {
       if (height.value > (200 + 70) / 2) {
-        height.value = withTiming(164); // Expande até o máximo
+        height.value = withTiming(158);
         opacity.value = withTiming(1);
       } else {
-        height.value = withTiming(70); // Recolhe até o mínimo
+        height.value = withTiming(70);
         opacity.value = withTiming(0);
       }
     });
@@ -299,54 +296,47 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
 
   return (
     <Animated.View style={[styles.container, animatedStyle]}>
-      <View>
-        <GestureDetector gesture={pan}>
-          <Pressable
-            style={{
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <ThemedView
-              colorName="background.3"
-              style={{
-                height: 5,
-                width: 100,
-                borderRadius: 2,
-                marginBottom: 8,
-              }}
-            />
-          </Pressable>
-        </GestureDetector>
-
-        <Animated.View
-          entering={FadeInDown.duration(200).easing(Easing.inOut(Easing.quad))}
-          exiting={FadeOutDown.duration(200).easing(Easing.inOut(Easing.quad))}
-          style={[
-            {
-              position: "absolute",
-              top: 16,
-              gap: 8,
-              width: "100%",
-            },
-            animatedOpacity,
-          ]}
+      <GestureDetector gesture={pan}>
+        <Pressable
+          style={{
+            alignItems: "center",
+            gap: 8,
+            padding: 4,
+          }}
         >
-          {showSuggestions && (
-            <Suggestions
-              onSelect={findProductInList}
-              suggestions={filterData}
-            />
-          )}
-
-          <ProdutDetails
-            value={value}
-            quantity={quantity}
-            onChangeQuantity={setQuantity}
-            onChangeValue={setValue}
+          <ThemedView
+            colorName="background.3"
+            style={{
+              height: 5,
+              width: 100,
+              borderRadius: 2,
+            }}
           />
-        </Animated.View>
-      </View>
+        </Pressable>
+      </GestureDetector>
+
+      <Animated.View
+        style={[
+          {
+            position: "absolute",
+            top: 16,
+            gap: 8,
+            width: "100%",
+          },
+          animatedOpacity,
+        ]}
+      >
+        {showSuggestions && (
+          <Suggestions onSelect={findProductInList} suggestions={filterData} />
+        )}
+
+        <ProdutDetails
+          value={value}
+          quantity={quantity}
+          onChangeQuantity={setQuantity}
+          onChangeValue={setValue}
+        />
+      </Animated.View>
 
       <Input
         placeholder="10 Laranjas"
@@ -384,6 +374,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 38,
     fontSize: 16,
+    backgroundColor: "#5B5B5B",
   },
   optionsContainer: {
     flexDirection: "row",
