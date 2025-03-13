@@ -5,7 +5,10 @@ import {
   useAddProduct,
   useEditProduct,
 } from "@/database/useShoppingList";
-import { useFilteredProducts } from "@/hooks/useFilteredProducts";
+import {
+  filterProductsInList,
+  useFilteredProducts,
+} from "@/hooks/useFilteredProducts";
 import { useModals } from "@/store/useModals";
 import * as Haptics from "expo-haptics";
 import React, { useEffect, useRef, useState } from "react";
@@ -205,6 +208,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
   showSuggestions = true,
   currentList,
 }) => {
+  const currentListProducts = currentList?.products;
   const { mutate } = useAddProduct();
 
   const [product, setProduct] = useState("");
@@ -242,8 +246,9 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
   const filterData = useFilteredProducts(product, PRODUCT_DATA);
 
   const findProductInList = (productName: string) => {
-    const existingProduct = currentList?.products.find(
-      (p) => p.name.toLowerCase() === productName.toLowerCase()
+    const existingProduct = filterProductsInList(
+      productName,
+      currentListProducts
     );
 
     if (existingProduct) {
