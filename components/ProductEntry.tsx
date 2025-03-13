@@ -9,10 +9,14 @@ import { useModals } from "@/store/useModals";
 import * as Haptics from "expo-haptics";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   Easing,
   FadeInDown,
   FadeOutDown,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
 } from "react-native-reanimated";
 import { Suggestions } from "./Suggestions";
 import { Input } from "./ui/Input";
@@ -206,7 +210,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
   showSuggestions = true,
   currentList,
 }) => {
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(true);
   const { mutate } = useAddProduct();
 
   const [product, setProduct] = useState("");
@@ -265,34 +269,68 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
     }
   };
 
+  const height = useSharedValue(70);
+  const opacity = useSharedValue(0);
+
+  const pan = Gesture.Pan()
+    .onChange((event) => {
+      const offsetDelta = height.value - event.changeY; // Inverte o cálculo
+      const clampedValue = Math.min(200, Math.max(60, offsetDelta)); // Garante que fique entre 70 e 200
+
+      height.value = clampedValue;
+    })
+    .onFinalize(() => {
+      if (height.value > (200 + 70) / 2) {
+        height.value = withTiming(164); // Expande até o máximo
+        opacity.value = withTiming(1);
+      } else {
+        height.value = withTiming(70); // Recolhe até o mínimo
+        opacity.value = withTiming(0);
+      }
+    });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    height: height.value,
+  }));
+
+  const animatedOpacity = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+  }));
+
   return (
-    <View style={styles.container}>
-      <Pressable
-        onPress={() => {
-          setShowDetails(!showDetails);
-        }}
-        style={{
-          alignItems: "center",
-          gap: 8,
-        }}
-      >
-        <ThemedView
-          colorName="background.3"
-          style={{
-            height: 5,
-            width: 100,
-            borderRadius: 2,
-            marginBottom: 8,
-          }}
-        />
-      </Pressable>
-      {showDetails && (
+    <Animated.View style={[styles.container, animatedStyle]}>
+      <View>
+        <GestureDetector gesture={pan}>
+          <Pressable
+            style={{
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <ThemedView
+              colorName="background.3"
+              style={{
+                height: 5,
+                width: 100,
+                borderRadius: 2,
+                marginBottom: 8,
+              }}
+            />
+          </Pressable>
+        </GestureDetector>
+
         <Animated.View
           entering={FadeInDown.duration(200).easing(Easing.inOut(Easing.quad))}
           exiting={FadeOutDown.duration(200).easing(Easing.inOut(Easing.quad))}
-          style={{
-            gap: 4,
-          }}
+          style={[
+            {
+              position: "absolute",
+              top: 16,
+              gap: 8,
+              width: "100%",
+            },
+            animatedOpacity,
+          ]}
         >
           {showSuggestions && (
             <Suggestions
@@ -308,7 +346,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
             onChangeValue={setValue}
           />
         </Animated.View>
-      )}
+      </View>
 
       <Input
         placeholder="10 Laranjas"
@@ -317,13 +355,14 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
         onActionClick={handleAddItem}
         cap="bottom"
       />
-    </View>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     gap: 4,
+    justifyContent: "space-between",
   },
   createSheet: {
     width: "100%",

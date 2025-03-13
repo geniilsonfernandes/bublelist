@@ -1,7 +1,7 @@
 import * as Haptics from "expo-haptics";
 import { useState } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
-import Animated, { Easing, FadeIn, FadeInUp } from "react-native-reanimated";
+import Animated, { Easing, FadeIn } from "react-native-reanimated";
 import { Chip } from "./Chip";
 
 type SuggestionsProps = {
@@ -41,7 +41,6 @@ export const Suggestions: React.FC<SuggestionsProps> = ({
       {mode === "vertical" && (
         <ScrollView>
           <Animated.View
-            entering={FadeInUp.duration(300).easing(Easing.inOut(Easing.quad))}
             style={{
               flexDirection: "row",
               flexWrap: "wrap",
@@ -63,7 +62,6 @@ export const Suggestions: React.FC<SuggestionsProps> = ({
       )}
       {mode === "horizontal" && (
         <Animated.FlatList
-          entering={FadeInUp.duration(300).easing(Easing.inOut(Easing.quad))}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           keyboardShouldPersistTaps="always"

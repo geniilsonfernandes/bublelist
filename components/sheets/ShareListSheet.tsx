@@ -76,12 +76,12 @@ export const ShareListSheet = forwardRef<BottomSheet, ShareListSheetProps>(
       >
         <BottomSheetScrollView style={{ paddingHorizontal: 16 }}>
           <Header
-            title="Compartilhar lista"
-            subtitle="Selecione o tipo de compartilhamento"
+            title="Copiar lista"
+            subtitle="Copie a lista para compartilhar onde quiser"
           />
           <View style={{ gap: 8, paddingTop: 48 }}>
             <Button variant="solid" onPress={shareList}>
-              Compartilhar Lista
+              Copiar Lista
             </Button>
             <Button onPress={onClose} variant="outline" cap="top">
               Cancelar
