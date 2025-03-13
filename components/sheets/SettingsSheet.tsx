@@ -18,7 +18,7 @@ type SettingsSheetProps = {
 
 export const SettingsSheet = forwardRef<BottomSheet, SettingsSheetProps>(
   ({ onClose }, ref) => {
-    const backgroundColorSheet = useThemeColor({}, "background.1");
+    const backgroundColorSheet = useThemeColor({}, "background");
     const router = useRouter();
 
     // variables

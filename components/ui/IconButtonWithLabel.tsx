@@ -16,13 +16,13 @@ export const IconButtonWithLabel: React.FC<IconButtonWithLabelProps> = ({
   label,
   rightIcon = "chevron-right",
   onPress,
-  variant = "ghost",
+  variant = "solid",
 }) => {
-  const backgroundColor = useThemeColor({}, "background.2");
+  const backgroundColor = useThemeColor({}, "background.1");
 
   const variantStyles = {
     solid: {
-      backgroundColor: backgroundColor + "60",
+      backgroundColor: backgroundColor,
 
       borderBottomWidth: 0,
     },
