@@ -12,7 +12,7 @@ import { ThemedText } from "./ThemedText";
 type ButtonProps = {
   children: React.ReactNode;
   variant?: "outline" | "solid" | "danger";
-  cap?: "top" | "bottom";
+  cap?: "top" | "bottom" | "none";
   onPress?: () => void;
   isLoading?: boolean;
   fullWidth?: boolean;

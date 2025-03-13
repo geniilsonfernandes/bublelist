@@ -92,25 +92,12 @@ export default function ListShowScreen() {
           </ThemedText>
         </View>
 
-        {/* <FlashList
-          ref={list}
-          data={data?.products || []}
-          renderItem={renderList}
-          keyExtractor={(item) => item.id}
-          estimatedItemSize={100}
-          keyboardShouldPersistTaps="always"
-          ItemSeparatorComponent={() => (
-            <ThemedView
-              style={styles.separator}
-              backgroundColor="background.1"
-            />
-          )}
-        /> */}
-
         <Animated.FlatList
           style={{
             paddingBottom: 16,
-            flex: 1,
+          }}
+          contentContainerStyle={{
+            flexGrow: 1,
           }}
           data={data?.products || []}
           keyExtractor={(item) => item.id}

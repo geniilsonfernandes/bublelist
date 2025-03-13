@@ -104,7 +104,10 @@ export default function HomeScreen() {
           </View>
         )}
       </>
-      <SettingsSheet ref={sheetSettingsRef as any} />
+      <SettingsSheet
+        ref={sheetSettingsRef as any}
+        onClose={() => sheetSettingsRef.current?.close()}
+      />
       <ShareListSheet
         list={selectedList}
         ref={sheetShareListRef as any}

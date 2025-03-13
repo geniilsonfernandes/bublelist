@@ -18,6 +18,8 @@ export default function RootLayout() {
               borderRadius: 8,
               marginRight: 16,
               backgroundColor: backgroundButton,
+              opacity: pressed ? 0.5 : 1,
+              transform: [{ scale: pressed ? 0.88 : 1 }],
             })}
           >
             <Icon name="chevron-left" size={24} />
@@ -25,6 +27,9 @@ export default function RootLayout() {
         ),
 
         headerStyle: {
+          backgroundColor,
+        },
+        contentStyle: {
           backgroundColor,
         },
 
@@ -35,23 +40,32 @@ export default function RootLayout() {
       <Stack.Screen
         name="lista/new"
         options={{
-          animation: "fade_from_bottom",
           headerTitle: "Nova lista",
         }}
       />
       <Stack.Screen
         name="lista/[id]/index"
         options={{
-          animation: "fade_from_bottom",
-
+          animation: "fade",
           headerShown: false,
         }}
       />
       <Stack.Screen
         name="lista/[id]/edit"
         options={{
-          animation: "fade_from_bottom",
           headerTitle: "Editar lista",
+        }}
+      />
+      <Stack.Screen
+        name="settings/delete-data"
+        options={{
+          headerTitle: "Deletar dados",
+        }}
+      />
+      <Stack.Screen
+        name="settings/export-data"
+        options={{
+          headerTitle: "Exportar dados",
         }}
       />
     </Stack>

@@ -15,8 +15,8 @@ import Animated, {
   FadeOutDown,
 } from "react-native-reanimated";
 import { Suggestions } from "./Suggestions";
-import { Icon } from "./ui/Icon";
 import { Input } from "./ui/Input";
+import { ThemedView } from "./ui/ThemedView";
 
 const PRODUCT_DATA = [
   "Arroz",
@@ -274,10 +274,17 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
         style={{
           alignItems: "center",
           gap: 8,
-          height: 18,
         }}
       >
-        <Icon name={!showDetails ? "chevron-up" : "chevron-down"} size={18} />
+        <ThemedView
+          colorName="background.3"
+          style={{
+            height: 5,
+            width: 100,
+            borderRadius: 2,
+            marginBottom: 8,
+          }}
+        />
       </Pressable>
       {showDetails && (
         <Animated.View

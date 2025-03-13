@@ -71,6 +71,7 @@ export default function RootLayout() {
               name="(main)"
               options={{
                 headerShown: false,
+                animation: "fade",
               }}
             />
             <Stack.Screen
@@ -80,13 +81,6 @@ export default function RootLayout() {
               }}
             />
 
-            <Stack.Screen
-              name="list"
-              options={{
-                animation: "fade_from_bottom",
-                presentation: "containedModal",
-              }}
-            />
             <Stack.Screen name="+not-found" />
           </Stack>
           <Modals />

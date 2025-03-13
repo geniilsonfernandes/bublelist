@@ -213,6 +213,19 @@ async function deleteProduct(id: string) {
   }
 }
 
+async function deleteAllLists() {
+  const statement = await db.prepareAsync(`DELETE FROM list`);
+  try {
+    const result = statement.executeAsync();
+
+    return result;
+  } catch (error) {
+    throw error;
+  } finally {
+    await statement.finalizeAsync();
+  }
+}
+
 export const useGetList = () => {
   return useQuery({
     queryKey: ["list"],
@@ -306,6 +319,18 @@ export const useDeleteList = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => deleteList(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["list"],
+      });
+    },
+  });
+};
+
+export const useDeleteAllLists = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => deleteAllLists(),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["list"],
