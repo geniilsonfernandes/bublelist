@@ -83,7 +83,7 @@ export const ShareListSheet = forwardRef<BottomSheet, ShareListSheetProps>(
             <Button variant="solid" onPress={shareList}>
               Copiar Lista
             </Button>
-            <Button onPress={onClose} variant="outline" cap="top">
+            <Button onPress={onClose} variant="outline">
               Cancelar
             </Button>
           </View>

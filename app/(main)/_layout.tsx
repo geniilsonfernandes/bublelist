@@ -16,11 +16,15 @@ export default function RootLayout() {
         contentStyle: {
           backgroundColor,
         },
-
         headerShadowVisible: false,
       }}
     >
-      <Stack.Screen name="index" />
+      <Stack.Screen
+        name="index"
+        options={{
+          headerShown: false,
+        }}
+      />
       <Stack.Screen
         name="lista/new"
         options={{
@@ -30,7 +34,7 @@ export default function RootLayout() {
       <Stack.Screen
         name="lista/[id]/index"
         options={{
-          animation: "fade",
+          animation: "fade_from_bottom",
           headerShown: false,
         }}
       />

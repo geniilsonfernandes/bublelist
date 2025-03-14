@@ -1,14 +1,6 @@
 import { type List } from "@/database/useShoppingList";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import React, { useEffect, useState } from "react";
-import {
-  Pressable,
-  PressableProps,
-  StyleProp,
-  StyleSheet,
-  View,
-  ViewStyle,
-} from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   FadeIn,
   useAnimatedStyle,
@@ -16,39 +8,12 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { Progress } from "./Progress";
+import { ActionButton } from "./ui/ActionButton";
 import { Icon } from "./ui/Icon";
 import { ThemedText } from "./ui/ThemedText";
 import { ThemedView } from "./ui/ThemedView";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
-type ActionButtonProps = {
-  style?: StyleProp<ViewStyle>;
-} & PressableProps;
-
-const ActionButton: React.FC<ActionButtonProps> = ({
-  children,
-  style,
-  ...props
-}) => {
-  const backgroundColor = useThemeColor({}, "background.2");
-  return (
-    <Pressable
-      style={({ pressed }) => [
-        {
-          ...styles.actionButton,
-          opacity: pressed ? 0.5 : 1,
-          backgroundColor: pressed ? backgroundColor : "transparent",
-          transform: [{ scale: pressed ? 0.88 : 1 }],
-        },
-        style,
-      ]}
-      {...props}
-    >
-      {children}
-    </Pressable>
-  );
-};
 
 type ListProps = {
   onPress: () => void;
@@ -59,7 +24,7 @@ type ListProps = {
 } & List;
 
 const HEIGHT = 80;
-const HEIGHT_EXPANDED = 130;
+const HEIGHT_EXPANDED = 138;
 
 export const ListCard: React.FC<ListProps> = ({
   name,
@@ -118,14 +83,14 @@ export const ListCard: React.FC<ListProps> = ({
       onPressOut={() => (scale.value = 1)}
     >
       <ThemedView backgroundColor="background.1" style={styles.container}>
-        <View>
-          <ThemedView style={styles.header}>
+        <View style={styles.headerContainer}>
+          <View style={styles.header}>
             <ThemedText style={styles.title}>{name}</ThemedText>
 
-            <ActionButton onPress={handleCollapse}>
+            <ActionButton size="sm" variant="ghost" onPress={handleCollapse}>
               <Icon name="more-vertical" size={18} />
             </ActionButton>
-          </ThemedView>
+          </View>
           <Progress progress={progress} />
         </View>
         {expanded ? (
@@ -133,7 +98,7 @@ export const ListCard: React.FC<ListProps> = ({
             entering={FadeIn.duration(300)}
             style={{
               flexDirection: "row",
-              alignItems: "center",
+              justifyContent: "flex-end",
               gap: 8,
             }}
           >
@@ -146,17 +111,6 @@ export const ListCard: React.FC<ListProps> = ({
             <ActionButton onPress={onClickToDelete}>
               <Icon name="trash" size={18} colorName="danger" />
             </ActionButton>
-            <ActionButton
-              style={[
-                styles.button,
-                {
-                  marginLeft: "auto",
-                },
-              ]}
-              onPress={handleUncollapse}
-            >
-              <Icon name="chevron-up" size={18} />
-            </ActionButton>
           </Animated.View>
         ) : null}
       </ThemedView>
@@ -166,30 +120,28 @@ export const ListCard: React.FC<ListProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 12,
-    borderRadius: 8,
+    padding: 16,
+    borderRadius: 16,
     width: "100%",
+    height: HEIGHT,
     flex: 1,
     justifyContent: "space-between",
+  },
+  headerContainer: {
+    gap: 8,
   },
   header: {
     justifyContent: "space-between",
     flexDirection: "row",
-    backgroundColor: "transparent",
-    alignItems: "center",
   },
   title: {
     fontSize: 18,
+    fontWeight: "bold",
   },
   quantity: {
     fontSize: 12,
   },
   button: {
-    padding: 8,
-    borderRadius: 8,
-  },
-
-  actionButton: {
     padding: 8,
     borderRadius: 8,
   },

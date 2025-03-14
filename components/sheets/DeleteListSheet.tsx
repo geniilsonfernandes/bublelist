@@ -1,9 +1,9 @@
 import { List, useDeleteList } from "@/database/useShoppingList";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import BottomSheet, {
-    BottomSheetBackdrop,
-    BottomSheetBackdropProps,
-    BottomSheetScrollView,
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { forwardRef, useCallback, useMemo } from "react";
 import { View } from "react-native";
@@ -77,7 +77,6 @@ export const DeleteListSheet = forwardRef<BottomSheet, DeleteListSheetProps>(
                 onClose?.();
               }}
               variant="outline"
-              cap="top"
             >
               Cancelar
             </Button>

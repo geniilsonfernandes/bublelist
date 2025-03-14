@@ -114,15 +114,10 @@ export default function ListCreateScreen() {
           justifyContent: "space-between",
         }}
       >
-        <Button
-          variant="outline"
-          fullWidth
-          cap="bottom"
-          onPress={() => router.back()}
-        >
+        <Button variant="outline" fullWidth onPress={() => router.back()}>
           Cancelar
         </Button>
-        <Button fullWidth variant="solid" cap="top" onPress={handleCreateList}>
+        <Button fullWidth variant="solid" onPress={handleCreateList}>
           {isEdit ? "Salvar" : "Criar lista"}
         </Button>
       </View>

@@ -19,12 +19,9 @@ export const Progress: React.FC<ProgressProps> = ({ progress}) => {
 
 
 const styles = StyleSheet.create({
-  
-
   container: {
     width: "100%",
     borderRadius: 8,
     overflow: "hidden",
-    marginTop: 16,
   },
 });

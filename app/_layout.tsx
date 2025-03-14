@@ -4,7 +4,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import * as SystemUI from "expo-system-ui";
@@ -34,6 +34,7 @@ const queryClient = new QueryClient();
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const router = useRouter();
   const colorScheme = useColorScheme();
 
   const [loaded] = useFonts({
@@ -62,7 +63,6 @@ export default function RootLayout() {
           <Stack
             screenOptions={{
               headerShown: false,
-              contentStyle: {},
             }}
           >
             {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}

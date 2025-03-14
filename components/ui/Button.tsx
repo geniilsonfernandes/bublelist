@@ -1,19 +1,26 @@
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { themeColors, useThemeColor } from "@/hooks/useThemeColor";
+import { Feather } from "@expo/vector-icons";
 import React from "react";
 import {
   ActivityIndicator,
   Pressable,
   StyleProp,
   StyleSheet,
+  View,
   ViewStyle,
 } from "react-native";
+import { Icon } from "./Icon";
 import { ThemedText } from "./ThemedText";
 
 type ButtonProps = {
   children: React.ReactNode;
-  variant?: "outline" | "solid" | "danger";
-  cap?: "top" | "bottom" | "none";
+  variant?: "outline" | "solid" | "danger" | "ghost";
+  bg?: themeColors;
+  cap?: ("TopStart" | "TopEnd" | "BottomStart" | "BottomEnd")[];
+  capRadius?: number;
   onPress?: () => void;
+  rightIcon?: keyof typeof Feather.glyphMap;
+  leftIcon?: keyof typeof Feather.glyphMap;
   isLoading?: boolean;
   fullWidth?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -24,27 +31,47 @@ export const Button: React.FC<ButtonProps> = ({
   variant = "solid",
   onPress,
   style,
-  cap = "bottom",
+  cap = [],
+  capRadius = 8,
+  leftIcon,
+  rightIcon,
   fullWidth,
   isLoading,
+  bg = "primary.100",
 }) => {
-  const backgroundColor = useThemeColor({}, "primary.100");
+  const backgroundColor = useThemeColor({}, bg);
   const borderColor = useThemeColor({}, "background.2");
-  const borderSolid = useThemeColor({}, "primary.200");
+
+  const capStyle: StyleProp<ViewStyle> = cap?.reduce((acc, cur) => {
+    switch (cur) {
+      case "TopStart":
+        return { borderTopStartRadius: capRadius, ...acc };
+      case "TopEnd":
+        return { borderTopEndRadius: capRadius, ...acc };
+      case "BottomStart":
+        return { borderBottomStartRadius: capRadius, ...acc };
+      case "BottomEnd":
+        return { borderBottomEndRadius: capRadius, ...acc };
+      default:
+        return acc;
+    }
+  }, {});
 
   const containerStyle: StyleProp<ViewStyle> = [
     styles.container,
     variant === "outline" && { borderColor, ...styles.outline },
     variant === "solid" && {
       backgroundColor,
-      borderWidth: 1,
-      borderColor: borderSolid,
-      borderBottomWidth: 0,
     },
     variant === "danger" && {
       backgroundColor: "#F2334C",
       borderWidth: 1,
       borderColor: "#E46C85",
+      borderBottomWidth: 0,
+    },
+    variant === "ghost" && {
+      backgroundColor: "transparent",
+      borderWidth: 0,
       borderBottomWidth: 0,
     },
   ];
@@ -56,9 +83,9 @@ export const Button: React.FC<ButtonProps> = ({
           containerStyle,
           style,
           state.pressed && { opacity: 0.8, transform: [{ scale: 0.98 }] },
-          cap === "bottom" && styles.capBottom,
-          cap === "top" && styles.capTop,
+
           fullWidth && { flex: 1 },
+          capStyle,
         ];
       }}
       accessibilityRole="button"
@@ -71,9 +98,32 @@ export const Button: React.FC<ButtonProps> = ({
           style={{ position: "absolute" }}
         />
       ) : (
-        <ThemedText colorName={variant === "solid" ? "gray.100" : "text.2"}>
-          {children}
-        </ThemedText>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          {leftIcon && (
+            <Icon
+              name="chevron-right"
+              size={24}
+              colorName={variant === "solid" ? "gray.100" : "text.2"}
+            />
+          )}
+          <ThemedText colorName={variant === "solid" ? "gray.100" : "text.2"}>
+            {children}
+          </ThemedText>
+
+          {rightIcon && (
+            <Icon
+              name={rightIcon}
+              size={24}
+              colorName={variant === "solid" ? "gray.100" : "text.2"}
+            />
+          )}
+        </View>
       )}
     </Pressable>
   );
@@ -82,7 +132,7 @@ export const Button: React.FC<ButtonProps> = ({
 const styles = StyleSheet.create({
   container: {
     height: 48,
-    borderRadius: 16,
+    borderRadius: 24,
 
     justifyContent: "center",
     alignItems: "center",
@@ -93,13 +143,5 @@ const styles = StyleSheet.create({
   outline: {
     backgroundColor: "transparent",
     borderWidth: 1,
-  },
-  capBottom: {
-    borderBottomEndRadius: 8,
-    borderBottomStartRadius: 8,
-  },
-  capTop: {
-    borderTopEndRadius: 8,
-    borderTopStartRadius: 8,
   },
 });
