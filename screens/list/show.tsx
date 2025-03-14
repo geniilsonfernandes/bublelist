@@ -1,5 +1,6 @@
 import { Product } from "@/components/Product";
 import { ProductEntry } from "@/components/ProductEntry";
+import { Icon } from "@/components/ui/Icon";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
 import {
@@ -8,15 +9,9 @@ import {
 } from "@/database/useShoppingList";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { calculateTotal, formatValue } from "@/utils/calculateTotal";
-import { FlashList } from "@shopify/flash-list";
 import { Stack, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useMemo, useRef, useState } from "react";
-import {
-  ActivityIndicator,
-  LayoutAnimation,
-  StyleSheet,
-  View,
-} from "react-native";
+import React, { useCallback, useMemo } from "react";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import Animated, { LinearTransition } from "react-native-reanimated";
 
 export default function ListShowScreen() {
@@ -24,27 +19,14 @@ export default function ListShowScreen() {
   const { data, isLoading } = useGetListById(id);
   const iconColor = useThemeColor({}, "primary.100");
 
-  const [data2, setData] = useState([1, 2, 3, 4, 5]);
-
   const valuesSum = useMemo(
     () => calculateTotal(data?.products || []),
     [data?.products]
   );
   const budget = useMemo(() => formatValue(data?.budget || 0), [data?.budget]);
 
-  const list = useRef<FlashList<ProductType> | null>(null);
-
-  const prepareForLayoutAnimation = () => {
-    // This must be called before `LayoutAnimation.configureNext` in order for the animation to run properly.
-    list.current?.prepareForLayoutAnimationRender();
-    // After removing the item, we can start the animation.
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-  };
-
   const renderList = useCallback(
-    ({ item }: { item: ProductType }) => (
-      <Product {...item} onRemove={prepareForLayoutAnimation} />
-    ),
+    ({ item }: { item: ProductType }) => <Product {...item} />,
     []
   );
 
@@ -73,6 +55,21 @@ export default function ListShowScreen() {
         options={{
           title: data?.name,
           headerShown: true,
+
+          headerRight(props) {
+            return (
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 16,
+                }}
+              >
+                <Icon name="search" size={18} />
+                <Icon name="menu" size={18} />
+              </View>
+            );
+          },
         }}
       />
       <ThemedView
@@ -152,7 +149,6 @@ const styles = StyleSheet.create({
     marginVertical: 16,
   },
   productEntry: {
-    paddingVertical: 8,
     paddingHorizontal: 16,
   },
 });

@@ -3,7 +3,6 @@ import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import React from "react";
 import { Pressable, StyleSheet, TextInput, View } from "react-native";
-import { ThemedView } from "./ui/ThemedView";
 
 type QuantitySelectorProps = {
   quantity: number | null;
@@ -14,9 +13,8 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
   quantity,
   onChangeQuantity,
 }) => {
-  const backgroundColor = useThemeColor({}, "background.1");
-  const iconColor = useThemeColor({}, "text.3");
-  const textColor = useThemeColor({}, "text");
+  const backgroundColor = useThemeColor({}, "background.2");
+  const color = useThemeColor({}, "text");
 
   const handleDecrease = () => {
     Haptics.selectionAsync();
@@ -44,26 +42,26 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
         ]}
         onPress={handleDecrease}
       >
-        <Feather name="minus" size={18} color={iconColor} />
+        <Feather name="minus" size={18} color={color} />
       </Pressable>
-      <ThemedView backgroundColor="background.1" style={styles.input}>
-        <TextInput
-          placeholder="quant."
-          autoCorrect={false}
-          autoCapitalize="none"
-          textContentType="none"
-          autoComplete="off"
-          style={{
-            flex: 1,
-            color: textColor,
-            fontSize: 16,
-            textAlign: "center",
-          }}
-          value={String(quantity)}
-          onChangeText={handleChangeText}
-          keyboardType="numeric"
-        />
-      </ThemedView>
+      <TextInput
+        placeholder="quant."
+        autoCorrect={false}
+        autoCapitalize="none"
+        textContentType="none"
+        autoComplete="off"
+        style={[
+          {
+            color,
+            backgroundColor,
+          },
+          styles.input,
+        ]}
+        value={String(quantity)}
+        onChangeText={handleChangeText}
+        keyboardType="numeric"
+      />
+
       <Pressable
         style={({ pressed }) => [
           styles.button,
@@ -73,7 +71,7 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
         ]}
         onPress={handleIncrease}
       >
-        <Feather name="plus" size={18} color={iconColor} />
+        <Feather name="plus" size={18} color={color} />
       </Pressable>
     </View>
   );
@@ -86,13 +84,12 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   input: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    width: 60,
-    borderRadius: 8,
+    fontSize: 16,
+    textAlign: "center",
+
+    width: 54,
     height: 48,
-    paddingHorizontal: 2,
+    borderRadius: 8,
   },
   button: {
     justifyContent: "center",

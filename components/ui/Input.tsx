@@ -1,8 +1,13 @@
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Feather } from "@expo/vector-icons";
 import { forwardRef } from "react";
-import { Pressable, StyleSheet, TextInput, TextInputProps } from "react-native";
-import { ThemedView } from "./ThemedView";
+import {
+  Pressable,
+  StyleSheet,
+  TextInput,
+  TextInputProps,
+  View,
+} from "react-native";
 
 type InputProps = {
   onActionClick?: () => void;
@@ -26,24 +31,19 @@ export const Input = forwardRef<TextInput, InputProps>(
     ref
   ) => {
     const textColor = useThemeColor({}, "text.2");
+    const backgroundColor = useThemeColor({}, "background");
     const placeholderTextColor = useThemeColor({}, "text.3");
     const iconColor = useThemeColor({}, "primary.100");
 
     return (
-      <ThemedView
-        borderColor={"background.2"}
-        style={[
-          styles.container,
-          cap === "bottom" && styles.capBottom,
-          cap === "top" && styles.capTop,
-        ]}
-      >
+      <View style={[styles.container]}>
         <TextInput
           ref={ref}
           style={[
             styles.input,
             {
               color: textColor,
+              backgroundColor,
             },
           ]}
           placeholderTextColor={placeholderTextColor + "80"}
@@ -55,27 +55,27 @@ export const Input = forwardRef<TextInput, InputProps>(
               rightSection
             ) : (
               <>
-                {rest.value ? (
-                  <Pressable
-                    onPress={onActionClick}
-                    style={[
-                      styles.icon,
-                      {
-                        backgroundColor: iconColor,
-                      },
-                      cap === "bottom" && styles.capBottom,
-                      cap === "top" && styles.capTop,
-                    ]}
-                    disabled={!rest.value}
-                  >
-                    <Feather name={iconName} size={16} color="#fff" />
-                  </Pressable>
-                ) : null}
+                <Pressable
+                  onPress={onActionClick}
+                  style={[
+                    styles.icon,
+                    {
+                      backgroundColor: iconColor,
+                    },
+                  ]}
+                  disabled={!rest.value}
+                >
+                  <Feather
+                    name={!rest.value ? "mic" : "shopping-bag"}
+                    size={16}
+                    color="#fff"
+                  />
+                </Pressable>
               </>
             )}
           </>
         ) : null}
-      </ThemedView>
+      </View>
     );
   }
 );
@@ -85,21 +85,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    borderRadius: 16,
-
-    padding: 4,
-    borderWidth: 1,
+    borderRadius: 50,
   },
   input: {
     flex: 1,
     fontSize: 16,
-    height: 40,
+    paddingHorizontal: 16,
+    height: 48,
     padding: 8,
+    borderRadius: 50,
   },
   icon: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
+    width: 48,
+    height: 48,
+
+    borderRadius: 48,
     justifyContent: "center",
     alignItems: "center",
   },

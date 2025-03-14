@@ -10,6 +10,7 @@ import {
   useFilteredProducts,
 } from "@/hooks/useFilteredProducts";
 import { useModals } from "@/store/useModals";
+import { formatValue } from "@/utils/calculateTotal";
 import * as Haptics from "expo-haptics";
 import React, { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, TextInput, View } from "react-native";
@@ -98,6 +99,7 @@ const ProdutDetails: React.FC<ProductEntryData> = ({
   onChangeQuantity,
   onChangeValue,
 }) => {
+  const valueFinal = (value || 0) * quantity;
   return (
     <Animated.View
       entering={FadeInDown.duration(200).easing(Easing.inOut(Easing.quad))}
@@ -106,6 +108,7 @@ const ProdutDetails: React.FC<ProductEntryData> = ({
       <ValueInput
         value={value}
         onChangeValue={onChangeValue}
+        rightLabel={formatValue(valueFinal)}
         style={{
           flex: 1,
         }}
@@ -260,18 +263,20 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
     }
   };
 
-  const height = useSharedValue(70);
-  const opacity = useSharedValue(0);
-
   const SHOW_SUGGESTIONS = false;
   const OPEN_HEIGHT = 158;
-  const OPEN_HEIGHT_WITHOUT_SUGGESTIONS = 120;
+  const CLOSED_HEIGHT = 84;
+  const OPEN_HEIGHT_WITHOUT_SUGGESTIONS = 138;
 
-  const CLOSED_HEIGHT = 70;
+  const height = useSharedValue(
+    SHOW_SUGGESTIONS ? OPEN_HEIGHT : OPEN_HEIGHT_WITHOUT_SUGGESTIONS
+  );
+  const opacity = useSharedValue(1);
 
   const pan = Gesture.Pan()
     .onChange((event) => {
       const offsetDelta = height.value - event.changeY;
+
       const clampedValue = Math.min(200, Math.max(60, offsetDelta));
 
       height.value = clampedValue;
@@ -304,7 +309,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
           style={{
             alignItems: "center",
             gap: 8,
-            padding: 4,
+            padding: 8,
           }}
         >
           <ThemedView
@@ -322,7 +327,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
         style={[
           {
             position: "absolute",
-            top: 16,
+            top: 24,
             gap: 8,
             width: "100%",
           },
@@ -356,6 +361,7 @@ const styles = StyleSheet.create({
   container: {
     gap: 4,
     justifyContent: "space-between",
+    paddingBottom: 8,
   },
   createSheet: {
     width: "100%",

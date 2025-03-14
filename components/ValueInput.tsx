@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import CurrencyInput from "react-native-currency-input";
 
+import { ThemedText } from "./ui/ThemedText";
 import { ThemedView } from "./ui/ThemedView";
 
 type ValueInputProps = {
@@ -17,6 +18,7 @@ type ValueInputProps = {
   onChangeValue: (value: number | null) => void;
   controlButtons?: boolean;
   placeholder?: string;
+  rightLabel?: string;
   increment?: number;
   style?: StyleProp<ViewStyle>;
   cap?: "top" | "bottom";
@@ -27,6 +29,7 @@ export const ValueInput: React.FC<ValueInputProps> = ({
   value,
   controlButtons,
   placeholder = "0,00",
+  rightLabel = "",
   increment = 50,
   style,
   cap,
@@ -45,15 +48,7 @@ export const ValueInput: React.FC<ValueInputProps> = ({
   };
 
   return (
-    <ThemedView
-      borderColor="background.2"
-      style={[
-        styles.container,
-        style,
-        cap === "bottom" && styles.capBottom,
-        cap === "top" && styles.capTop,
-      ]}
-    >
+    <ThemedView style={[styles.container, style]}>
       <Feather name="dollar-sign" size={18} color={textColor} />
       <CurrencyInput
         placeholder={placeholder}
@@ -64,10 +59,17 @@ export const ValueInput: React.FC<ValueInputProps> = ({
         textContentType="none"
         autoComplete="off"
         value={value}
+        maxLength={6}
         style={{ flex: 1, color: textColor, fontSize: 16 }}
         onChangeValue={onChangeValue}
         // {...props}
       />
+      <ThemedText
+        colorName="text.6"
+        style={{ fontSize: 14, position: "absolute", right: 8 }}
+      >
+        {rightLabel}
+      </ThemedText>
       {controlButtons ? (
         <View style={styles.controls}>
           <Pressable
@@ -92,10 +94,9 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-    borderRadius: 16,
-    paddingHorizontal: 8,
-
+    gap: 4,
+    borderRadius: 48,
+    paddingHorizontal: 16,
     height: 48,
   },
   controls: {

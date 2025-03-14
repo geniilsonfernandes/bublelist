@@ -63,7 +63,6 @@ export default function RootLayout() {
             screenOptions={{
               headerShown: false,
               contentStyle: {},
-              presentation: "transparentModal",
             }}
           >
             {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
