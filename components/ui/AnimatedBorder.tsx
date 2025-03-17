@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import Animated, {
-    interpolateColor,
-    useAnimatedStyle,
-    useSharedValue,
-    withRepeat,
-    withTiming,
+  interpolateColor,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
 } from "react-native-reanimated";
 
 export default function AnimatedBorder({
@@ -42,10 +42,8 @@ export default function AnimatedBorder({
 
 const styles = StyleSheet.create({
   box: {
-
-    borderWidth: 2,
-    borderRadius: 18,
+    borderWidth: 1,
+    borderRadius: 48,
     overflow: "hidden",
- 
   },
 });

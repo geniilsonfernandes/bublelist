@@ -66,7 +66,7 @@ export const ValueInput: React.FC<ValueInputProps> = ({
       />
       <ThemedText
         colorName="text.6"
-        style={{ fontSize: 14, position: "absolute", right: 8 }}
+        style={{ fontSize: 14, position: "absolute", right: 16 }}
       >
         {rightLabel}
       </ThemedText>

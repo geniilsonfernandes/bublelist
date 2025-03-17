@@ -19,6 +19,16 @@ const primary = {
   "primary.700": "#92FFE9",
 };
 
+const avocado = {
+  "primary.100": "#FFA7A8",
+  "primary.200": "#FFAEB4",
+  "primary.300": "#FFB4BF",
+  "primary.400": "#FFBBCA",
+  "primary.500": "#FFC3D4",
+  "primary.600": "#FFCADD",
+  "primary.700": "#FFD1E5",
+};
+
 const gray = {
   "gray.100": "#F2F2F2",
   "gray.200": "#E6E6E6",
@@ -62,7 +72,7 @@ export const Colors = {
     danger: "#F96868",
     success: "rgb(87, 206, 87)",
     ...gray,
-    ...primary,
+    ...avocado,
   },
   dark: {
     text: "#F2F2F2",
@@ -94,7 +104,6 @@ export const Colors = {
     danger: "#F96868",
     success: "rgb(87, 206, 87)",
     ...gray,
-    ...primary,
+    ...avocado,
   },
 };
-

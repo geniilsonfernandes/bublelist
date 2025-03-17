@@ -8,6 +8,7 @@ import {
   TextInputProps,
   View,
 } from "react-native";
+import Animated, { FadeInLeft, FadeOutLeft } from "react-native-reanimated";
 
 type InputProps = {
   onActionClick?: () => void;
@@ -36,45 +37,45 @@ export const Input = forwardRef<TextInput, InputProps>(
     const iconColor = useThemeColor({}, "primary.100");
 
     return (
-      <View style={[styles.container]}>
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor,
+          },
+        ]}
+      >
         <TextInput
           ref={ref}
           style={[
             styles.input,
             {
               color: textColor,
-              backgroundColor,
             },
           ]}
           placeholderTextColor={placeholderTextColor + "80"}
           {...rest}
         />
-        {showActions ? (
-          <>
-            {rightSection ? (
-              rightSection
-            ) : (
-              <>
-                <Pressable
-                  onPress={onActionClick}
-                  style={[
-                    styles.icon,
-                    {
-                      backgroundColor: iconColor,
-                    },
-                  ]}
-                  disabled={!rest.value}
-                >
-                  <Feather
-                    name={!rest.value ? "mic" : "shopping-bag"}
-                    size={16}
-                    color="#fff"
-                  />
-                </Pressable>
-              </>
-            )}
-          </>
-        ) : null}
+
+        {rest.value && (
+          <Animated.View
+            entering={FadeInLeft.duration(200)}
+            exiting={FadeOutLeft.duration(200)} // Aqui está a correção
+          >
+            <Pressable
+              onPress={onActionClick}
+              style={[
+                styles.icon,
+                {
+                  backgroundColor: iconColor,
+                },
+              ]}
+              disabled={!rest.value}
+            >
+              <Feather name="shopping-bag" size={16} color="#fff" />
+            </Pressable>
+          </Animated.View>
+        )}
       </View>
     );
   }
@@ -86,18 +87,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     borderRadius: 50,
+    height: 56,
+    backgroundColor: "#5B5B5B",
+    paddingHorizontal: 8,
   },
   input: {
     flex: 1,
     fontSize: 16,
-    paddingHorizontal: 16,
-    height: 48,
+    height: "100%",
     padding: 8,
     borderRadius: 50,
   },
   icon: {
-    width: 48,
-    height: 48,
+    width: 40,
+    height: 40,
 
     borderRadius: 48,
     justifyContent: "center",

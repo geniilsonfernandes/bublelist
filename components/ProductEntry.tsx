@@ -208,7 +208,7 @@ function extractNumberAndClean(text: string): {
 }
 
 export const ProductEntry: React.FC<ProductEntryProps> = ({
-  showSuggestions = true,
+  showSuggestions = false,
   currentList,
 }) => {
   const currentListProducts = currentList?.products;
@@ -263,10 +263,57 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
     }
   };
 
-  const SHOW_SUGGESTIONS = false;
-  const OPEN_HEIGHT = 158;
-  const CLOSED_HEIGHT = 84;
-  const OPEN_HEIGHT_WITHOUT_SUGGESTIONS = 138;
+  return (
+    <Sheet
+      showSuggestions={showSuggestions}
+      hiddenContent={
+        <View
+          style={{
+            gap: 8,
+          }}
+        >
+          {showSuggestions && (
+            <Suggestions
+              onSelect={findProductInList}
+              suggestions={filterData}
+            />
+          )}
+
+          <ProdutDetails
+            value={value}
+            quantity={quantity}
+            onChangeQuantity={setQuantity}
+            onChangeValue={setValue}
+          />
+        </View>
+      }
+    >
+      <Input
+        placeholder="10 Laranjas"
+        value={product}
+        onChangeText={setProduct}
+        onActionClick={handleAddItem}
+        cap="bottom"
+      />
+    </Sheet>
+  );
+};
+
+type SheetProps = {
+  children: React.ReactNode;
+  hiddenContent?: React.ReactNode;
+  showSuggestions?: boolean;
+};
+
+const Sheet: React.FC<SheetProps> = ({
+  children,
+  hiddenContent,
+  showSuggestions = true,
+}) => {
+  const SHOW_SUGGESTIONS = showSuggestions;
+  const OPEN_HEIGHT = 190;
+  const CLOSED_HEIGHT = 100;
+  const OPEN_HEIGHT_WITHOUT_SUGGESTIONS = 150;
 
   const height = useSharedValue(
     SHOW_SUGGESTIONS ? OPEN_HEIGHT : OPEN_HEIGHT_WITHOUT_SUGGESTIONS
@@ -305,54 +352,16 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
   return (
     <Animated.View style={[styles.container, animatedStyle]}>
       <GestureDetector gesture={pan}>
-        <Pressable
-          style={{
-            alignItems: "center",
-            gap: 8,
-            padding: 8,
-          }}
-        >
-          <ThemedView
-            colorName="background.3"
-            style={{
-              height: 5,
-              width: 100,
-              borderRadius: 2,
-            }}
-          />
+        <Pressable style={styles.dragHandle}>
+          <ThemedView colorName="background.3" style={styles.indicator} />
         </Pressable>
       </GestureDetector>
 
-      <Animated.View
-        style={[
-          {
-            position: "absolute",
-            top: 24,
-            gap: 8,
-            width: "100%",
-          },
-          animatedOpacity,
-        ]}
-      >
-        {SHOW_SUGGESTIONS && (
-          <Suggestions onSelect={findProductInList} suggestions={filterData} />
-        )}
-
-        <ProdutDetails
-          value={value}
-          quantity={quantity}
-          onChangeQuantity={setQuantity}
-          onChangeValue={setValue}
-        />
+      <Animated.View style={[styles.hiddenContent, animatedOpacity]}>
+        {hiddenContent}
       </Animated.View>
 
-      <Input
-        placeholder="10 Laranjas"
-        value={product}
-        onChangeText={setProduct}
-        onActionClick={handleAddItem}
-        cap="bottom"
-      />
+      {children}
     </Animated.View>
   );
 };
@@ -362,6 +371,7 @@ const styles = StyleSheet.create({
     gap: 4,
     justifyContent: "space-between",
     paddingBottom: 8,
+    marginTop: -24,
   },
   createSheet: {
     width: "100%",
@@ -389,5 +399,24 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 8,
     justifyContent: "space-between",
+  },
+
+  hiddenContent: {
+    position: "absolute",
+    top: 32,
+    gap: 8,
+    width: "100%",
+  },
+
+  dragHandle: {
+    alignItems: "center",
+    gap: 8,
+    padding: 8,
+  },
+
+  indicator: {
+    height: 5,
+    width: 100,
+    borderRadius: 2,
   },
 });
