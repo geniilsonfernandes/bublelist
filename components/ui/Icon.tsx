@@ -3,7 +3,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { Feather } from "@expo/vector-icons";
 import React from "react";
 
-type IconProps = {
+export type IconProps = {
   colorName?: keyof typeof Colors.light & keyof typeof Colors.dark;
 } & React.ComponentProps<typeof Feather>;
 export const Icon: React.FC<IconProps> = ({

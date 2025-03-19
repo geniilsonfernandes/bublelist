@@ -1,49 +1,104 @@
 import { useThemeColor } from "@/hooks/useThemeColor";
-import React from "react";
-import { StyleSheet, TextInput, TextInputProps } from "react-native";
+import React, { forwardRef, useState } from "react";
+import { Pressable, StyleSheet, TextInput, TextInputProps } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { Icon } from "./ui/Icon";
-import { ThemedView } from "./ui/ThemedView";
 
-export const Search: React.FC<TextInputProps> = (props) => {
+export const Search = forwardRef<TextInput, TextInputProps>((props, ref) => {
+  // Temas
   const textColor = useThemeColor({}, "text.2");
-  const iconColor = useThemeColor({}, "text.5");
+  const backgroundColor = useThemeColor({}, "background.1");
+  const clearButtonColor = useThemeColor({}, "background.2");
   const placeholderColor = useThemeColor({}, "text.5");
 
+  // Estados
+  const [isFocused, setIsFocused] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+
+  // Animação
+  const width = useSharedValue(42);
+  const animatedStyle = useAnimatedStyle(() => ({
+    width: width.value,
+  }));
+
+  // Função para abrir/fechar o input
+  const handleOpen = (open: boolean) => {
+    width.value = withTiming(open ? 300 : 42);
+    setIsFocused(open);
+    if (!open) setInputValue(""); // Limpa o input ao fechar
+  };
+
   return (
-    <ThemedView style={styles.container} backgroundColor="background.1">
-      <Icon name="search" size={18} colorName="text.5" />
+    <Animated.View
+      style={[styles.container, { backgroundColor }, animatedStyle]}
+    >
+      {/* Botão de pesquisa */}
+      <Pressable
+        style={styles.iconButton}
+        onPress={() => handleOpen(!isFocused)}
+      >
+        <Icon name="search" size={18} colorName="text.5" />
+      </Pressable>
+
+      {/* Input */}
       <TextInput
+        ref={ref}
+        value={inputValue}
+        onChangeText={setInputValue}
         placeholder="Procurar Lista"
         placeholderTextColor={placeholderColor}
         style={[styles.input, { color: textColor }]}
+        onFocus={() => handleOpen(true)}
+        onBlur={() => handleOpen(false)}
         {...props}
       />
-    </ThemedView>
+
+      {/* Botão de limpar */}
+      {isFocused && (
+        <Pressable
+          style={[styles.clearButton, { backgroundColor: clearButtonColor }]}
+          onPress={() => {
+            handleOpen(false);
+            props.onChangeText?.("");
+          }}
+        >
+          <Icon name="x" size={18} colorName="text.2" />
+        </Pressable>
+      )}
+    </Animated.View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    borderBottomRightRadius: 8,
-    borderBottomLeftRadius: 8,
+    borderRadius: 28,
+    height: 42,
+    width: 42,
+    overflow: "hidden",
   },
-
-  input: {
-    flex: 1,
-    marginLeft: 12,
-    fontSize: 16,
-    height: 56,
-  },
-  leftContainer: {
-    width: 38,
-    height: 38,
+  iconButton: {
+    height: 42,
+    width: 42,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 12,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    height: 42,
+  },
+  clearButton: {
+    height: 32,
+    width: 32,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 16,
+    marginRight: 8,
   },
 });
