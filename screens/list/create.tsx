@@ -79,6 +79,7 @@ export default function ListCreateScreen() {
           onChangeText={setListName}
           showActions={false}
           cap="bottom"
+          bg="background.1"
         />
         <ListNameSuggestions onAcceptSuggestion={setListName} />
 
@@ -92,7 +93,7 @@ export default function ListCreateScreen() {
               controlButtons
               value={listBudget}
               onChangeValue={setListBudget}
-              cap="top"
+              bg="background.1"
             />
           </Animated.View>
         )}

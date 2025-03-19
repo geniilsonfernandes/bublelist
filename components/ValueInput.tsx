@@ -1,10 +1,10 @@
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { themeColors, useThemeColor } from "@/hooks/useThemeColor";
 import { Feather } from "@expo/vector-icons";
 import React from "react";
 import {
-  Pressable,
   StyleProp,
   StyleSheet,
+  TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native";
@@ -21,7 +21,7 @@ type ValueInputProps = {
   rightLabel?: string;
   increment?: number;
   style?: StyleProp<ViewStyle>;
-  cap?: "top" | "bottom";
+  bg?: themeColors;
 };
 
 export const ValueInput: React.FC<ValueInputProps> = ({
@@ -32,8 +32,9 @@ export const ValueInput: React.FC<ValueInputProps> = ({
   rightLabel = "",
   increment = 50,
   style,
-  cap,
+  bg = "background",
 }) => {
+  const backgroundColor = useThemeColor({}, bg);
   const textColor = useThemeColor({}, "text.2");
 
   const handleIncrement = () => {
@@ -48,7 +49,7 @@ export const ValueInput: React.FC<ValueInputProps> = ({
   };
 
   return (
-    <ThemedView style={[styles.container, style]}>
+    <ThemedView style={[styles.container, style, { backgroundColor }]}>
       <Feather name="dollar-sign" size={18} color={textColor} />
       <CurrencyInput
         placeholder={placeholder}
@@ -72,18 +73,18 @@ export const ValueInput: React.FC<ValueInputProps> = ({
       </ThemedText>
       {controlButtons ? (
         <View style={styles.controls}>
-          <Pressable
+          <TouchableOpacity
             style={styles.budgetButton}
             onPress={() => handleDecrement()}
           >
             <Feather name="minus" size={16} color={textColor} />
-          </Pressable>
-          <Pressable
+          </TouchableOpacity>
+          <TouchableOpacity
             style={styles.budgetButton}
             onPress={() => handleIncrement()}
           >
             <Feather name="plus" size={16} color={textColor} />
-          </Pressable>
+          </TouchableOpacity>
         </View>
       ) : null}
     </ThemedView>
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
     gap: 4,
     borderRadius: 48,
     paddingHorizontal: 16,
-    height: 48,
+    height: 56,
   },
   controls: {
     flexDirection: "row",
@@ -110,13 +111,5 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
-  },
-  capBottom: {
-    borderBottomEndRadius: 8,
-    borderBottomStartRadius: 8,
-  },
-  capTop: {
-    borderTopEndRadius: 8,
-    borderTopStartRadius: 8,
   },
 });

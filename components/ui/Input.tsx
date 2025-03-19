@@ -1,4 +1,4 @@
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { themeColors, useThemeColor } from "@/hooks/useThemeColor";
 import { Feather } from "@expo/vector-icons";
 import { forwardRef } from "react";
 import {
@@ -15,6 +15,7 @@ type InputProps = {
   rightSection?: React.ReactNode;
   iconName?: keyof typeof Feather.glyphMap;
   showActions?: boolean;
+  bg?: themeColors;
 
   cap?: "top" | "bottom";
 } & TextInputProps;
@@ -26,13 +27,14 @@ export const Input = forwardRef<TextInput, InputProps>(
       rightSection,
       iconName = "check",
       showActions = true,
+      bg = "background",
       cap,
       ...rest
     },
     ref
   ) => {
     const textColor = useThemeColor({}, "text.2");
-    const backgroundColor = useThemeColor({}, "background");
+    const backgroundColor = useThemeColor({}, bg);
     const placeholderTextColor = useThemeColor({}, "text.3");
     const iconColor = useThemeColor({}, "primary.100");
 
@@ -72,7 +74,7 @@ export const Input = forwardRef<TextInput, InputProps>(
               ]}
               disabled={!rest.value}
             >
-              <Feather name="shopping-bag" size={16} color="#fff" />
+              <Feather name={iconName} size={16} color="#fff" />
             </Pressable>
           </Animated.View>
         )}

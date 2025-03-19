@@ -112,7 +112,6 @@ const ProdutDetails: React.FC<ProductEntryData> = ({
         style={{
           flex: 1,
         }}
-        cap="top"
       />
 
       <QuantitySelector
@@ -311,9 +310,9 @@ const Sheet: React.FC<SheetProps> = ({
   showSuggestions = true,
 }) => {
   const SHOW_SUGGESTIONS = showSuggestions;
-  const OPEN_HEIGHT = 190;
+  const OPEN_HEIGHT = 200;
   const CLOSED_HEIGHT = 100;
-  const OPEN_HEIGHT_WITHOUT_SUGGESTIONS = 150;
+  const OPEN_HEIGHT_WITHOUT_SUGGESTIONS = 160;
 
   const height = useSharedValue(
     SHOW_SUGGESTIONS ? OPEN_HEIGHT : OPEN_HEIGHT_WITHOUT_SUGGESTIONS

@@ -118,7 +118,7 @@ export default function ListShowScreen() {
         />
       </ThemedView>
       <ThemedView backgroundColor="background.1" style={styles.productEntry}>
-        <ProductEntry currentList={data} showSuggestions />
+        <ProductEntry currentList={data} />
       </ThemedView>
     </ThemedView>
   );
