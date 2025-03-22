@@ -293,6 +293,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
         onChangeText={setProduct}
         onActionClick={handleAddItem}
         cap="bottom"
+
       />
     </Sheet>
   );

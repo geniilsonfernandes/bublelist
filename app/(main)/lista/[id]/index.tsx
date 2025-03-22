@@ -1,3 +1,4 @@
+import { EmptyList } from "@/components/EmptyList";
 import { Product } from "@/components/Product";
 import { ProductEntry } from "@/components/ProductEntry";
 import { Search } from "@/components/Search";
@@ -8,27 +9,19 @@ import {
   Product as ProductType,
   useGetListById,
 } from "@/database/useShoppingList";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import { calculateTotal } from "@/utils/calculateTotal";
 import { Stack, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import Animated, { LinearTransition } from "react-native-reanimated";
 
 export default function ListShowScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data, isLoading } = useGetListById(id);
-  const iconColor = useThemeColor({}, "primary.100");
 
   // Estados
   const [search, setSearch] = useState("");
   const [showEntry, setShowEntry] = useState(true);
-
-  // Cálculo total dos valores da lista
-  const valuesSum = useMemo(
-    () => calculateTotal(data?.products || []),
-    [data?.products]
-  );
 
   // Filtragem dos produtos com base no search
   const filteredProducts = useMemo(() => {
@@ -44,17 +37,14 @@ export default function ListShowScreen() {
     []
   );
 
-  if (isLoading) {
-    return (
-      <ThemedView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={iconColor} />
-      </ThemedView>
-    );
-  }
+  // Cálculo total dos valores da lista
+  const valuesSum = useMemo(
+    () => calculateTotal(data?.products || []),
+    [data?.products]
+  );
 
   return (
-    <ThemedView backgroundColor="background.1" style={styles.screen}>
-      {/* Cabeçalho */}
+    <View style={{ flex: 1 }}>
       <Stack.Screen
         options={{
           title: data?.name,
@@ -65,21 +55,29 @@ export default function ListShowScreen() {
             </View>
           ),
         }}
-      />{" "}
-      <ThemedView style={styles.container}>
-        {/* Barra de pesquisa e ações */}
+      />
+      <View>
         <ScrollView
+          style={styles.actionBar}
           horizontal
           showsHorizontalScrollIndicator={false}
-          style={styles.actionBar}
         >
-          <Search value={search} onChangeText={setSearch} />
+          <Search
+            onFocus={() => setShowEntry(false)}
+            onforceBlur={() => setShowEntry(true)}
+            onBlur={() => setShowEntry(true)}
+            value={search}
+            onChangeText={setSearch}
+          />
           <View style={styles.spacing} />
           <ActionButton icon="filter" label="Ordenar" />
-          <View style={styles.spacing} />
-          <ActionButton icon="share-2" label="Compartilhar" />
         </ScrollView>
-        {/* Lista de produtos */}
+      </View>
+      <View
+        style={{
+          flex: 1,
+        }}
+      >
         <Animated.FlatList
           style={styles.list}
           contentContainerStyle={styles.listContent}
@@ -104,24 +102,24 @@ export default function ListShowScreen() {
             index,
           })}
         />
-
-        {/* Total da compra */}
         <ThemedView style={styles.cartSummary} backgroundColor="background.1">
           <Icon name="shopping-cart" size={18} colorName="text.2" />
           <ThemedText colorName="text.2" type="defaultSemiBold">
             {valuesSum}
           </ThemedText>
         </ThemedView>
-      </ThemedView>
+      </View>
       {/* Entrada de produtos */}
       {showEntry && (
         <ThemedView backgroundColor="background.1" style={styles.productEntry}>
           <ProductEntry currentList={data} showSuggestions />
         </ThemedView>
       )}
-    </ThemedView>
+    </View>
   );
 }
+
+const ActionBar = () => {};
 
 // Botão reutilizável para filtros e ações
 const ActionButton = ({
@@ -135,19 +133,6 @@ const ActionButton = ({
     <Icon name={icon} size={18} colorName="text.2" />
     <ThemedText colorName="text.2" type="default">
       {label}
-    </ThemedText>
-  </ThemedView>
-);
-
-// Componente para lista vazia
-const EmptyList = () => (
-  <ThemedView style={styles.emptyList} backgroundColor="background">
-    <Icon name="inbox" size={48} colorName="text.4" />
-    <ThemedText colorName="text.2" type="defaultSemiBold">
-      Nenhum produto encontrado
-    </ThemedText>
-    <ThemedText colorName="text.5" type="default">
-      Adicione produtos ao carrinho
     </ThemedText>
   </ThemedView>
 );
@@ -174,7 +159,7 @@ const styles = StyleSheet.create({
   },
   actionBar: {
     paddingHorizontal: 16,
-    paddingBottom: 16,
+    paddingVertical: 8,
   },
   spacing: {
     width: 8,
@@ -184,17 +169,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     borderRadius: 24,
-    height: 38,
+    height: 42,
     gap: 8,
     paddingHorizontal: 16,
   },
   list: {
     paddingBottom: 48,
-    borderWidth: 1,
-    borderColor: "red",
   },
   listContent: {
-    flexGrow: 1,
     paddingBottom: 48,
   },
   separator: {
@@ -206,6 +188,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 8,
+    marginVertical: 100,
   },
   cartSummary: {
     position: "absolute",
@@ -221,5 +204,7 @@ const styles = StyleSheet.create({
   },
   productEntry: {
     paddingHorizontal: 16,
+    borderTopEndRadius: 32,
+    borderTopStartRadius: 32,
   },
 });

@@ -72,7 +72,7 @@ export const Colors = {
     danger: "#F96868",
     success: "rgb(87, 206, 87)",
     ...gray,
-    ...avocado,
+    ...primary,
   },
   dark: {
     text: "#F2F2F2",
@@ -104,6 +104,6 @@ export const Colors = {
     danger: "#F96868",
     success: "rgb(87, 206, 87)",
     ...gray,
-    ...avocado,
+    ...primary,
   },
 };

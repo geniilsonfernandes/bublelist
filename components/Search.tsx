@@ -8,7 +8,11 @@ import Animated, {
 } from "react-native-reanimated";
 import { Icon } from "./ui/Icon";
 
-export const Search = forwardRef<TextInput, TextInputProps>((props, ref) => {
+type SearchProps = {
+  onforceBlur?: () => void;
+} & TextInputProps;
+
+export const Search = forwardRef<TextInput, SearchProps>((props, ref) => {
   // Temas
   const textColor = useThemeColor({}, "text.2");
   const backgroundColor = useThemeColor({}, "background.1");
@@ -52,8 +56,14 @@ export const Search = forwardRef<TextInput, TextInputProps>((props, ref) => {
         placeholder="Procurar Lista"
         placeholderTextColor={placeholderColor}
         style={[styles.input, { color: textColor }]}
-        onFocus={() => handleOpen(true)}
-        onBlur={() => handleOpen(false)}
+        onFocus={(e) => {
+          props.onFocus?.(e);
+          handleOpen(true);
+        }}
+        onBlur={(e) => {
+          props.onBlur?.(e);
+          handleOpen(false);
+        }}
         {...props}
       />
 
@@ -61,8 +71,9 @@ export const Search = forwardRef<TextInput, TextInputProps>((props, ref) => {
       {isFocused && (
         <Pressable
           style={[styles.clearButton, { backgroundColor: clearButtonColor }]}
-          onPress={() => {
+          onPress={(e) => {
             handleOpen(false);
+            props.onforceBlur?.();
             props.onChangeText?.("");
           }}
         >
