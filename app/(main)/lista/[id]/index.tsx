@@ -1,19 +1,28 @@
-import { EmptyList } from "@/components/EmptyList";
-import { Product } from "@/components/Product";
+import { PillList } from "@/components/PillList";
 import { ProductEntry } from "@/components/ProductEntry";
 import { Search } from "@/components/Search";
 import { Icon, IconProps } from "@/components/ui/Icon";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
-import {
-  Product as ProductType,
-  useGetListById,
-} from "@/database/useShoppingList";
-import { calculateTotal } from "@/utils/calculateTotal";
+import { useGetListById } from "@/database/useShoppingList";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { calculateTotal, formatValue } from "@/utils/calculateTotal";
 import { Stack, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useMemo, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
-import Animated, { LinearTransition } from "react-native-reanimated";
+import React, { useMemo, useState } from "react";
+import {
+  Pressable,
+  PressableProps,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+
+const OPTIONS = ["Todos", "Marcados", "Desmarcados"] as const;
 
 export default function ListShowScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -22,32 +31,41 @@ export default function ListShowScreen() {
   // Estados
   const [search, setSearch] = useState("");
   const [showEntry, setShowEntry] = useState(true);
+  const [filter, setFilter] = useState<(typeof OPTIONS)[number]>("Todos");
 
   // Filtragem dos produtos com base no search
   const filteredProducts = useMemo(() => {
     if (!data?.products) return [];
-    return data.products.filter((product) =>
-      product.name.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [search, data?.products]);
-
-  // Renderização dos itens da lista
-  const renderList = useCallback(
-    ({ item }: { item: ProductType }) => <Product {...item} />,
-    []
-  );
+    return data.products.filter((product) => {
+      if (search) {
+        return product.name.toLowerCase().includes(search.toLowerCase());
+      }
+      if (filter === "Todos") return true;
+      if (filter === "Marcados") return product.checked;
+      if (filter === "Desmarcados") return !product.checked;
+      return true;
+    });
+  }, [search, data?.products, filter]);
 
   // Cálculo total dos valores da lista
   const valuesSum = useMemo(
-    () => calculateTotal(data?.products || []),
+    () => ({
+      total: calculateTotal(data?.products || []),
+      formated: formatValue(calculateTotal(data?.products || [])),
+    }),
     [data?.products]
   );
+
+  const budget = useMemo(() => {
+    if (!data?.budget) return "0";
+    return formatValue(data.budget - valuesSum.total);
+  }, [data?.budget, valuesSum.total]);
 
   return (
     <View style={{ flex: 1 }}>
       <Stack.Screen
         options={{
-          title: data?.name,
+          title: "",
           headerShown: true,
           headerRight: () => (
             <View style={styles.headerIcons}>
@@ -56,29 +74,61 @@ export default function ListShowScreen() {
           ),
         }}
       />
+      <View
+        style={{
+          paddingHorizontal: 16,
+        }}
+      >
+        <ThemedText type="title.3">{data?.name}</ThemedText>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <ThemedText type="body" colorName="text.5">
+            Orçamento: {formatValue(data?.budget || 0)} / {budget}
+          </ThemedText>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            <Icon name="shopping-cart" size={14} colorName="text.2" />
+            <ThemedText type="body" colorName="text.5">
+              Total: {valuesSum.formated}
+            </ThemedText>
+          </View>
+        </View>
+      </View>
+
       <View>
         <ScrollView
           style={styles.actionBar}
           horizontal
           showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 16 }}
         >
           <Search
             onFocus={() => setShowEntry(false)}
+            onForceFocus={() => setShowEntry(false)}
             onforceBlur={() => setShowEntry(true)}
             onBlur={() => setShowEntry(true)}
             value={search}
             onChangeText={setSearch}
           />
-          <View style={styles.spacing} />
-          <ActionButton icon="filter" label="Ordenar" />
+          {OPTIONS.map((value) => (
+            <ActionButton
+              key={value}
+              label={value}
+              active={value === filter}
+              onPress={() => setFilter(value)}
+              style={{
+                marginLeft: 8,
+              }}
+            />
+          ))}
         </ScrollView>
       </View>
+
       <View
         style={{
           flex: 1,
         }}
       >
-        <Animated.FlatList
+        <PillList data={filteredProducts} />
+        {/* <Animated.FlatList
           style={styles.list}
           contentContainerStyle={styles.listContent}
           data={filteredProducts}
@@ -101,41 +151,74 @@ export default function ListShowScreen() {
             offset: 50 * index,
             index,
           })}
-        />
-        <ThemedView style={styles.cartSummary} backgroundColor="background.1">
-          <Icon name="shopping-cart" size={18} colorName="text.2" />
-          <ThemedText colorName="text.2" type="defaultSemiBold">
-            {valuesSum}
-          </ThemedText>
-        </ThemedView>
+        /> */}
       </View>
       {/* Entrada de produtos */}
       {showEntry && (
         <ThemedView backgroundColor="background.1" style={styles.productEntry}>
-          <ProductEntry currentList={data} showSuggestions />
+          <ProductEntry currentList={data} />
         </ThemedView>
       )}
     </View>
   );
 }
 
-const ActionBar = () => {};
+const AnimetedPressable = Animated.createAnimatedComponent(Pressable);
 
 // Botão reutilizável para filtros e ações
-const ActionButton = ({
-  icon = "filter",
-  label,
-}: {
-  icon: IconProps["name"];
+
+type ActionButtonProps = {
+  icon?: IconProps["name"];
   label: string;
-}) => (
-  <ThemedView style={styles.actionButton} backgroundColor="background.1">
-    <Icon name={icon} size={18} colorName="text.2" />
-    <ThemedText colorName="text.2" type="default">
-      {label}
-    </ThemedText>
-  </ThemedView>
-);
+  active?: boolean;
+} & PressableProps;
+
+const ActionButton: React.FC<ActionButtonProps> = ({
+  icon,
+  label,
+  active,
+  style,
+  ...props
+}) => {
+  const backgroundColor = useThemeColor({}, "background.1");
+  const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
+  return (
+    <AnimetedPressable
+      style={[style, animatedStyle]}
+      onPressIn={() => {
+        scale.value = withTiming(0.9);
+      }}
+      onPressOut={() => {
+        scale.value = withTiming(1);
+      }}
+      {...props}
+    >
+      <ThemedView
+        style={[
+          [styles.actionButton],
+          {
+            opacity: active ? 1 : 0.4,
+            backgroundColor,
+          },
+        ]}
+      >
+        {icon ? <Icon name={icon} size={16} colorName="text.2" /> : null}
+        <ThemedText
+          colorName="text.2"
+          style={styles.ActionButtonLabel}
+          type="defaultSemiBold"
+        >
+          {label}
+        </ThemedText>
+      </ThemedView>
+    </AnimetedPressable>
+  );
+};
 
 const styles = StyleSheet.create({
   screen: {
@@ -158,8 +241,8 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   actionBar: {
-    paddingHorizontal: 16,
     paddingVertical: 8,
+    paddingTop: 16,
   },
   spacing: {
     width: 8,
@@ -169,9 +252,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     borderRadius: 24,
-    height: 42,
+    height: 38,
     gap: 8,
     paddingHorizontal: 16,
+  },
+  ActionButtonLabel: {
+    fontSize: 16,
+    fontWeight: "400",
   },
   list: {
     paddingBottom: 48,
@@ -191,9 +278,6 @@ const styles = StyleSheet.create({
     marginVertical: 100,
   },
   cartSummary: {
-    position: "absolute",
-    bottom: 16,
-    right: 10,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -203,7 +287,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   productEntry: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
     borderTopEndRadius: 32,
     borderTopStartRadius: 32,
   },

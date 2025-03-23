@@ -102,7 +102,7 @@ export const Colors = {
     tabIconDefault: "#9BA1A6",
     tabIconSelected: tintColorDark,
     danger: "#F96868",
-    success: "rgb(87, 206, 87)",
+    success: "rgb(12, 100, 12)",
     ...gray,
     ...primary,
   },

@@ -1,7 +1,7 @@
 import { Product } from "@/database/useShoppingList";
 
 export const formatValue = (value: number) => {
-  if (!value) return "";
+  if (!value) return "0";
   return value.toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL",
@@ -15,5 +15,5 @@ export const calculateTotal = (products: Product[]) => {
     return acc + product.value * product.quantity;
   }, 0);
 
-  return formatValue(total);
+  return total;
 };

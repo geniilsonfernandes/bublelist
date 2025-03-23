@@ -17,6 +17,7 @@ export type ThemedTextProps = TextProps & {
     | "title.2"
     | "title.3";
   colorName?: keyof typeof Colors.light;
+  opacity?: number;
 };
 
 export function ThemedText({
@@ -25,6 +26,7 @@ export function ThemedText({
   darkColor,
   type = "default",
   colorName = "text",
+  opacity = 1,
   ...rest
 }: ThemedTextProps) {
   const color = useThemeColor(
@@ -45,6 +47,7 @@ export function ThemedText({
         type === "link" ? styles.link : undefined,
         type === "body" ? styles.body : undefined,
         style,
+        { opacity },
       ]}
       {...rest}
     />

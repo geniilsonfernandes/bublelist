@@ -3,18 +3,11 @@
 
 
 TODO:
+ cria o menu de configurações de lista
 
-HOME: 
-
-[] criar rota para editar lista
-[] criar sheet para apagar lista
-[] criar sheet para compartilhar lista
-
-
-LISTA:
-MELHORAR O CARREGAMENTO DA LISTA
-
-
-CONFINGS:
-APENAS O DE APAGAR DADOS,
-E AS INFOS DO APP
+o que falta para a list de compras ficar pronta:
+    [] configuracao de ordernação
+    [x] configuracao de filtro
+    [FF] configuracao de categorias
+    [x] opção de lista ou bullets
+    [ ] mudar a busca para a barra de baixo, quando clicar na lupa abrir a busca 

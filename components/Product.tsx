@@ -134,6 +134,44 @@ export const Product: React.FC<ProductProps> = React.memo(
   }
 );
 
+export const ProductBullet: React.FC<ProductProps> = ({
+  name,
+  quantity,
+  value,
+  checked,
+}) => {
+  const valueFormatted = useMemo(() => {
+    return formatValue(value * quantity);
+  }, [value]);
+  return (
+    <ThemedView
+      backgroundColor={checked ? "success" : "background.1"}
+      style={{
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 50,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
+      }}
+    >
+      <ThemedText colorName="text.1" type="defaultSemiBold">
+        {name}
+      </ThemedText>
+      {quantity > 1 ? (
+        <ThemedText colorName="text" opacity={0.7} type="body">
+          {quantity > 1 ? `${quantity}` : ""}
+        </ThemedText>
+      ) : null}
+      {valueFormatted ? (
+        <ThemedText colorName="text" opacity={0.7} type="body">
+          {valueFormatted}
+        </ThemedText>
+      ) : null}
+    </ThemedView>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",

@@ -26,7 +26,7 @@ import { Suggestions } from "./Suggestions";
 import { Input } from "./ui/Input";
 import { ThemedView } from "./ui/ThemedView";
 
-const PRODUCT_DATA = [
+export const PRODUCT_DATA = [
   "Arroz",
   "Feijão",
   "Macarrão",

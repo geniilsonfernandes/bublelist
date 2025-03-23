@@ -37,7 +37,7 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
         style={({ pressed }) => [
           styles.button,
           { backgroundColor },
-          styles.capRight,
+          styles.capLeft,
           pressed && { opacity: 0.5 },
         ]}
         onPress={handleDecrease}
@@ -66,7 +66,7 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
         style={({ pressed }) => [
           styles.button,
           { backgroundColor },
-          styles.capLeft,
+          styles.capRight,
           pressed && { opacity: 0.5 },
         ]}
         onPress={handleIncrease}
@@ -96,15 +96,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: 38,
     height: 48,
-    borderRadius: 16,
+    borderRadius: 8,
     backgroundColor: "#5B5B5B",
   },
   capLeft: {
-    borderTopLeftRadius: 8,
-    borderBottomLeftRadius: 8,
+    borderTopLeftRadius: 16,
+    borderBottomLeftRadius: 16,
   },
   capRight: {
-    borderTopRightRadius: 8,
-    borderBottomRightRadius: 8,
+    borderTopRightRadius: 24,
+    borderBottomRightRadius: 16,
   },
 });

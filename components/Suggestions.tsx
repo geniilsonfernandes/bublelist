@@ -1,7 +1,11 @@
 import * as Haptics from "expo-haptics";
 import { useState } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
-import Animated, { Easing, FadeIn } from "react-native-reanimated";
+import Animated, {
+  Easing,
+  FadeIn,
+  LinearTransition,
+} from "react-native-reanimated";
 import { Chip } from "./Chip";
 
 type SuggestionsProps = {
@@ -65,19 +69,16 @@ export const Suggestions: React.FC<SuggestionsProps> = ({
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           keyboardShouldPersistTaps="always"
+          layout={LinearTransition}
           keyExtractor={(item) => item}
           ItemSeparatorComponent={() => <View style={{ width: 4 }} />}
           data={suggestions}
           renderItem={({ item, index }) => (
-            <Animated.View
-              entering={FadeIn.delay(index * 10)
-                .duration(300)
-                .easing(Easing.inOut(Easing.quad))}
-            >
+            <View>
               <TouchableOpacity onPress={() => handleSelect(item)}>
                 <Chip label={item} />
               </TouchableOpacity>
-            </Animated.View>
+            </View>
           )}
         />
       )}
@@ -86,7 +87,6 @@ export const Suggestions: React.FC<SuggestionsProps> = ({
 };
 
 const styles = StyleSheet.create({
-
   button: {
     borderRadius: 5,
     alignItems: "center",

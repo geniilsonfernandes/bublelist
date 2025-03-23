@@ -10,6 +10,7 @@ import { Icon } from "./ui/Icon";
 
 type SearchProps = {
   onforceBlur?: () => void;
+  onForceFocus?: () => void;
 } & TextInputProps;
 
 export const Search = forwardRef<TextInput, SearchProps>((props, ref) => {
@@ -24,15 +25,16 @@ export const Search = forwardRef<TextInput, SearchProps>((props, ref) => {
   const [inputValue, setInputValue] = useState("");
 
   // Animação
-  const width = useSharedValue(42);
+  const width = useSharedValue(38);
   const animatedStyle = useAnimatedStyle(() => ({
     width: width.value,
   }));
 
   // Função para abrir/fechar o input
   const handleOpen = (open: boolean) => {
-    width.value = withTiming(open ? 300 : 42);
+    width.value = withTiming(open ? 300 : 38);
     setIsFocused(open);
+    props.onForceFocus?.();
     if (!open) setInputValue(""); // Limpa o input ao fechar
   };
 
@@ -87,29 +89,32 @@ export const Search = forwardRef<TextInput, SearchProps>((props, ref) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    alignItems: "center",
+
     borderRadius: 28,
-    height: 42,
-    width: 42,
+    height: 38,
+    alignItems: "center",
+    paddingRight: 4,
     overflow: "hidden",
+
+    backgroundColor: "blue",
   },
   iconButton: {
-    height: 42,
-    width: 42,
+    height: 38,
+    width: 38,
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 16,
   },
   input: {
     flex: 1,
     fontSize: 16,
-    height: 42,
   },
   clearButton: {
     height: 32,
     width: 32,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "red",
     borderRadius: 16,
-    marginRight: 8,
   },
 });
