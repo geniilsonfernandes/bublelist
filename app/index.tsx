@@ -1,5 +1,4 @@
 import { ListCard } from "@/components/ListCard";
-import { Search } from "@/components/Search";
 import { DeleteListSheet } from "@/components/sheets/DeleteListSheet";
 import { SettingsSheet } from "@/components/sheets/SettingsSheet";
 import { ShareListSheet } from "@/components/sheets/ShareListSheet";
@@ -11,27 +10,18 @@ import { List, useGetList } from "@/database/useShoppingList";
 import { useKeyboard } from "@/hooks/useKeyboard";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useRouter } from "expo-router";
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { FlatList, StatusBar, StyleSheet, View } from "react-native";
 
 export default function HomeScreen() {
   const keyboardVisible = useKeyboard();
-  const [query, setQuery] = useState("");
   const [selectedList, setSelectedList] = useState<List | null>(null);
   const router = useRouter();
   const { data } = useGetList();
 
-  const filteredLists = useMemo(() => {
-    return data?.filter((list) =>
-      list.name.toLowerCase().includes(query.toLowerCase())
-    );
-  }, [data, query]);
-
   const sheetSettingsRef = useRef<BottomSheet>();
   const sheetDeleteListRef = useRef<BottomSheet>();
   const sheetShareListRef = useRef<BottomSheet>();
-
-  console.log("HomeScreen");
 
   return (
     <ThemedView colorName="background" style={styles.container}>
@@ -60,11 +50,10 @@ export default function HomeScreen() {
             onPress={() => sheetSettingsRef.current?.snapToIndex(0)}
           />
         </View>
-        <Search value={query} onChangeText={setQuery} />
       </View>
       <FlatList
         contentContainerStyle={styles.list}
-        data={filteredLists}
+        data={data}
         ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
         renderItem={({ item }) => (
           <ListCard

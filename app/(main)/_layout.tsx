@@ -56,6 +56,13 @@ export default function RootLayout() {
           headerTitle: "Exportar dados",
         }}
       />
+      <Stack.Screen
+        name="settings/list"
+        options={{
+          headerTitle: "Configurações de listas",
+          animation: "slide_from_right",
+        }}
+      />
     </Stack>
   );
 }

@@ -8,7 +8,7 @@ import { ThemedView } from "@/components/ui/ThemedView";
 import { useGetListById } from "@/database/useShoppingList";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { calculateTotal, formatValue } from "@/utils/calculateTotal";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
   Pressable,
@@ -28,6 +28,7 @@ const OPTIONS = ["Todos", "Marcados", "Desmarcados"] as const;
 export default function ListShowScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data, isLoading } = useGetListById(id);
+  const router = useRouter();
 
   // Estados
   const [search, setSearch] = useState("");
@@ -69,9 +70,14 @@ export default function ListShowScreen() {
           title: "",
           headerShown: true,
           headerRight: () => (
-            <View style={styles.headerIcons}>
-              <Icon name="menu" size={18} />
-            </View>
+            <Pressable
+              onPress={() => {
+                router.push(`/(main)/settings/list`);
+              }}
+              style={styles.headerIcons}
+            >
+              <Icon name="more-vertical" size={18} />
+            </Pressable>
           ),
         }}
       />

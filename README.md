@@ -7,7 +7,9 @@ TODO:
 
 o que falta para a list de compras ficar pronta:
     [] configuracao de ordernação
-    [x] configuracao de filtro
-    [FF] configuracao de categorias
-    [x] opção de lista ou bullets
-    [ ] mudar a busca para a barra de baixo, quando clicar na lupa abrir a busca 
+    [] mostrar o total da lista
+    [] mostrar a quantidade
+    [] mostrar o total de cada produto
+    [] mostrar sugestoes 
+
+

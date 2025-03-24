@@ -15,6 +15,7 @@ import { Modals } from "@/components/Modals";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   configureReanimatedLogger,
@@ -57,34 +58,36 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
-          <Stack
-            screenOptions={{
-              headerShown: false,
-            }}
+        <BottomSheetModalProvider>
+          <ThemeProvider
+            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
           >
-            {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
-            <Stack.Screen
-              name="(main)"
-              options={{
+            <Stack
+              screenOptions={{
                 headerShown: false,
-                animation: "fade",
               }}
-            />
-            <Stack.Screen
-              name="index"
-              options={{
-                animation: "fade_from_bottom",
-              }}
-            />
+            >
+              {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+              <Stack.Screen
+                name="(main)"
+                options={{
+                  headerShown: false,
+                  animation: "fade",
+                }}
+              />
+              <Stack.Screen
+                name="index"
+                options={{
+                  animation: "fade_from_bottom",
+                }}
+              />
 
-            <Stack.Screen name="+not-found" />
-          </Stack>
-          <Modals />
-          <StatusBar style="auto" />
-        </ThemeProvider>
+              <Stack.Screen name="+not-found" />
+            </Stack>
+            <Modals />
+            <StatusBar style="auto" />
+          </ThemeProvider>
+        </BottomSheetModalProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>
   );
