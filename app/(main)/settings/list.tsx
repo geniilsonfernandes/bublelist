@@ -2,7 +2,7 @@ import { Icon } from "@/components/ui/Icon";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
 import { Colors } from "@/constants/Colors";
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { themeColors, useThemeColor } from "@/hooks/useThemeColor";
 import {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
@@ -18,12 +18,14 @@ import {
   View,
   ViewStyle,
 } from "react-native";
+import Animated, { BounceIn } from "react-native-reanimated";
 
 type SettingsButtonProps = {
   label: string | React.ReactNode;
   rightComponent?: React.ReactNode;
   pr?: number;
   onPress?: () => void;
+  bg?: themeColors;
 };
 
 const SettingsButton: React.FC<SettingsButtonProps> = ({
@@ -31,8 +33,9 @@ const SettingsButton: React.FC<SettingsButtonProps> = ({
   rightComponent,
   pr,
   onPress,
+  bg = "background.1",
 }) => {
-  const backgroundColor = useThemeColor({}, "background.1");
+  const backgroundColor = useThemeColor({}, bg);
   const styles: StyleProp<ViewStyle> = {
     paddingRight: pr,
   };
@@ -65,12 +68,19 @@ const SettingsButton: React.FC<SettingsButtonProps> = ({
 export default function SettingsList() {
   const backgroundColorSheet = useThemeColor({}, "background.1");
   const sheet = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ["30%"], []);
+  const snapPoints = useMemo(() => ["35%"], []);
   const [settings, setSettings] = useState({
     showQuantity: true,
     showTotal: true,
     showSuggestions: false,
+    orderBy: "date",
   });
+
+  const orderByOptions = [
+    { label: "Recentes", value: "date" },
+    { label: "Quantidade", value: "quantity" },
+    { label: "Valor", value: "value" },
+  ];
 
   const renderBackdrop = useCallback(
     (props: BottomSheetBackdropProps) => (
@@ -114,7 +124,7 @@ export default function SettingsList() {
           <ThemedText type="defaultSemiBold">
             Ordenar por:{" "}
             <ThemedText type="body" colorName="primary.200">
-              {settings.showQuantity ? "Quantidade" : "Valor"}
+              {orderByOptions.find((o) => o.value === settings.orderBy)?.label}
             </ThemedText>
           </ThemedText>
         }
@@ -159,6 +169,7 @@ export default function SettingsList() {
           />
         }
       />
+
       <BottomSheetModal
         ref={sheet}
         index={0}
@@ -181,38 +192,72 @@ export default function SettingsList() {
           >
             <ThemedText type="defaultSemiBold">Ordenar por</ThemedText>
           </View>
-          <ThemedView
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 8,
-              padding: 16,
-              height: 56,
-              borderRadius: 8,
-            }}
-            backgroundColor="background.2"
-          >
-            <ThemedText type="defaultSemiBold">Quantidade</ThemedText>
-            <ThemedView
-              borderColor="background.5"
-              bg="background.2"
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: 8,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Icon name="check" size={18} colorName="text.5" />
-            </ThemedView>
-          </ThemedView>
+          <View style={{ gap: 8 }}>
+            {orderByOptions.map((option) => (
+              <SettingsButton
+                onPress={() => {
+                  setSettings({ ...settings, orderBy: option.value });
+                }}
+                key={option.value}
+                bg="background.2"
+                label={option.label}
+                rightComponent={
+                  <CheckBox
+                    value={settings.orderBy === option.value}
+                    onChange={(value) => {
+                      if (value) {
+                        setSettings({ ...settings, orderBy: option.value });
+                      }
+                    }}
+                  />
+                }
+              />
+            ))}
+          </View>
         </BottomSheetScrollView>
       </BottomSheetModal>
     </View>
   );
 }
+
+type CheckBoxProps = {
+  value?: boolean;
+  onChange?: (value: boolean) => void;
+};
+
+const CheckBox: React.FC<CheckBoxProps> = ({ onChange, value }) => {
+  return (
+    <Pressable
+      onPress={() => {
+        onChange?.(!value);
+      }}
+      style={({ pressed }) => [
+        {
+          opacity: pressed ? 0.5 : 1,
+          transform: [{ scale: pressed ? 0.95 : 1 }],
+        },
+      ]}
+    >
+      <ThemedView
+        borderColor={value ? "primary.100" : "background.3"}
+        bg={value ? "primary.100" : "background.2"}
+        style={{
+          width: 28,
+          height: 28,
+          borderRadius: 8,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {value ? (
+          <Animated.View entering={BounceIn.duration(300)}>
+            <Icon name="check" size={16} colorName="text.1" />
+          </Animated.View>
+        ) : null}
+      </ThemedView>
+    </Pressable>
+  );
+};
 
 const styles = StyleSheet.create({
   separator: { height: 1 },
