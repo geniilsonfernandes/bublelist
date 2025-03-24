@@ -6,16 +6,14 @@ import BottomSheet, {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { forwardRef, useCallback, useMemo } from "react";
-import { View } from "react-native";
 import { Header } from "../Header";
-import { Button } from "../ui/Button";
 
 type DetailsListSheetProps = {
   onClose?: () => void;
   list: List | null;
 };
 
-export const DetailsListSheet = forwardRef<BottomSheet, DetailsListSheetProps>(
+export const SettingsListSheet = forwardRef<BottomSheet, DetailsListSheetProps>(
   ({ onClose, list }, ref) => {
     const { mutate: deleteList, isPending } = useDeleteList();
     const backgroundColorSheet = useThemeColor({}, "background.1");
@@ -61,24 +59,7 @@ export const DetailsListSheet = forwardRef<BottomSheet, DetailsListSheetProps>(
       >
         <BottomSheetScrollView style={{ paddingHorizontal: 16 }}>
           <Header title={list?.name || ""} />
-          <View style={{ gap: 8, paddingTop: 48 }}>
-            <Button
-              variant="danger"
-              isLoading={isPending}
-              onPress={handleDelete}
-            >
-              Deletar lista
-            </Button>
-            <Button
-              onPress={() => {
-                onClose?.();
-              }}
-              variant="outline"
-              cap="top"
-            >
-              Cancelar
-            </Button>
-          </View>
+        
         </BottomSheetScrollView>
       </BottomSheet>
     );

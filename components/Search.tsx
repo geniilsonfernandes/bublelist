@@ -35,7 +35,10 @@ export const Search = forwardRef<TextInput, SearchProps>((props, ref) => {
     width.value = withTiming(open ? 300 : 38);
     setIsFocused(open);
     props.onForceFocus?.();
-    if (!open) setInputValue(""); // Limpa o input ao fechar
+    if (!open) {
+      setInputValue("");
+      props.onforceBlur?.();
+    } // Limpa o input ao fechar
   };
 
   return (

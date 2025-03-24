@@ -1,3 +1,4 @@
+import { EmptyList } from "@/components/EmptyList";
 import { PillList } from "@/components/PillList";
 import { ProductEntry } from "@/components/ProductEntry";
 import { Search } from "@/components/Search";
@@ -127,7 +128,7 @@ export default function ListShowScreen() {
           flex: 1,
         }}
       >
-        <PillList data={filteredProducts} />
+        <PillList data={filteredProducts} ListEmptyComponent={<EmptyList />} />
         {/* <Animated.FlatList
           style={styles.list}
           contentContainerStyle={styles.listContent}
