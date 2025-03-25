@@ -55,16 +55,14 @@ export const Suggestions: React.FC<SuggestionsProps> = ({
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           keyboardShouldPersistTaps="always"
+          contentContainerStyle={{ paddingHorizontal: 8, gap: 8 }}
           // layout={LinearTransition}
           keyExtractor={(item) => item}
-          ItemSeparatorComponent={() => <View style={{ width: 4 }} />}
           data={suggestions}
           renderItem={({ item, index }) => (
-            <View>
-              <TouchableOpacity onPress={() => handleSelect(item)}>
-                <Chip label={item} />
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity onPress={() => handleSelect(item)}>
+              <Chip label={item} />
+            </TouchableOpacity>
           )}
         />
       )}

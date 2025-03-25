@@ -320,9 +320,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
       }}
     >
       {showSuggestions && !product ? (
-        <View style={{}}>
-          <Suggestions onSelect={findProductInList} suggestions={filterData} />
-        </View>
+        <Suggestions onSelect={findProductInList} suggestions={filterData} />
       ) : null}
       <ThemedView
         backgroundColor="background.1"
