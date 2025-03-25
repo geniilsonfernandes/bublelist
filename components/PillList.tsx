@@ -6,6 +6,7 @@ import {
   useDeleteProduct,
 } from "@/database/useShoppingList";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { useConfigStore } from "@/store/useConfigStore";
 import { useModals } from "@/store/useModals";
 import { formatValue } from "@/utils/calculateTotal";
 import { useMemo } from "react";
@@ -72,6 +73,7 @@ export const ProductBullet: React.FC<ProductProps> = ({
         -maxDrag
       );
       translateX.value = clampedX;
+
       progress.value = clampedX / maxDrag;
     })
     .onEnd(() => {
@@ -101,7 +103,7 @@ export const ProductBullet: React.FC<ProductProps> = ({
           onLongPress={onLongPress}
           hitSlop={10}
           onPressIn={() => {
-            scale.value = withTiming(0.95);
+            scale.value = withTiming(0.85);
           }}
           onPressOut={() => {
             scale.value = withTiming(1);
@@ -134,7 +136,7 @@ type ProductContentProps = {
   style?: StyleProp<ViewStyle>;
 };
 
-const ProductContent: React.FC<ProductContentProps> = ({
+export const ProductContent: React.FC<ProductContentProps> = ({
   name,
   quantity,
   valueFormatted,
@@ -163,7 +165,12 @@ const ProductContent: React.FC<ProductContentProps> = ({
       </ThemedText>
 
       {quantity > 1 && showQuantity && (
-        <ThemedText colorName="text" opacity={0.7} type="body">
+        <ThemedText
+          colorName="text"
+          style={styles.valueText}
+          opacity={0.7}
+          type="defaultSemiBold"
+        >
           {quantity}
         </ThemedText>
       )}
@@ -172,8 +179,8 @@ const ProductContent: React.FC<ProductContentProps> = ({
         <ThemedText
           colorName="text"
           style={styles.valueText}
+          type="defaultSemiBold"
           opacity={0.7}
-          type="body"
         >
           {valueFormatted}
         </ThemedText>
@@ -192,12 +199,13 @@ export const PillList: React.FC<PillListProps> = ({
   data,
   ListEmptyComponent,
 }) => {
+  const { show_quantity, show_value } = useConfigStore();
   const { mutate: deleteProduct } = useDeleteProduct();
   const { mutate: checkProduct } = useCheckProduct();
   const { setSelectedProduct } = useModals();
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} removeClippedSubviews>
       <View style={styles.pillList}>
         {data.length === 0 && ListEmptyComponent}
         {data.map((product) => (
@@ -209,8 +217,8 @@ export const PillList: React.FC<PillListProps> = ({
               checkProduct({ id: product.id, checked: !product.checked })
             }
             onLongPress={() => setSelectedProduct(product)}
-            showQuantity
-            showValue
+            showQuantity={show_quantity}
+            showValue={show_value}
           />
         ))}
       </View>
@@ -227,13 +235,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     paddingHorizontal: 16,
-    paddingVertical: 16,
+    paddingBottom: 8,
+
     gap: 8,
   },
   pill: {
     paddingHorizontal: 13,
-    height: 38,
-    borderRadius: 50,
+    height: 40,
+    borderRadius: 8,
     flexDirection: "row",
     alignItems: "center",
     gap: 6,

@@ -23,21 +23,22 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   size = "md",
   ...props
 }) => {
-  const backgroundColor = useThemeColor({}, "background.2");
-  const borderColor = useThemeColor({}, "background.4");
+  const backgroundColor = useThemeColor({}, "background.1");
+  const borderColor = useThemeColor({}, "background.1");
 
   const sizeStyles: StyleProp<ViewStyle> = [
-    size === "sm" && { width: 32, height: 32 },
-    size === "md" && { width: 40, height: 40 },
-    size === "lg" && { width: 48, height: 48 },
+    size === "sm" && { height: 32 },
+    size === "md" && { height: 40 },
+    size === "lg" && { height: 48 },
   ];
-
 
   const variantStyles: StyleProp<ViewStyle> = [
     variant === "outline" && {
       borderWidth: 1,
       borderColor,
     },
+    variant === "danger" && { backgroundColor: "#FF0000" },
+    variant === "solid" && { backgroundColor },
   ];
 
   return (
@@ -45,14 +46,13 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
       style={({ pressed }) => [
         {
           ...styles.actionButton,
-
           opacity: pressed ? 0.5 : 1,
 
           transform: [{ scale: pressed ? 0.95 : 1 }],
         },
-        style,
         variantStyles,
         sizeStyles,
+        style,
       ]}
       {...props}
     >
@@ -63,10 +63,9 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
 
 const styles = StyleSheet.create({
   actionButton: {
-    width: 40,
-    height: 40,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 16,
+    borderRadius: 8,
+    paddingHorizontal: 8,
   },
 });

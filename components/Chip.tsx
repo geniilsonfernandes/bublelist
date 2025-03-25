@@ -15,10 +15,7 @@ export const Chip: React.FC<ChipProps> = ({ label, active }) => {
       colorName={active ? "background.3" : "background.1"}
       style={styles.container}
     >
-      <ThemedText
-        colorName={active ? "text.1" : "text.4"}
-        style={{ fontSize: 16 }}
-      >
+      <ThemedText colorName={active ? "text.1" : "text.4"} style={styles.label}>
         {label}
       </ThemedText>
     </ThemedView>
@@ -30,7 +27,9 @@ const styles = StyleSheet.create({
     padding: 2,
     paddingHorizontal: 8,
     borderRadius: 8,
-    borderBottomEndRadius: 4,
-    borderBottomStartRadius: 4,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: "500",
   },
 });

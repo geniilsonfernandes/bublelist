@@ -7,11 +7,13 @@ import { Pressable, StyleSheet, TextInput, View } from "react-native";
 type QuantitySelectorProps = {
   quantity: number | null;
   onChangeQuantity: (value: number) => void;
+  size?: "sm" | "md" | "lg";
 };
 
 export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
   quantity,
   onChangeQuantity,
+  size = "md",
 }) => {
   const backgroundColor = useThemeColor({}, "background.2");
   const color = useThemeColor({}, "text");
@@ -31,13 +33,18 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
     onChangeQuantity(isNaN(numericValue) ? 0 : numericValue);
   };
 
+  const height = {
+    sm: 42,
+    md: 56,
+    lg: 64,
+  } as Record<"sm" | "md" | "lg", number>;
+
   return (
     <View style={styles.container}>
       <Pressable
         style={({ pressed }) => [
           styles.button,
-          { backgroundColor },
-          styles.capLeft,
+          { backgroundColor, height: height[size] },
           pressed && { opacity: 0.5 },
         ]}
         onPress={handleDecrease}
@@ -51,11 +58,12 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
         textContentType="none"
         autoComplete="off"
         style={[
+          styles.input,
           {
             color,
             backgroundColor,
+            height: height[size],
           },
-          styles.input,
         ]}
         value={String(quantity)}
         onChangeText={handleChangeText}
@@ -65,8 +73,7 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
       <Pressable
         style={({ pressed }) => [
           styles.button,
-          { backgroundColor },
-          styles.capRight,
+          { backgroundColor, height: height[size] },
           pressed && { opacity: 0.5 },
         ]}
         onPress={handleIncrease}

@@ -11,8 +11,9 @@ export const formatValue = (value: number) => {
 export const calculateTotal = (products: Product[]) => {
   const total = products.reduce((acc, product) => {
     if (!product.value || !product.quantity || !product.checked) return acc;
-    const sum = acc + product.value * product.quantity;
-    return acc + product.value * product.quantity;
+
+    const sum = product.value * product.quantity;
+    return acc + sum;
   }, 0);
 
   return total;

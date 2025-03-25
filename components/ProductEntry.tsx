@@ -23,7 +23,9 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { Suggestions } from "./Suggestions";
+import { Icon } from "./ui/Icon";
 import { Input } from "./ui/Input";
+import { ThemedText } from "./ui/ThemedText";
 import { ThemedView } from "./ui/ThemedView";
 
 export const PRODUCT_DATA = [
@@ -112,10 +114,12 @@ const ProdutDetails: React.FC<ProductEntryData> = ({
         style={{
           flex: 1,
         }}
+        size="sm"
       />
 
       <QuantitySelector
         quantity={quantity}
+        size="sm"
         onChangeQuantity={onChangeQuantity}
       />
     </Animated.View>
@@ -158,10 +162,56 @@ export const ProductEditEntry = () => {
   }, [selectedProduct]);
 
   return (
-    <View style={styles.container}>
-      {selectedProduct && (
-        <Suggestions onSelect={() => {}} suggestions={[selectedProduct.name]} />
-      )}
+    <View
+      style={[
+        styles.container,
+        {
+          gap: 8,
+        },
+      ]}
+    >
+      <ThemedView
+        style={{
+          flexDirection: "row",
+          padding: 16,
+          alignItems: "center",
+          gap: 8,
+          borderRadius: 8,
+          marginBottom: 16,
+        }}
+        bg="background.1"
+      >
+        <Icon name="shopping-bag" size={24} colorName="text.2" />
+        <ThemedText type="title.3">{selectedProduct?.name}</ThemedText>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            gap: 16,
+          }}
+        >
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              gap: 8,
+              alignItems: "center",
+            }}
+          >
+            <Icon name="shopping-cart" size={16} colorName="text.4" />
+            <ThemedText colorName="text.4" type="defaultSemiBold">
+              {selectedProduct?.quantity}
+            </ThemedText>
+          </View>
+
+          <ThemedText colorName="text" type="defaultSemiBold" opacity={0.7}>
+            {selectedProduct?.value && formatValue(selectedProduct.value)}
+          </ThemedText>
+        </View>
+      </ThemedView>
 
       <ProdutDetails
         value={value}
@@ -263,39 +313,45 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
   };
 
   return (
-    <Sheet
-      showSuggestions={showSuggestions}
-      hiddenContent={
-        <View
-          style={{
-            gap: 8,
-          }}
-        >
-          {showSuggestions && (
-            <Suggestions
-              onSelect={findProductInList}
-              suggestions={filterData}
-            />
-          )}
-
-          <ProdutDetails
-            value={value}
-            quantity={quantity}
-            onChangeQuantity={setQuantity}
-            onChangeValue={setValue}
-          />
-        </View>
-      }
+    <Animated.View
+      entering={FadeInDown.duration(200)}
+      style={{
+        gap: 8,
+      }}
     >
-      <Input
-        placeholder="10 Laranjas"
-        value={product}
-        onChangeText={setProduct}
-        onActionClick={handleAddItem}
-        cap="bottom"
-
-      />
-    </Sheet>
+      {showSuggestions && !product ? (
+        <View style={{}}>
+          <Suggestions onSelect={findProductInList} suggestions={filterData} />
+        </View>
+      ) : null}
+      <ThemedView
+        backgroundColor="background.1"
+        style={{
+          paddingHorizontal: 8,
+          borderTopRightRadius: 8,
+          borderTopLeftRadius: 8,
+        }}
+      >
+        <Sheet
+          hiddenContent={
+            <ProdutDetails
+              value={value}
+              quantity={quantity}
+              onChangeQuantity={setQuantity}
+              onChangeValue={setValue}
+            />
+          }
+        >
+          <Input
+            placeholder="10 Laranjas"
+            value={product}
+            onChangeText={setProduct}
+            onActionClick={handleAddItem}
+            cap="bottom"
+          />
+        </Sheet>
+      </ThemedView>
+    </Animated.View>
   );
 };
 
@@ -310,14 +366,10 @@ const Sheet: React.FC<SheetProps> = ({
   hiddenContent,
   showSuggestions = true,
 }) => {
-  const SHOW_SUGGESTIONS = showSuggestions;
-  const OPEN_HEIGHT = 200;
-  const CLOSED_HEIGHT = 100;
-  const OPEN_HEIGHT_WITHOUT_SUGGESTIONS = 160;
+  const OPEN_HEIGHT = 148;
+  const CLOSED_HEIGHT = 90;
 
-  const height = useSharedValue(
-    SHOW_SUGGESTIONS ? OPEN_HEIGHT : OPEN_HEIGHT_WITHOUT_SUGGESTIONS
-  );
+  const height = useSharedValue(OPEN_HEIGHT);
   const opacity = useSharedValue(1);
 
   const pan = Gesture.Pan()
@@ -331,9 +383,7 @@ const Sheet: React.FC<SheetProps> = ({
     })
     .onFinalize(() => {
       if (height.value > (200 + CLOSED_HEIGHT) / 2) {
-        height.value = withTiming(
-          SHOW_SUGGESTIONS ? OPEN_HEIGHT : OPEN_HEIGHT_WITHOUT_SUGGESTIONS
-        );
+        height.value = withTiming(OPEN_HEIGHT);
         opacity.value = withTiming(1);
       } else {
         height.value = withTiming(CLOSED_HEIGHT);
@@ -370,8 +420,7 @@ const styles = StyleSheet.create({
   container: {
     gap: 4,
     justifyContent: "space-between",
-    paddingBottom: 8,
-    marginTop: -24,
+    paddingBottom: 16,
   },
   createSheet: {
     width: "100%",
@@ -403,7 +452,7 @@ const styles = StyleSheet.create({
 
   hiddenContent: {
     position: "absolute",
-    top: 32,
+    top: 24,
     gap: 8,
     width: "100%",
   },

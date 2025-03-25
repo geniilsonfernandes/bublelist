@@ -1,11 +1,7 @@
 import * as Haptics from "expo-haptics";
 import { useState } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
-import Animated, {
-  Easing,
-  FadeIn,
-  LinearTransition,
-} from "react-native-reanimated";
+import Animated, { Easing, FadeIn } from "react-native-reanimated";
 import { Chip } from "./Chip";
 
 type SuggestionsProps = {
@@ -32,16 +28,6 @@ export const Suggestions: React.FC<SuggestionsProps> = ({
 
   return (
     <View style={{ gap: 8 }}>
-      {/* <Pressable
-        
-        style={({ pressed }) => [styles.button]}
-      >
-        <Feather
-          name={mode !== "horizontal" ? "chevron-down" : "chevron-up"}
-          size={16}
-          color={iconColor}
-        />
-      </Pressable> */}
       {mode === "vertical" && (
         <ScrollView>
           <Animated.View
@@ -69,7 +55,7 @@ export const Suggestions: React.FC<SuggestionsProps> = ({
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           keyboardShouldPersistTaps="always"
-          layout={LinearTransition}
+          // layout={LinearTransition}
           keyExtractor={(item) => item}
           ItemSeparatorComponent={() => <View style={{ width: 4 }} />}
           data={suggestions}

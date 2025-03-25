@@ -2,12 +2,14 @@ import { EmptyList } from "@/components/EmptyList";
 import { PillList } from "@/components/PillList";
 import { ProductEntry } from "@/components/ProductEntry";
 import { Search } from "@/components/Search";
+import { TotalBar } from "@/components/TotalBar";
+import { ActionButton } from "@/components/ui/ActionButton";
 import { Icon, IconProps } from "@/components/ui/Icon";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
 import { useGetListById } from "@/database/useShoppingList";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { calculateTotal, formatValue } from "@/utils/calculateTotal";
+import { useConfigStore } from "@/store/useConfigStore";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
@@ -29,6 +31,7 @@ export default function ListShowScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data, isLoading } = useGetListById(id);
   const router = useRouter();
+  const { show_suggestions, show_total } = useConfigStore();
 
   // Estados
   const [search, setSearch] = useState("");
@@ -50,18 +53,6 @@ export default function ListShowScreen() {
   }, [search, data?.products, filter]);
 
   // Cálculo total dos valores da lista
-  const valuesSum = useMemo(
-    () => ({
-      total: calculateTotal(data?.products || []),
-      formated: formatValue(calculateTotal(data?.products || [])),
-    }),
-    [data?.products]
-  );
-
-  const budget = useMemo(() => {
-    if (!data?.budget) return "0";
-    return formatValue(data.budget - valuesSum.total);
-  }, [data?.budget, valuesSum.total]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -84,20 +75,10 @@ export default function ListShowScreen() {
       <View
         style={{
           paddingHorizontal: 16,
+          gap: 4,
         }}
       >
         <ThemedText type="title.3">{data?.name}</ThemedText>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <ThemedText type="body" colorName="text.5">
-            Orçamento: {formatValue(data?.budget || 0)} / {budget}
-          </ThemedText>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-            <Icon name="shopping-cart" size={14} colorName="text.2" />
-            <ThemedText type="body" colorName="text.5">
-              Total: {valuesSum.formated}
-            </ThemedText>
-          </View>
-        </View>
       </View>
 
       <View>
@@ -118,13 +99,14 @@ export default function ListShowScreen() {
           {OPTIONS.map((value) => (
             <ActionButton
               key={value}
-              label={value}
-              active={value === filter}
+              variant={filter === value ? "solid" : "outline"}
               onPress={() => setFilter(value)}
               style={{
                 marginLeft: 8,
               }}
-            />
+            >
+              <ThemedText type="body">{value}</ThemedText>
+            </ActionButton>
           ))}
         </ScrollView>
       </View>
@@ -132,39 +114,19 @@ export default function ListShowScreen() {
       <View
         style={{
           flex: 1,
+          paddingTop: 10,
         }}
       >
         <PillList data={filteredProducts} ListEmptyComponent={<EmptyList />} />
-        {/* <Animated.FlatList
-          style={styles.list}
-          contentContainerStyle={styles.listContent}
-          data={filteredProducts}
-          keyExtractor={(item) => item.id}
-          itemLayoutAnimation={LinearTransition}
-          renderItem={renderList}
-          ItemSeparatorComponent={() => (
-            <ThemedView
-              style={styles.separator}
-              backgroundColor="background.1"
-            />
-          )}
-          ListEmptyComponent={EmptyList}
-          initialNumToRender={20}
-          maxToRenderPerBatch={20}
-          windowSize={5}
-          keyboardShouldPersistTaps="always"
-          getItemLayout={(data, index) => ({
-            length: 50,
-            offset: 50 * index,
-            index,
-          })}
-        /> */}
+        <TotalBar
+          data={data?.products || []}
+          show={show_total}
+          budget={data?.budget || 0}
+        />
       </View>
       {/* Entrada de produtos */}
       {showEntry && (
-        <ThemedView backgroundColor="background.1" style={styles.productEntry}>
-          <ProductEntry currentList={data} />
-        </ThemedView>
+        <ProductEntry currentList={data} showSuggestions={show_suggestions} />
       )}
     </View>
   );
@@ -180,7 +142,7 @@ type ActionButtonProps = {
   active?: boolean;
 } & PressableProps;
 
-const ActionButton: React.FC<ActionButtonProps> = ({
+const ActionButtonf: React.FC<ActionButtonProps> = ({
   icon,
   label,
   active,
@@ -249,7 +211,6 @@ const styles = StyleSheet.create({
   },
   actionBar: {
     paddingVertical: 8,
-    paddingTop: 16,
   },
   spacing: {
     width: 8,
@@ -295,7 +256,7 @@ const styles = StyleSheet.create({
   },
   productEntry: {
     paddingHorizontal: 8,
-    borderTopEndRadius: 32,
-    borderTopStartRadius: 32,
+    borderTopEndRadius: 8,
+    borderTopStartRadius: 8,
   },
 });

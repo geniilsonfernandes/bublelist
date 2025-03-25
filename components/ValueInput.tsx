@@ -22,6 +22,7 @@ type ValueInputProps = {
   increment?: number;
   style?: StyleProp<ViewStyle>;
   bg?: themeColors;
+  size?: "md" | "lg" | "sm";
 };
 
 export const ValueInput: React.FC<ValueInputProps> = ({
@@ -31,6 +32,7 @@ export const ValueInput: React.FC<ValueInputProps> = ({
   placeholder = "0,00",
   rightLabel = "",
   increment = 50,
+  size,
   style,
   bg = "background",
 }) => {
@@ -48,8 +50,20 @@ export const ValueInput: React.FC<ValueInputProps> = ({
     onChangeValue(prev - increment);
   };
 
+  const height = {
+    sm: 42,
+    md: 56,
+    lg: 64,
+  } as Record<"sm" | "md" | "lg", number>;
+
   return (
-    <ThemedView style={[styles.container, style, { backgroundColor }]}>
+    <ThemedView
+      style={[
+        styles.container,
+        style,
+        { backgroundColor, height: height[size || "md"] },
+      ]}
+    >
       <Feather name="dollar-sign" size={18} color={textColor} />
       <CurrencyInput
         placeholder={placeholder}
@@ -96,7 +110,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    borderRadius: 48,
+    borderRadius: 8,
     paddingHorizontal: 16,
     height: 56,
   },

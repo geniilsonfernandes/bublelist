@@ -1,3 +1,4 @@
+import * as SQLite from "expo-sqlite";
 import { type SQLiteDatabase } from "expo-sqlite";
 
 export async function initializeDatabase(database: SQLiteDatabase) {
@@ -23,3 +24,5 @@ export async function initializeDatabase(database: SQLiteDatabase) {
     );
   `);
 }
+
+export const db = SQLite.openDatabaseSync("tlist.db");

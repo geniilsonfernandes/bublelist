@@ -1,80 +1,31 @@
+import { CheckBox } from "@/components/ui/CheckBox";
 import { Icon } from "@/components/ui/Icon";
+import { SettingsButton } from "@/components/ui/SettingsButton";
 import { ThemedText } from "@/components/ui/ThemedText";
-import { ThemedView } from "@/components/ui/ThemedView";
 import { Colors } from "@/constants/Colors";
-import { themeColors, useThemeColor } from "@/hooks/useThemeColor";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { useConfigStore } from "@/store/useConfigStore";
 import {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
   BottomSheetModal,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { useCallback, useMemo, useRef, useState } from "react";
-import {
-  Pressable,
-  StyleProp,
-  StyleSheet,
-  Switch,
-  View,
-  ViewStyle,
-} from "react-native";
-import Animated, { BounceIn } from "react-native-reanimated";
-
-type SettingsButtonProps = {
-  label: string | React.ReactNode;
-  rightComponent?: React.ReactNode;
-  pr?: number;
-  onPress?: () => void;
-  bg?: themeColors;
-};
-
-const SettingsButton: React.FC<SettingsButtonProps> = ({
-  label,
-  rightComponent,
-  pr,
-  onPress,
-  bg = "background.1",
-}) => {
-  const backgroundColor = useThemeColor({}, bg);
-  const styles: StyleProp<ViewStyle> = {
-    paddingRight: pr,
-  };
-
-  const Comp = onPress ? Pressable : View;
-  return (
-    <Comp
-      style={[
-        {
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 8,
-          padding: 16,
-          height: 56,
-          borderRadius: 8,
-          backgroundColor,
-        },
-        styles,
-      ]}
-      onPress={onPress}
-      // bg="background.1"
-    >
-      <ThemedText type="defaultSemiBold">{label}</ThemedText>
-      {rightComponent}
-    </Comp>
-  );
-};
+import React, { useCallback, useRef } from "react";
+import { Switch, View } from "react-native";
 
 export default function SettingsList() {
   const backgroundColorSheet = useThemeColor({}, "background.1");
-  const sheet = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ["35%"], []);
-  const [settings, setSettings] = useState({
-    showQuantity: true,
-    showTotal: true,
-    showSuggestions: false,
-    orderBy: "date",
-  });
+  const sheetRef = useRef<BottomSheetModal>(null);
+
+  const {
+    order_by,
+    show_quantity,
+    show_suggestions,
+    show_value,
+    show_total,
+    setConfig,
+  } = useConfigStore();
 
   const orderByOptions = [
     { label: "Recentes", value: "date" },
@@ -89,42 +40,53 @@ export default function SettingsList() {
         disappearsOnIndex={-1}
         appearsOnIndex={0}
         pressBehavior="close"
-        style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 49 }}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 49,
+        }}
       />
     ),
     []
   );
 
+  const renderSwitch = (value: boolean, onToggle: () => void) => (
+    <Switch
+      value={value}
+      onValueChange={onToggle}
+      thumbColor={value ? Colors.dark["primary.100"] : "#f4f3f4"}
+    />
+  );
+
   return (
     <View style={{ flex: 1, paddingHorizontal: 16, gap: 8 }}>
+      {/* Seção: Visualização */}
       <ThemedText type="defaultSemiBold" colorName="text.7">
         Visualização
       </ThemedText>
 
       <SettingsButton
-        label="Mostrar a quantidade e o valor"
-        rightComponent={
-          <Switch
-            thumbColor={
-              settings.showQuantity ? Colors.dark["primary.100"] : "#f4f3f4"
-            }
-            value={settings.showQuantity}
-            onChange={() =>
-              setSettings({ ...settings, showQuantity: !settings.showQuantity })
-            }
-            style={styles.switch}
-          />
-        }
+        label="Mostrar a valor"
+        rightComponent={renderSwitch(show_value, () =>
+          setConfig("show_value", !show_value)
+        )}
       />
       <SettingsButton
-        onPress={() => {
-          sheet.current?.present();
-        }}
+        label="Mostrar a quantidade"
+        rightComponent={renderSwitch(show_quantity, () =>
+          setConfig("show_quantity", !show_quantity)
+        )}
+      />
+
+      <SettingsButton
+        onPress={() => sheetRef.current?.present()}
         label={
           <ThemedText type="defaultSemiBold">
             Ordenar por:{" "}
             <ThemedText type="body" colorName="primary.200">
-              {orderByOptions.find((o) => o.value === settings.orderBy)?.label}
+              {orderByOptions.find((o) => o.value === order_by)?.label}
             </ThemedText>
           </ThemedText>
         }
@@ -133,47 +95,30 @@ export default function SettingsList() {
         }
       />
 
+      {/* Seção: Outros */}
       <ThemedText type="defaultSemiBold" colorName="text.7">
         Outros
       </ThemedText>
+
       <SettingsButton
         label="Mostrar o total da lista"
-        rightComponent={
-          <Switch
-            thumbColor={
-              settings.showTotal ? Colors.dark["primary.100"] : "#f4f3f4"
-            }
-            value={settings.showTotal}
-            onChange={() =>
-              setSettings({ ...settings, showTotal: !settings.showTotal })
-            }
-            style={styles.switch}
-          />
-        }
-      />
-      <SettingsButton
-        label="Mostrar sugestoes de produtos"
-        rightComponent={
-          <Switch
-            thumbColor={
-              settings.showSuggestions ? Colors.dark["primary.100"] : "#f4f3f4"
-            }
-            value={settings.showSuggestions}
-            onChange={() =>
-              setSettings({
-                ...settings,
-                showSuggestions: !settings.showSuggestions,
-              })
-            }
-            style={styles.switch}
-          />
-        }
+        rightComponent={renderSwitch(show_total, () =>
+          setConfig("show_total", !show_total)
+        )}
       />
 
+      <SettingsButton
+        label="Mostrar sugestões de produtos"
+        rightComponent={renderSwitch(show_suggestions, () =>
+          setConfig("show_suggestions", !show_suggestions)
+        )}
+      />
+
+      {/* Bottom Sheet - Ordenação */}
       <BottomSheetModal
-        ref={sheet}
+        ref={sheetRef}
         index={0}
-        snapPoints={snapPoints}
+        snapPoints={["35%"]}
         enablePanDownToClose
         enableDynamicSizing={false}
         backdropComponent={renderBackdrop}
@@ -192,22 +137,19 @@ export default function SettingsList() {
           >
             <ThemedText type="defaultSemiBold">Ordenar por</ThemedText>
           </View>
+
           <View style={{ gap: 8 }}>
             {orderByOptions.map((option) => (
               <SettingsButton
-                onPress={() => {
-                  setSettings({ ...settings, orderBy: option.value });
-                }}
                 key={option.value}
+                onPress={() => setConfig("order_by", option.value)}
                 bg="background.2"
                 label={option.label}
                 rightComponent={
                   <CheckBox
-                    value={settings.orderBy === option.value}
-                    onChange={(value) => {
-                      if (value) {
-                        setSettings({ ...settings, orderBy: option.value });
-                      }
+                    value={order_by === option.value}
+                    onChange={(checked) => {
+                      if (checked) setConfig("order_by", option.value);
                     }}
                   />
                 }
@@ -219,47 +161,3 @@ export default function SettingsList() {
     </View>
   );
 }
-
-type CheckBoxProps = {
-  value?: boolean;
-  onChange?: (value: boolean) => void;
-};
-
-const CheckBox: React.FC<CheckBoxProps> = ({ onChange, value }) => {
-  return (
-    <Pressable
-      onPress={() => {
-        onChange?.(!value);
-      }}
-      style={({ pressed }) => [
-        {
-          opacity: pressed ? 0.5 : 1,
-          transform: [{ scale: pressed ? 0.95 : 1 }],
-        },
-      ]}
-    >
-      <ThemedView
-        borderColor={value ? "primary.100" : "background.3"}
-        bg={value ? "primary.100" : "background.2"}
-        style={{
-          width: 28,
-          height: 28,
-          borderRadius: 8,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {value ? (
-          <Animated.View entering={BounceIn.duration(300)}>
-            <Icon name="check" size={16} colorName="text.1" />
-          </Animated.View>
-        ) : null}
-      </ThemedView>
-    </Pressable>
-  );
-};
-
-const styles = StyleSheet.create({
-  separator: { height: 1 },
-  switch: { marginRight: -8 },
-});

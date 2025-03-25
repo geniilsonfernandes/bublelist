@@ -11,7 +11,7 @@ type EmptyListProps = {
 
 const DEFAULT_ICON = "inbox";
 const DEFAULT_MESSAGE = "Nenhum produto encontrado";
-const DEFAULT_SUB_MESSAGE = "Adicione produtos a list"
+const DEFAULT_SUB_MESSAGE = "Adicione produtos a lista";
 
 export const EmptyList: React.FC<EmptyListProps> = ({
   icon = DEFAULT_ICON,
