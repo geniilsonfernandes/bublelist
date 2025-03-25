@@ -28,7 +28,7 @@ export default function SettingsList() {
   } = useConfigStore();
 
   const orderByOptions = [
-    { label: "Recentes", value: "date" },
+    { label: "Alfabeticamente", value: "name" },
     { label: "Quantidade", value: "quantity" },
     { label: "Valor", value: "value" },
   ];

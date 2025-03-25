@@ -31,17 +31,30 @@ export default function ListShowScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data, isLoading } = useGetListById(id);
   const router = useRouter();
-  const { show_suggestions, show_total } = useConfigStore();
+  const { show_suggestions, show_total, order_by } = useConfigStore();
 
   // Estados
   const [search, setSearch] = useState("");
   const [showEntry, setShowEntry] = useState(true);
   const [filter, setFilter] = useState<(typeof OPTIONS)[number]>("Todos");
 
-  // Filtragem dos produtos com base no search
-  const filteredProducts = useMemo(() => {
-    if (!data?.products) return [];
-    return data.products.filter((product) => {
+  const orderedProducts = useMemo(() => {
+    const sorted = [...(data?.products || [])];
+
+    sorted.sort((a, b) => {
+      // 1. Ordenar por campo selecionado
+      if (order_by === "name") {
+        return a.name.localeCompare(b.name);
+      } else if (order_by === "quantity") {
+        return b.quantity - a.quantity;
+      } else if (order_by === "value") {
+        return b.value - a.value;
+      }
+
+      return 0;
+    });
+
+    return sorted.filter((product) => {
       if (search) {
         return product.name.toLowerCase().includes(search.toLowerCase());
       }
@@ -50,7 +63,7 @@ export default function ListShowScreen() {
       if (filter === "Desmarcados") return !product.checked;
       return true;
     });
-  }, [search, data?.products, filter]);
+  }, [search, data?.products, filter, order_by]);
 
   // Cálculo total dos valores da lista
 
@@ -117,7 +130,7 @@ export default function ListShowScreen() {
           paddingTop: 10,
         }}
       >
-        <PillList data={filteredProducts} ListEmptyComponent={<EmptyList />} />
+        <PillList data={orderedProducts} ListEmptyComponent={<EmptyList />} />
         <TotalBar
           data={data?.products || []}
           show={show_total}
