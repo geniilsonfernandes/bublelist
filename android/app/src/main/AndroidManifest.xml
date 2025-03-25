@@ -26,6 +26,7 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="myapp"/>
         <data android:scheme="com.orriker.tlist"/>
+        <data android:scheme="exp+tlist"/>
       </intent-filter>
     </activity>
   </application>

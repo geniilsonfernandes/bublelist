@@ -7,7 +7,6 @@ import { useFonts } from "expo-font";
 import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import * as SystemUI from "expo-system-ui";
 import { useEffect } from "react";
 import "react-native-reanimated";
 
@@ -43,20 +42,18 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-      SystemUI.setBackgroundColorAsync(
-        colorScheme === "dark" ? "#1e1e1e" : "#FFFFFF"
-      );
-    }
-  }, [loaded]);
+    const prepare = async () => {
+      if (!loaded) return; // espera a fonte carregar
 
-  if (!loaded) {
-    return null;
-  }
+      // Aguarda qualquer outro carregamento que quiser aqui
+      await SplashScreen.hideAsync();
+    };
+
+    prepare();
+  }, [loaded]); // <- adiciona loaded como dependência
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#0f172a" }}>
       <QueryClientProvider client={queryClient}>
         <BottomSheetModalProvider>
           <ThemeProvider
@@ -67,7 +64,6 @@ export default function RootLayout() {
                 headerShown: false,
               }}
             >
-              {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
               <Stack.Screen
                 name="(main)"
                 options={{

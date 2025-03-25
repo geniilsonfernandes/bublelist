@@ -79,6 +79,7 @@ export default function ListShowScreen() {
                 router.push(`/(main)/settings/list`);
               }}
               style={styles.headerIcons}
+              hitSlop={8}
             >
               <Icon name="more-vertical" size={18} />
             </Pressable>

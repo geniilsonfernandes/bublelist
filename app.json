@@ -14,7 +14,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#d3d3d3"
+        "backgroundColor": "#1e1e1e"
       },
       "package": "com.orriker.tlist"
     },
@@ -30,8 +30,12 @@
         {
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
+          "dark": {
+            "image": "./assets/splash-icon-dark.png",
+            "backgroundColor": "#000000"
+          },
           "resizeMode": "contain",
-          "backgroundColor": "#d3d3d3"
+          "backgroundColor": "#1e1e1e"
         }
       ],
       "expo-sqlite"
