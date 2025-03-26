@@ -126,9 +126,8 @@ export default function ListShowScreen() {
           budget={data?.budget || 0}
         />
         {/* Entrada de produtos */}
-        {showEntry && (
-          <ProductEntry currentList={data} showSuggestions={show_suggestions} />
-        )}
+
+        <ProductEntry currentList={data} showSuggestions={show_suggestions} />
       </View>
     </ThemedView>
   );

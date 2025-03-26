@@ -37,7 +37,7 @@ export const Button: React.FC<ButtonProps> = ({
   rightIcon,
   fullWidth,
   isLoading,
-  bg = "background.1",
+  bg = "primary.100",
 }) => {
   const backgroundColor = useThemeColor({}, bg);
   const borderColor = useThemeColor({}, "background.2");

@@ -108,7 +108,6 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      <SectionTitle title="Fixas" />
       <SectionTitle title="Minhas listas" />
 
       <FlatList
