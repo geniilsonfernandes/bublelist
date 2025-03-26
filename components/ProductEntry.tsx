@@ -13,7 +13,7 @@ import {
 import { useModals } from "@/store/useModals";
 import { formatValue } from "@/utils/calculateTotal";
 import * as Haptics from "expo-haptics";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Pressable, StyleSheet, TextInput, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -164,12 +164,6 @@ export const ProductEditEntry = () => {
       setSelectedProduct(null);
     }
   };
-
-  useEffect(() => {
-    if (selectedProduct) {
-      inputRef.current?.focus();
-    }
-  }, [selectedProduct]);
 
   return (
     <View
