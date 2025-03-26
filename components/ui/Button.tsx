@@ -37,7 +37,7 @@ export const Button: React.FC<ButtonProps> = ({
   rightIcon,
   fullWidth,
   isLoading,
-  bg = "primary.100",
+  bg = "background.1",
 }) => {
   const backgroundColor = useThemeColor({}, bg);
   const borderColor = useThemeColor({}, "background.2");
@@ -132,13 +132,13 @@ export const Button: React.FC<ButtonProps> = ({
 const styles = StyleSheet.create({
   container: {
     height: 48,
-    borderRadius: 24,
+    borderRadius: 8,
 
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
     gap: 8,
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
   },
   outline: {
     backgroundColor: "transparent",

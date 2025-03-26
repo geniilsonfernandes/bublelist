@@ -50,7 +50,7 @@ export const SettingsSheet = forwardRef<BottomSheet, SettingsSheetProps>(
         backdropComponent={renderBackdrop}
         backgroundStyle={{
           backgroundColor: backgroundColorSheet,
-          borderRadius: 24,
+          borderRadius: 8,
         }}
       >
         <BottomSheetScrollView>

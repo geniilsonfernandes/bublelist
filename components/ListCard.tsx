@@ -2,13 +2,10 @@ import { type List } from "@/database/useShoppingList";
 import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
-  FadeIn,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { Progress } from "./Progress";
-import { ActionButton } from "./ui/ActionButton";
 import { Icon } from "./ui/Icon";
 import { ThemedText } from "./ui/ThemedText";
 import { ThemedView } from "./ui/ThemedView";
@@ -45,7 +42,6 @@ export const ListCard: React.FC<ListProps> = ({
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: withTiming(scale.value, { duration: 200 }) }],
-    height: withTiming(height.value, { duration: 100 }),
   }));
 
   const handleUncollapse = () => {
@@ -75,25 +71,34 @@ export const ListCard: React.FC<ListProps> = ({
     <AnimatedPressable
       style={animatedStyle}
       onPress={onPress}
-      onLongPress={() => {
-        height.value = HEIGHT_EXPANDED;
-        setExpanded(true);
-      }}
+      // onLongPress={() => {
+      //   setExpanded(true);
+      // }}
       onPressIn={() => (scale.value = 0.98)}
       onPressOut={() => (scale.value = 1)}
     >
       <ThemedView backgroundColor="background.1" style={styles.container}>
-        <View style={styles.headerContainer}>
-          <View style={styles.header}>
-            <ThemedText style={styles.title}>{name}</ThemedText>
-
-            <ActionButton size="sm" variant="ghost" onPress={handleCollapse}>
-              <Icon name="more-vertical" size={18} />
-            </ActionButton>
-          </View>
-          <Progress progress={progress} />
+        <ThemedView
+          style={{
+            width: 56,
+            height: 56,
+            borderRadius: 8,
+          }}
+          colorName="background.2"
+        ></ThemedView>
+        <View>
+          <ThemedText style={styles.title}>{name}</ThemedText>
+          <ThemedText type="body" colorName="text.5">
+            {totalOfProducts} itens
+          </ThemedText>
         </View>
-        {expanded ? (
+        <Icon
+          style={{ marginLeft: "auto" }}
+          name="chevron-right"
+          size={24}
+          colorName="text.6"
+        />
+        {/* {expanded ? (
           <Animated.View
             entering={FadeIn.duration(300)}
             style={{
@@ -112,7 +117,7 @@ export const ListCard: React.FC<ListProps> = ({
               <Icon name="trash" size={18} colorName="danger" />
             </ActionButton>
           </Animated.View>
-        ) : null}
+        ) : null} */}
       </ThemedView>
     </AnimatedPressable>
   );
@@ -120,12 +125,13 @@ export const ListCard: React.FC<ListProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-    borderRadius: 16,
     width: "100%",
-    height: HEIGHT,
+
     flex: 1,
-    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+    backgroundColor: "transparent",
   },
   headerContainer: {
     gap: 8,

@@ -3,10 +3,12 @@ import { Feather } from "@expo/vector-icons";
 import { forwardRef } from "react";
 import {
   Pressable,
+  StyleProp,
   StyleSheet,
   TextInput,
   TextInputProps,
   View,
+  ViewStyle,
 } from "react-native";
 import Animated, { FadeInLeft, FadeOutLeft } from "react-native-reanimated";
 
@@ -16,8 +18,9 @@ type InputProps = {
   iconName?: keyof typeof Feather.glyphMap;
   showActions?: boolean;
   bg?: themeColors;
-
+  fullWidth?: boolean;
   cap?: "top" | "bottom";
+  size?: "md" | "lg" | "sm" | "xl";
 } & TextInputProps;
 
 export const Input = forwardRef<TextInput, InputProps>(
@@ -29,6 +32,8 @@ export const Input = forwardRef<TextInput, InputProps>(
       showActions = true,
       bg = "background",
       cap,
+      fullWidth,
+      size = "xl",
       ...rest
     },
     ref
@@ -38,13 +43,21 @@ export const Input = forwardRef<TextInput, InputProps>(
     const placeholderTextColor = useThemeColor({}, "text.3");
     const iconColor = useThemeColor({}, "primary.100");
 
+    const sizeStyles: StyleProp<ViewStyle> = [
+      size === "sm" && { height: 32 },
+      size === "md" && { height: 40 },
+      size === "lg" && { height: 48 },
+      size === "xl" && { height: 56 },
+    ];
     return (
       <View
         style={[
           styles.container,
           {
             backgroundColor,
+            flex: fullWidth ? 1 : undefined,
           },
+          sizeStyles,
         ]}
       >
         <TextInput
@@ -59,7 +72,7 @@ export const Input = forwardRef<TextInput, InputProps>(
           {...rest}
         />
 
-        {rest.value && (
+        {rest.value && showActions && (
           <Animated.View
             entering={FadeInLeft.duration(200)}
             exiting={FadeOutLeft.duration(200)} // Aqui está a correção
@@ -103,7 +116,6 @@ const styles = StyleSheet.create({
   icon: {
     width: 40,
     height: 40,
-
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",

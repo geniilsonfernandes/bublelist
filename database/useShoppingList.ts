@@ -258,7 +258,6 @@ export const useEditList = () => {
 };
 
 export const useGetListById = (id: string) => {
-  const queryClient = useQueryClient();
   return useQuery({
     queryKey: ["list", id],
     queryFn: () => findListById(id),

@@ -16,7 +16,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#1e1e1e"
       },
-      "package": "com.orriker.tlist"
+      "package": "com.orriker.Bubblylist"
     },
     "web": {
       "bundler": "metro",
@@ -32,7 +32,7 @@
           "imageWidth": 200,
           "dark": {
             "image": "./assets/splash-icon-dark.png",
-            "backgroundColor": "#000000"
+            "backgroundColor": "#red"
           },
           "resizeMode": "contain",
           "backgroundColor": "#1e1e1e"

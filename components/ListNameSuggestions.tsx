@@ -1,12 +1,15 @@
 import dayjs from "dayjs";
+import "dayjs/locale/pt-br"; // Importa o locale
 import * as Haptics from "expo-haptics";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Chip } from "./Chip";
 import { ThemedText } from "./ui/ThemedText";
 
+dayjs.locale("pt-br");
+
 export const LIST_NAME_SUGGESTIONS = [
   "Feira da Semana",
-  `Lista de ${dayjs().locale("pt-br").format("MMMM")}`,
+  `Lista de ${dayjs().format("MMMM")}`, // já está em pt-br
   `${dayjs().format("DD/MM/YYYY")}`,
   "Compras Mensais",
   "Itens de Padaria",

@@ -71,7 +71,8 @@ export default function ListShowScreen() {
     <View style={{ flex: 1 }}>
       <Stack.Screen
         options={{
-          title: "",
+          title: data?.name,
+          headerTitleAlign: "center",
           headerShown: true,
           headerRight: () => (
             <Pressable
@@ -86,14 +87,6 @@ export default function ListShowScreen() {
           ),
         }}
       />
-      <View
-        style={{
-          paddingHorizontal: 16,
-          gap: 4,
-        }}
-      >
-        <ThemedText type="title.3">{data?.name}</ThemedText>
-      </View>
 
       <View>
         <ScrollView

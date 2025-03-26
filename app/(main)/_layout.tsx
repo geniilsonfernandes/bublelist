@@ -34,8 +34,7 @@ export default function RootLayout() {
       <Stack.Screen
         name="lista/[id]/index"
         options={{
-          animation: "fade_from_bottom",
-          headerShown: false,
+          animation: "slide_from_right",
         }}
       />
       <Stack.Screen
