@@ -12,9 +12,9 @@ import { formatValue } from "@/utils/calculateTotal";
 import { useMemo } from "react";
 import {
   Pressable,
+  ScrollView,
   StyleProp,
   StyleSheet,
-  View,
   ViewStyle,
 } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -204,7 +204,10 @@ export const PillList: React.FC<PillListProps> = ({
   const { setSelectedProduct } = useModals();
 
   return (
-    <View style={styles.pillList}>
+    <ScrollView
+      contentContainerStyle={styles.pillList}
+      removeClippedSubviews={true}
+    >
       {data.length === 0 && ListEmptyComponent}
       {data.map((product) => (
         <ProductBullet
@@ -219,7 +222,7 @@ export const PillList: React.FC<PillListProps> = ({
           showValue={show_value}
         />
       ))}
-    </View>
+    </ScrollView>
   );
 };
 
@@ -235,11 +238,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingRight: 48,
     paddingBottom: 8,
-    gap: 8,
+    gap: 10,
   },
   pill: {
-    paddingHorizontal: 13,
-    height: 40,
+    paddingHorizontal: 10,
+    height: 32,
     borderRadius: 8,
     flexDirection: "row",
     alignItems: "center",

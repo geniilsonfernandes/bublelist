@@ -117,9 +117,8 @@ export default function ListShowScreen() {
         </ScrollView>
       </View>
 
-      <ScrollView style={{ marginTop: 8 }} removeClippedSubviews={true}>
-        <PillList data={orderedProducts} ListEmptyComponent={<EmptyList />} />
-      </ScrollView>
+      <PillList data={orderedProducts} ListEmptyComponent={<EmptyList />} />
+
       <View>
         <TotalBar
           data={data?.products || []}
@@ -134,8 +133,6 @@ export default function ListShowScreen() {
     </ThemedView>
   );
 }
-
-
 
 const styles = StyleSheet.create({
   screen: {
