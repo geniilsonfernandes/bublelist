@@ -3,6 +3,7 @@ import { ValueInput } from "@/components/ValueInput";
 import {
   List,
   useAddProduct,
+  useDeleteProduct,
   useEditProduct,
 } from "@/database/useShoppingList";
 import {
@@ -23,6 +24,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { Suggestions } from "./Suggestions";
+import { Button } from "./ui/Button";
 import { Icon } from "./ui/Icon";
 import { Input } from "./ui/Input";
 import { ThemedText } from "./ui/ThemedText";
@@ -129,6 +131,7 @@ const ProdutDetails: React.FC<ProductEntryData> = ({
 export const ProductEditEntry = () => {
   const { setSelectedProduct, selectedProduct } = useModals();
   const { mutate } = useEditProduct();
+  const { mutate: deleteProduct } = useDeleteProduct();
   const inputRef = useRef<TextInput | null>(null);
 
   const [product, setProduct] = useState(selectedProduct?.name || "");
@@ -155,6 +158,13 @@ export const ProductEditEntry = () => {
     }
   };
 
+  const handleDeleteProduct = () => {
+    if (selectedProduct) {
+      deleteProduct(selectedProduct.id);
+      setSelectedProduct(null);
+    }
+  };
+
   useEffect(() => {
     if (selectedProduct) {
       inputRef.current?.focus();
@@ -170,48 +180,66 @@ export const ProductEditEntry = () => {
         },
       ]}
     >
-      <ThemedView
+      <View
         style={{
           flexDirection: "row",
-          padding: 16,
           alignItems: "center",
           gap: 8,
-          borderRadius: 8,
-          marginBottom: 16,
+          paddingBottom: 16,
         }}
-        bg="background.1"
       >
-        <Icon name="shopping-bag" size={24} colorName="text.2" />
-        <ThemedText type="title.3">{selectedProduct?.name}</ThemedText>
-        <View
+        <ThemedView
           style={{
-            flex: 1,
             flexDirection: "row",
-            justifyContent: "flex-end",
+            height: 56,
+            paddingHorizontal: 16,
             alignItems: "center",
-            gap: 16,
+            gap: 8,
+            borderRadius: 8,
+
+            flex: 1,
           }}
+          bg="background.1"
         >
+          <Icon name="shopping-bag" size={24} colorName="text.2" />
+          <ThemedText type="title.3">{selectedProduct?.name}</ThemedText>
           <View
             style={{
-              flex: 1,
               flexDirection: "row",
               justifyContent: "flex-end",
-              gap: 8,
               alignItems: "center",
+              gap: 16,
+              flex: 1,
             }}
           >
-            <Icon name="shopping-cart" size={16} colorName="text.4" />
-            <ThemedText colorName="text.4" type="defaultSemiBold">
-              {selectedProduct?.quantity}
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                gap: 8,
+                alignItems: "center",
+              }}
+            >
+              <Icon name="shopping-cart" size={16} colorName="text.4" />
+              <ThemedText colorName="text.4" type="defaultSemiBold">
+                {selectedProduct?.quantity}
+              </ThemedText>
+            </View>
+
+            <ThemedText colorName="text" type="defaultSemiBold" opacity={0.7}>
+              {selectedProduct?.value && formatValue(selectedProduct.value)}
             </ThemedText>
           </View>
-
-          <ThemedText colorName="text" type="defaultSemiBold" opacity={0.7}>
-            {selectedProduct?.value && formatValue(selectedProduct.value)}
-          </ThemedText>
-        </View>
-      </ThemedView>
+        </ThemedView>
+        <Button
+          variant="solid"
+          bg="danger"
+          onPress={handleDeleteProduct}
+          style={{ height: 56, width: 70 }}
+        >
+          <Icon name="trash" size={16} colorName="text" />
+        </Button>
+      </View>
 
       <ProdutDetails
         value={value}

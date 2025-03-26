@@ -1,11 +1,9 @@
 // Imports
-import { Colors } from "@/constants/Colors";
 import {
   Product,
   useCheckProduct,
   useDeleteProduct,
 } from "@/database/useShoppingList";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import { useConfigStore } from "@/store/useConfigStore";
 import { useModals } from "@/store/useModals";
 import { formatValue } from "@/utils/calculateTotal";
@@ -17,19 +15,16 @@ import {
   StyleSheet,
   ViewStyle,
 } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   Easing,
   FadeInUp,
-  interpolateColor,
   LinearTransition,
-  runOnJS,
-  SharedValue,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 import { ThemedText } from "./ui/ThemedText";
+import { ThemedView } from "./ui/ThemedView";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -60,66 +55,44 @@ export const ProductBullet: React.FC<ProductProps> = ({
 
   const translateX = useSharedValue(0);
   const scale = useSharedValue(1);
-  const progress = useSharedValue(0);
-
-  const threshold = 10;
-  const maxDrag = 30;
-
-  const pan = Gesture.Pan()
-    .onUpdate((event) => {
-      const clampedX = Math.max(
-        Math.min(event.translationX, maxDrag),
-        -maxDrag
-      );
-      translateX.value = clampedX;
-
-      progress.value = clampedX / maxDrag;
-    })
-    .onEnd(() => {
-      if (translateX.value < -threshold) {
-        translateX.value = withTiming(-100);
-        runOnJS(onRemove)();
-      } else if (translateX.value > threshold) {
-        runOnJS(onCheck)();
-        translateX.value = withTiming(0);
-        progress.value = withTiming(0);
-      } else {
-        translateX.value = withTiming(0);
-        progress.value = withTiming(0);
-      }
-    });
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }, { scale: scale.value }],
   }));
 
   return (
-    <GestureDetector gesture={pan}>
-      <Animated.View style={animatedStyle} layout={LinearTransition}>
-        <AnimatedPressable
-          entering={FadeInUp.duration(200).easing(Easing.inOut(Easing.quad))}
-          onPress={onCheck}
-          onLongPress={onLongPress}
-          hitSlop={0}
-          onPressIn={() => {
-            scale.value = withTiming(0.85);
-          }}
-          onPressOut={() => {
-            scale.value = withTiming(1);
-          }}
-        >
-          <ProductContent
-            name={name}
-            quantity={quantity}
-            valueFormatted={valueFormatted}
-            checked={checked}
-            showQuantity={showQuantity}
-            showValue={showValue}
-            progress={progress}
-          />
-        </AnimatedPressable>
-      </Animated.View>
-    </GestureDetector>
+    <Animated.View
+      style={[
+        animatedStyle,
+        {
+          position: "relative",
+        },
+      ]}
+      layout={LinearTransition}
+    >
+      <AnimatedPressable
+        entering={FadeInUp.duration(200).easing(Easing.inOut(Easing.quad))}
+        onPress={onCheck}
+        onLongPress={onLongPress}
+        hitSlop={0}
+        onPressIn={() => {
+          scale.value = withTiming(0.95);
+        }}
+        onPressOut={() => {
+          scale.value = withTiming(1);
+        }}
+        style={animatedStyle}
+      >
+        <ProductContent
+          name={name}
+          quantity={quantity}
+          valueFormatted={valueFormatted}
+          checked={checked}
+          showQuantity={showQuantity}
+          showValue={showValue}
+        />
+      </AnimatedPressable>
+    </Animated.View>
   );
 };
 
@@ -131,7 +104,6 @@ type ProductContentProps = {
   checked: boolean;
   showQuantity: boolean;
   showValue: boolean;
-  progress: SharedValue<number>;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -143,22 +115,12 @@ export const ProductContent: React.FC<ProductContentProps> = ({
   showQuantity,
   showValue,
   style,
-  progress,
 }) => {
-  const bg = useThemeColor({}, checked ? "success" : "background.1");
-
-  const animatedStyle = useAnimatedStyle(() => {
-    const backgroundColor = interpolateColor(
-      progress.value,
-      [-1, 0, 1],
-      [Colors.dark.danger, bg, Colors.dark.success]
-    );
-
-    return { backgroundColor };
-  });
-
   return (
-    <Animated.View style={[styles.pill, style, animatedStyle]}>
+    <ThemedView
+      colorName={checked ? "success" : "background.1"}
+      style={[styles.pill, style]}
+    >
       <ThemedText colorName="text.1" type="defaultSemiBold">
         {name}
       </ThemedText>
@@ -184,7 +146,7 @@ export const ProductContent: React.FC<ProductContentProps> = ({
           {valueFormatted}
         </ThemedText>
       )}
-    </Animated.View>
+    </ThemedView>
   );
 };
 
@@ -236,13 +198,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     paddingHorizontal: 16,
-    paddingRight: 48,
     paddingBottom: 8,
     gap: 10,
   },
   pill: {
     paddingHorizontal: 10,
-    height: 32,
+    height: 38,
     borderRadius: 8,
     flexDirection: "row",
     alignItems: "center",
