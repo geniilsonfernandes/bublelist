@@ -233,6 +233,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     paddingHorizontal: 16,
+    paddingRight: 48,
     paddingBottom: 8,
     gap: 8,
   },
