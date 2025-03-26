@@ -119,8 +119,8 @@ export default function HomeScreen() {
         renderItem={({ item }) => (
           <ListCard
             {...item}
-            onPress={() => router.push(`/(main)/lista/${item.id}`)}
-            onClickToEdit={() => router.push(`/(main)/lista/${item.id}/edit`)}
+            onPress={() => router.push(`/(list)/show/${item.id}`)}
+            // onClickToEdit={() => router.push(`/list/${item.id}/edit`)}
             onClickToDelete={() => handleOpenDelete(item)}
             onClickToShare={() => handleOpenShare(item)}
           />
@@ -129,7 +129,7 @@ export default function HomeScreen() {
 
       {!keyboardVisible && (
         <View style={styles.buttonContainer}>
-          <Button onPress={() => router.push("/(main)/lista/new")}>
+          <Button onPress={() => router.push("/(list)/new")}>
             Criar lista
           </Button>
         </View>
@@ -172,7 +172,8 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 16,
     marginTop: StatusBar.currentHeight,
-    paddingVertical: 24,
+    paddingVertical: 16,
+
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",

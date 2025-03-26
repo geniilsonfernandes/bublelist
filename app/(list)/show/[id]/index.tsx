@@ -4,26 +4,21 @@ import { ProductEntry } from "@/components/ProductEntry";
 import { Search } from "@/components/Search";
 import { TotalBar } from "@/components/TotalBar";
 import { ActionButton } from "@/components/ui/ActionButton";
-import { Icon, IconProps } from "@/components/ui/Icon";
+import { Icon } from "@/components/ui/Icon";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
 import { useGetListById } from "@/database/useShoppingList";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import { useConfigStore } from "@/store/useConfigStore";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
+  Dimensions,
   Pressable,
-  PressableProps,
   ScrollView,
+  StatusBar,
   StyleSheet,
   View,
 } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
 
 const OPTIONS = ["Todos", "Marcados", "Desmarcados"] as const;
 
@@ -64,20 +59,25 @@ export default function ListShowScreen() {
       return true;
     });
   }, [search, data?.products, filter, order_by]);
-
-  // Cálculo total dos valores da lista
+  const statusBarHeight = StatusBar.currentHeight || 0;
+  const height = Dimensions.get("screen").height;
 
   return (
-    <View style={{ flex: 1 }}>
+    <ThemedView
+      style={{
+        flex: 1,
+      }}
+    >
       <Stack.Screen
         options={{
           title: data?.name,
           headerTitleAlign: "center",
           headerShown: true,
+          // headerTransparent: true,
           headerRight: () => (
             <Pressable
               onPress={() => {
-                router.push(`/(main)/settings/list`);
+                router.push(`/settings/list`);
               }}
               style={styles.headerIcons}
               hitSlop={8}
@@ -87,7 +87,6 @@ export default function ListShowScreen() {
           ),
         }}
       />
-
       <View>
         <ScrollView
           style={styles.actionBar}
@@ -118,83 +117,25 @@ export default function ListShowScreen() {
         </ScrollView>
       </View>
 
-      <View
-        style={{
-          flex: 1,
-          paddingTop: 10,
-        }}
-      >
+      <ScrollView style={{ marginTop: 8 }} removeClippedSubviews={true}>
         <PillList data={orderedProducts} ListEmptyComponent={<EmptyList />} />
+      </ScrollView>
+      <View>
         <TotalBar
           data={data?.products || []}
           show={show_total}
           budget={data?.budget || 0}
         />
+        {/* Entrada de produtos */}
+        {showEntry && (
+          <ProductEntry currentList={data} showSuggestions={show_suggestions} />
+        )}
       </View>
-      {/* Entrada de produtos */}
-      {showEntry && (
-        <ProductEntry currentList={data} showSuggestions={show_suggestions} />
-      )}
-    </View>
+    </ThemedView>
   );
 }
 
-const AnimetedPressable = Animated.createAnimatedComponent(Pressable);
 
-// Botão reutilizável para filtros e ações
-
-type ActionButtonProps = {
-  icon?: IconProps["name"];
-  label: string;
-  active?: boolean;
-} & PressableProps;
-
-const ActionButtonf: React.FC<ActionButtonProps> = ({
-  icon,
-  label,
-  active,
-  style,
-  ...props
-}) => {
-  const backgroundColor = useThemeColor({}, "background.1");
-  const scale = useSharedValue(1);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
-
-  return (
-    <AnimetedPressable
-      style={[style, animatedStyle]}
-      onPressIn={() => {
-        scale.value = withTiming(0.9);
-      }}
-      onPressOut={() => {
-        scale.value = withTiming(1);
-      }}
-      {...props}
-    >
-      <ThemedView
-        style={[
-          [styles.actionButton],
-          {
-            opacity: active ? 1 : 0.4,
-            backgroundColor,
-          },
-        ]}
-      >
-        {icon ? <Icon name={icon} size={16} colorName="text.2" /> : null}
-        <ThemedText
-          colorName="text.2"
-          style={styles.ActionButtonLabel}
-          type="defaultSemiBold"
-        >
-          {label}
-        </ThemedText>
-      </ThemedView>
-    </AnimetedPressable>
-  );
-};
 
 const styles = StyleSheet.create({
   screen: {

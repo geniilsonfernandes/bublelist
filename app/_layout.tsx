@@ -16,6 +16,7 @@ import { Modals } from "@/components/Modals";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+import { Colors } from "@/constants/Colors";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
@@ -42,10 +43,8 @@ export default function RootLayout() {
   useEffect(() => {
     async function prepare() {
       try {
-        // Pre-load fonts, make any API calls you need to do here
         await Font.loadAsync(Entypo.font);
-        // Artificially delay for two seconds to simulate a slow loading
-        // experience. Remove this if you copy and paste the code!
+
         await new Promise((resolve) => setTimeout(resolve, 2000));
       } catch (e) {
         console.warn(e);
@@ -60,11 +59,6 @@ export default function RootLayout() {
 
   const onLayoutRootView = useCallback(() => {
     if (appIsReady) {
-      // This tells the splash screen to hide immediately! If we call this after
-      // `setAppIsReady`, then we may see a blank screen while the app is
-      // loading its initial state and rendering its first pixels. So instead,
-      // we hide the splash screen once we know the root view has already
-      // performed layout.
       SplashScreen.hide();
     }
   }, [appIsReady]);
@@ -74,10 +68,7 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView
-      style={{ flex: 1, backgroundColor: "#0f172a" }}
-      onLayout={onLayoutRootView}
-    >
+    <GestureHandlerRootView onLayout={onLayoutRootView}>
       <QueryClientProvider client={queryClient}>
         <BottomSheetModalProvider>
           <ThemeProvider
@@ -85,20 +76,42 @@ export default function RootLayout() {
           >
             <Stack
               screenOptions={{
-                headerShown: false,
+                headerStyle: {
+                  backgroundColor:
+                    colorScheme === "dark"
+                      ? Colors.dark.background
+                      : Colors.light.background,
+                },
+                headerShadowVisible: false,
               }}
             >
-              <Stack.Screen
-                name="(main)"
-                options={{
-                  headerShown: false,
-                  animation: "slide_from_right",
-                }}
-              />
               <Stack.Screen
                 name="index"
                 options={{
                   animation: "fade_from_bottom",
+                  headerShown: false,
+                }}
+              />
+
+              <Stack.Screen name="(list)" options={{ headerShown: false }} />
+
+              <Stack.Screen
+                name="settings/delete-data"
+                options={{
+                  headerTitle: "Deletar dados",
+                }}
+              />
+              <Stack.Screen
+                name="settings/export-data"
+                options={{
+                  headerTitle: "Exportar dados",
+                }}
+              />
+              <Stack.Screen
+                name="settings/list"
+                options={{
+                  headerTitle: "Configurações de listas",
+                  animation: "slide_from_right",
                 }}
               />
 

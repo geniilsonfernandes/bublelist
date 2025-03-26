@@ -12,7 +12,6 @@ import { formatValue } from "@/utils/calculateTotal";
 import { useMemo } from "react";
 import {
   Pressable,
-  ScrollView,
   StyleProp,
   StyleSheet,
   View,
@@ -101,7 +100,7 @@ export const ProductBullet: React.FC<ProductProps> = ({
           entering={FadeInUp.duration(200).easing(Easing.inOut(Easing.quad))}
           onPress={onCheck}
           onLongPress={onLongPress}
-          hitSlop={10}
+          hitSlop={0}
           onPressIn={() => {
             scale.value = withTiming(0.85);
           }}
@@ -205,38 +204,36 @@ export const PillList: React.FC<PillListProps> = ({
   const { setSelectedProduct } = useModals();
 
   return (
-    <ScrollView style={styles.container} removeClippedSubviews>
-      <View style={styles.pillList}>
-        {data.length === 0 && ListEmptyComponent}
-        {data.map((product) => (
-          <ProductBullet
-            key={product.id}
-            {...product}
-            onRemove={() => deleteProduct(product.id)}
-            onCheck={() =>
-              checkProduct({ id: product.id, checked: !product.checked })
-            }
-            onLongPress={() => setSelectedProduct(product)}
-            showQuantity={show_quantity}
-            showValue={show_value}
-          />
-        ))}
-      </View>
-    </ScrollView>
+    <View style={styles.pillList}>
+      {data.length === 0 && ListEmptyComponent}
+      {data.map((product) => (
+        <ProductBullet
+          key={product.id}
+          {...product}
+          onRemove={() => deleteProduct(product.id)}
+          onCheck={() =>
+            checkProduct({ id: product.id, checked: !product.checked })
+          }
+          onLongPress={() => setSelectedProduct(product)}
+          showQuantity={show_quantity}
+          showValue={show_value}
+        />
+      ))}
+    </View>
   );
 };
 
 // Styles
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    borderWidth: 1,
+    borderColor: "red",
   },
   pillList: {
     flexDirection: "row",
     flexWrap: "wrap",
     paddingHorizontal: 16,
     paddingBottom: 8,
-
     gap: 8,
   },
   pill: {
