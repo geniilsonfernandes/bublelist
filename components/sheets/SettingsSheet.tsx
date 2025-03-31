@@ -7,10 +7,9 @@ import BottomSheet, {
 import { useRouter } from "expo-router";
 import { forwardRef, useCallback, useMemo } from "react";
 import { StyleSheet, View } from "react-native";
-import { IconButtonWithLabel } from "../ui/IconButtonWithLabel";
 import { Paper } from "../ui/Paper";
+import { SettingsButton } from "../ui/SettingsButton";
 import { ThemedText } from "../ui/ThemedText";
-import { ThemedView } from "../ui/ThemedView";
 
 type SettingsSheetProps = {
   onClose: () => void;
@@ -22,7 +21,7 @@ export const SettingsSheet = forwardRef<BottomSheet, SettingsSheetProps>(
     const router = useRouter();
 
     // variables
-    const snapPoints = useMemo(() => ["25%", "54%"], []);
+    const snapPoints = useMemo(() => ["25%", "70%"], []);
 
     // renders
     const renderBackdrop = useCallback(
@@ -57,45 +56,49 @@ export const SettingsSheet = forwardRef<BottomSheet, SettingsSheetProps>(
           <View style={styles.container}>
             <ThemedText style={styles.sectionTitle}>Seus dados:</ThemedText>
             <Paper>
-              <IconButtonWithLabel
+              <SettingsButton
                 icon="upload"
                 onPress={() => {
                   onClose();
-                  router.push("/(main)/settings/export-data");
+                  router.push("/settings/export-data");
                 }}
                 label="Exportar dados"
+                rightIcon="chevron-right"
               />
-              <ThemedView
-                colorName="background.3"
-                style={{ height: 1, marginLeft: 48 }}
-              />
-              <IconButtonWithLabel
+
+              <SettingsButton
                 onPress={() => {
                   onClose();
-                  router.push("/(main)/settings/delete-data");
+                  router.push("/settings/delete-data");
                 }}
                 icon="trash-2"
                 label="Apagar dados"
+                rightIcon="chevron-right"
               />
             </Paper>
+
+            <ThemedText style={styles.sectionTitle}>Lista:</ThemedText>
+            <SettingsButton
+              onPress={() => router.push("/settings/list")}
+              icon="settings"
+              rightIcon="chevron-right"
+              label="Configurações da lista"
+            />
             <ThemedText style={styles.sectionTitle}>Sobre nós:</ThemedText>
 
-            <IconButtonWithLabel
+            <SettingsButton
               icon="star"
               label="Avalie a aplicação"
               rightIcon="external-link"
             />
             <Paper>
-              <IconButtonWithLabel
+              <SettingsButton
                 icon="message-circle"
                 label="Conversar com desenvolvedor"
                 rightIcon="external-link"
               />
-              <ThemedView
-                colorName="background.3"
-                style={{ height: 1, marginLeft: 48 }}
-              />
-              <IconButtonWithLabel
+
+              <SettingsButton
                 icon="file-text"
                 label="Termos e condições"
                 rightIcon="external-link"

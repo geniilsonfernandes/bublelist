@@ -6,6 +6,7 @@ import { Icon, IconProps } from "./Icon";
 type SettingsButtonProps = {
   label: string | React.ReactNode;
   rightComponent?: React.ReactNode;
+  rightIcon?: IconProps["name"];
   pr?: number;
   onPress?: () => void;
   color?: themeColors;
@@ -21,6 +22,7 @@ export const SettingsButton: React.FC<SettingsButtonProps> = ({
   bg = "background.1",
   color,
   icon,
+  rightIcon,
 }) => {
   const backgroundColor = useThemeColor({}, bg);
   const styles: StyleProp<ViewStyle> = {
@@ -56,6 +58,7 @@ export const SettingsButton: React.FC<SettingsButtonProps> = ({
       >
         {label}
       </ThemedText>
+      {rightIcon && <Icon name={rightIcon} size={18} colorName="text.6" />}
       {rightComponent}
     </Comp>
   );

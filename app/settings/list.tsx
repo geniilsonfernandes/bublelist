@@ -2,6 +2,7 @@ import { CheckBox } from "@/components/ui/CheckBox";
 import { Icon } from "@/components/ui/Icon";
 import { SettingsButton } from "@/components/ui/SettingsButton";
 import { ThemedText } from "@/components/ui/ThemedText";
+import { ThemedView } from "@/components/ui/ThemedView";
 import { Colors } from "@/constants/Colors";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useConfigStore } from "@/store/useConfigStore";
@@ -61,7 +62,7 @@ export default function SettingsList() {
   );
 
   return (
-    <View style={{ flex: 1, paddingHorizontal: 16, gap: 8 }}>
+    <ThemedView style={{ flex: 1, paddingHorizontal: 16, gap: 8 }}>
       {/* Seção: Visualização */}
       <ThemedText type="defaultSemiBold" colorName="text.7">
         Visualização
@@ -158,6 +159,6 @@ export default function SettingsList() {
           </View>
         </BottomSheetScrollView>
       </BottomSheetModal>
-    </View>
+    </ThemedView>
   );
 }

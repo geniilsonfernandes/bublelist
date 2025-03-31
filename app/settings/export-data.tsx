@@ -1,8 +1,8 @@
-import { IconButtonWithLabel } from "@/components/ui/IconButtonWithLabel";
+import { SettingsButton } from "@/components/ui/SettingsButton";
+import { ThemedView } from "@/components/ui/ThemedView";
 import { useGetList } from "@/database/useShoppingList";
 import * as ExpoFileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
-import { View } from "react-native";
 
 export default function ExportData() {
   const { data } = useGetList();
@@ -18,14 +18,14 @@ export default function ExportData() {
   };
 
   return (
-    <View style={{ flex: 1, paddingHorizontal: 16, gap: 48, paddingTop: 16 }}>
-      <IconButtonWithLabel
+    <ThemedView
+      style={{ flex: 1, paddingHorizontal: 16, gap: 48, paddingTop: 16 }}
+    >
+      <SettingsButton
         onPress={exportJson}
-        variant="solid"
         icon="upload"
-        rightIcon="none"
         label="exportar dados (.json)"
       />
-    </View>
+    </ThemedView>
   );
 }

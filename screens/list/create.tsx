@@ -26,17 +26,19 @@ export default function ListCreateScreen() {
     setEmoji,
   } = useEmojiStore();
 
+  const isEdit = id;
+
   const { mutate: createList } = useCreateList();
   const { mutate: editList } = useEditList();
   const router = useRouter();
 
-  const [listName, setListName] = useState(list?.name || "");
+  const [listName, setListName] = useState(isEdit ? list?.name : "");
   const [listBudget, setListBudget] = useState<number | null>(
-    list?.budget || null
+    isEdit ? list?.budget || null : null
   );
 
   const handleCreateList = () => {
-    if (list.id) {
+    if (isEdit) {
       editList(
         {
           id: id,
@@ -72,7 +74,7 @@ export default function ListCreateScreen() {
   };
 
   useEffect(() => {
-    if (list) {
+    if (isEdit && list) {
       setEmoji(list.icon || "🍔");
       setBackground(list.color || "#FFC107");
     }
@@ -120,7 +122,7 @@ export default function ListCreateScreen() {
         }}
       >
         <Button fullWidth variant="solid" onPress={handleCreateList}>
-          {list.id ? "Salvar" : "Criar lista"}
+          {isEdit ? "Salvar" : "Criar lista"}
         </Button>
       </View>
     </ThemedView>

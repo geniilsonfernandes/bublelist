@@ -1,8 +1,9 @@
-import { IconButtonWithLabel } from "@/components/ui/IconButtonWithLabel";
+import { SettingsButton } from "@/components/ui/SettingsButton";
+import { ThemedView } from "@/components/ui/ThemedView";
 import { useDeleteAllLists } from "@/database/useShoppingList";
 import { useRouter } from "expo-router";
 import React from "react";
-import { Alert, View } from "react-native";
+import { Alert } from "react-native";
 
 export default function DeleteData() {
   const { mutate: deleteAllLists } = useDeleteAllLists();
@@ -20,7 +21,7 @@ export default function DeleteData() {
         {
           text: "OK",
           onPress: () => {
-            deleteAllLists()
+            deleteAllLists();
             router.back();
             console.log("Dados apagados com sucesso");
           },
@@ -29,14 +30,14 @@ export default function DeleteData() {
     );
 
   return (
-    <View style={{ flex: 1, paddingHorizontal: 16, gap: 48, paddingTop: 16 }}>
-      <IconButtonWithLabel
+    <ThemedView
+      style={{ flex: 1, paddingHorizontal: 16, gap: 48, paddingTop: 16 }}
+    >
+      <SettingsButton
         onPress={createThreeButtonAlert}
-        variant="solid"
         icon="trash-2"
-        rightIcon="none"
         label="Apagar dados"
       />
-    </View>
+    </ThemedView>
   );
 }

@@ -13,6 +13,7 @@ import { Icon } from "@/components/ui/Icon";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
 
+import { EmptyList } from "@/components/EmptyList";
 import { useGetList } from "@/database/useShoppingList";
 import { useListStore } from "@/store/useListStore";
 import { StatusBar } from "react-native";
@@ -39,19 +40,19 @@ export default function HomeScreen() {
               style={styles.uppercase}
               colorName="text.1"
             >
-              {dayjs().format("ddd[.] M")}
+              {dayjs().format("ddd[.] DD")}
             </ThemedText>
             <ThemedText type="body" colorName="text.5">
-              {dayjs().format("YYYY")}
+              {dayjs().format("MMMM YYYY")}
             </ThemedText>
           </View>
         </View>
 
-        {/* <View style={styles.actions}>
+        <View style={styles.actions}>
           <ActionButton onPress={handleOpenSettings}>
             <Icon name="settings" size={24} colorName="text.2" />
           </ActionButton>
-        </View> */}
+        </View>
       </View>
 
       <SectionTitle title="Minhas listas" />
@@ -60,6 +61,12 @@ export default function HomeScreen() {
         contentContainerStyle={styles.list}
         data={data}
         keyExtractor={(item) => item.id}
+        ListEmptyComponent={
+          <EmptyList
+            message="Nenhuma lista criada"
+            subMessage="Crie uma nova lista para começar"
+          />
+        }
         ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
         renderItem={({ item }) => (
           <ListCard

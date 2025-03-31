@@ -104,12 +104,14 @@ export default function RootLayout() {
                 name="settings/delete-data"
                 options={{
                   headerTitle: "Deletar dados",
+                  animation: "slide_from_right",
                 }}
               />
               <Stack.Screen
                 name="settings/export-data"
                 options={{
                   headerTitle: "Exportar dados",
+                  animation: "slide_from_right",
                 }}
               />
               <Stack.Screen
