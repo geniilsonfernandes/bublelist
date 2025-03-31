@@ -44,6 +44,8 @@ export default function ListCreateScreen() {
           id: id,
           name: listName || LIST_NAME_SUGGESTIONS[0],
           budget: Number(listBudget),
+          color: background,
+          icon: emojiSelected,
         },
         {
           onSuccess: () => {
@@ -57,6 +59,8 @@ export default function ListCreateScreen() {
       {
         name: listName || LIST_NAME_SUGGESTIONS[0],
         budget: Number(listBudget),
+        color: background,
+        icon: emojiSelected,
       },
       {
         onSuccess: (data) => {
@@ -87,6 +91,7 @@ export default function ListCreateScreen() {
             value={listName}
             onChangeText={setListName}
             showActions={false}
+            pl={16}
             bg="background.1"
           />
           <ListNameSuggestions onAcceptSuggestion={setListName} />

@@ -13,7 +13,6 @@ export default function RootLayout() {
               ? Colors.dark.background
               : Colors.light.background,
         },
-        headerShown: false,
         headerShadowVisible: false,
       }}
     >
@@ -42,6 +41,7 @@ export default function RootLayout() {
           headerTitle: "editar produto",
           animation: "fade_from_bottom",
           presentation: "transparentModal",
+          headerShown: false,
         }}
       />
     </Stack>

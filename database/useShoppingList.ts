@@ -7,6 +7,8 @@ export type List = {
   budget?: number;
   name: string;
   products: Product[];
+  icon?: string;
+  color?: string;
 };
 
 export type Product = {
@@ -26,7 +28,7 @@ async function createList(
   data: Omit<List, "id" | "products">
 ): Promise<Omit<List, "products">> {
   const statement = await db.prepareAsync(
-    `INSERT INTO list (name, budget) VALUES ($name, $budget)`
+    `INSERT INTO list (name, budget, color, icon) VALUES ($name, $budget, $color, $icon)`
   );
   console.log(data);
 
@@ -34,6 +36,8 @@ async function createList(
     const result = await statement.executeAsync({
       $name: data.name,
       $budget: data.budget || 0,
+      $icon: data.icon || "",
+      $color: data.color || "",
     });
 
     const insertedRowId = result.lastInsertRowId;

@@ -63,7 +63,7 @@ export default function ListShowScreen() {
     <ThemedView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
-          title: list.name,
+          title: `${data?.icon} ${data?.name}`,
 
           headerShown: true,
           headerRight: () => (
@@ -75,9 +75,6 @@ export default function ListShowScreen() {
                 size="sm"
               >
                 <Icon name="search" size={18} />
-              </ActionButton>
-              <ActionButton style={styles.headerIcons} size="sm">
-                <Icon name="more-vertical" size={18} />
               </ActionButton>
             </View>
           ),

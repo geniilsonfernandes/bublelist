@@ -22,6 +22,7 @@ type InputProps = {
   bg?: themeColors;
   fullWidth?: boolean;
   size?: InputSize;
+  pl?: number;
 } & TextInputProps;
 
 export const Input = forwardRef<TextInput, InputProps>(
@@ -35,6 +36,7 @@ export const Input = forwardRef<TextInput, InputProps>(
       fullWidth,
       size = "xl",
       leftIcon,
+      pl,
       ...rest
     },
     ref
@@ -55,7 +57,7 @@ export const Input = forwardRef<TextInput, InputProps>(
       <ThemedView
         style={[
           styles.container,
-          { backgroundColor, flex: fullWidth ? 1 : undefined },
+          { backgroundColor, flex: fullWidth ? 1 : undefined, paddingLeft: pl },
           sizeStyles[size],
         ]}
       >

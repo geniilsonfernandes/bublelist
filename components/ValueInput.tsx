@@ -23,6 +23,7 @@ type ValueInputProps = {
   style?: StyleProp<ViewStyle>;
   bg?: themeColors;
   size?: "md" | "lg" | "sm";
+  pl?: number;
 };
 
 export const ValueInput: React.FC<ValueInputProps> = ({
@@ -34,6 +35,7 @@ export const ValueInput: React.FC<ValueInputProps> = ({
   increment = 50,
   size,
   style,
+  pl,
   bg = "background",
 }) => {
   const backgroundColor = useThemeColor({}, bg);
@@ -61,7 +63,7 @@ export const ValueInput: React.FC<ValueInputProps> = ({
       style={[
         styles.container,
         style,
-        { backgroundColor, height: height[size || "md"] },
+        { backgroundColor, height: height[size || "md"], paddingLeft: pl },
       ]}
     >
       <Feather name="dollar-sign" size={18} color={textColor} />

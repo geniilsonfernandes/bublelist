@@ -2,7 +2,7 @@ import { type List } from "@/database/useShoppingList";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -29,6 +29,8 @@ export const ListCard: React.FC<ListProps> = ({
   name,
   products,
   onPress,
+  icon,
+  color,
   onClickToDelete,
   onClickToEdit,
   onClickToShare,
@@ -39,7 +41,6 @@ export const ListCard: React.FC<ListProps> = ({
   const [expanded, setExpanded] = useState(false);
 
   const totalOfProducts = products.length || 0;
-  const itemsChecked = products.filter((item) => item.checked).length;
   const bg = useThemeColor({}, "background.1");
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -82,7 +83,7 @@ export const ListCard: React.FC<ListProps> = ({
       <LinearGradient
         start={{ x: 0, y: 0 }}
         dither={false}
-        colors={["#cc565610", bg + 10]}
+        colors={[`${color || bg}50` || bg, bg + 40]}
         style={styles.container}
       >
         <ThemedView
@@ -90,10 +91,21 @@ export const ListCard: React.FC<ListProps> = ({
             width: 56,
             height: 56,
             borderRadius: 8,
-            backgroundColor: "#cc565650",
+            backgroundColor: color + "50",
           }}
           colorName="background.2"
-        ></ThemedView>
+        >
+          <Text
+            style={{
+              textAlign: "center",
+              lineHeight: 56,
+              fontSize: 24,
+              color: "#fff",
+            }}
+          >
+            {icon || "📋"}
+          </Text>
+        </ThemedView>
         <View>
           <ThemedText style={styles.title}>{name}</ThemedText>
           <ThemedText type="body" colorName="text.5">
