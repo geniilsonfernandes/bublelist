@@ -44,21 +44,26 @@ Buble List é um aplicativo moderno de lista de compras que combina simplicidade
 
 ## UI/UX
 
-<p align="center">
-  <img src="assets/screenshots/01.png" width="200" />
-  <img src="assets/screenshots/02.png" width="200" />
-  <img src="assets/screenshots/03.png" width="200" />
-  <img src="assets/screenshots/04.png" width="200" />
-  <img src="assets/screenshots/05.png" width="200" />
-</p>
-<p align="center">
-  <img src="assets/screenshots/06.png" width="200" />
-  <img src="assets/screenshots/07.png" width="200" />
-  <img src="assets/screenshots/08.png" width="200" />
-  <img src="assets/screenshots/09.png" width="200" />
-  <img src="assets/screenshots/10.png" width="200" />
+  <p align="center">
+  <img src="assets/screenshots/1.png" width="200" />
+  <img src="assets/screenshots/2.png" width="200" />
+  <img src="assets/screenshots/3.png" width="200" />
+  </p>
+  <p align="center">
+  <img src="assets/screenshots/4.png" width="200" />
+  <img src="assets/screenshots/5.png" width="200" />
+  <img src="assets/screenshots/6.png" width="200" />
+  </p>
+   <p align="center">
+  <img src="assets/screenshots/7.png" width="200" />
+  <img src="assets/screenshots/8.png" width="200" />
+  
+  </p>
+     <p align="center">
   <img src="assets/screenshots/11.png" width="200" />
-</p>
+  <img src="assets/screenshots/10.png" width="200" />
+
+  </p>
 
 ### Documentation
 
@@ -84,10 +89,12 @@ src/
 ```
 
 ## SQLite
-	•	Tabelas:
-	•	list: informações da lista (nome, cor, emoji, orçamento, data)
-	•	product: produtos por lista (nome, quantidade, valor, status, etc)
+
+    •	Tabelas:
+    •	list: informações da lista (nome, cor, emoji, orçamento, data)
+    •	product: produtos por lista (nome, quantidade, valor, status, etc)
 
 ## Componentes Reutilizáveis
-	•	ProductInput: entrada de produto com botão de ação
-	•	ThemedView / ThemedText: suporte a temas escuros/claro
+
+    •	ProductInput: entrada de produto com botão de ação
+    •	ThemedView / ThemedText: suporte a temas escuros/claro
