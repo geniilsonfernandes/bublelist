@@ -84,13 +84,15 @@ async function getList(): Promise<List[]> {
 
 async function editList(data: Omit<List, "products">) {
   const statement = await db.prepareAsync(
-    `UPDATE list SET name = $name, budget = $budget WHERE id = $id`
+    `UPDATE list SET name = $name, budget = $budget, icon = $icon, color = $color WHERE id = $id`
   );
   try {
     const result = await statement.executeAsync({
       $name: data.name,
       $budget: data.budget || 0,
       $id: data.id,
+      $icon: data.icon || "",
+      $color: data.color || "",
     });
 
     return result;

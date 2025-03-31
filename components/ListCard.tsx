@@ -74,9 +74,11 @@ export const ListCard: React.FC<ListProps> = ({
     <AnimatedPressable
       style={animatedStyle}
       onPress={onPress}
-      // onLongPress={() => {
-      //   setExpanded(true);
-      // }}
+      onLongPress={() => {
+        console.log("long press");
+
+        onClickToEdit && onClickToEdit();
+      }}
       onPressIn={() => (scale.value = 0.98)}
       onPressOut={() => (scale.value = 1)}
     >

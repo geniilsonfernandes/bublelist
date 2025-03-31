@@ -7,38 +7,36 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { ThemedView } from "@/components/ui/ThemedView";
 import { ValueInput } from "@/components/ValueInput";
-import {
-  useCreateList,
-  useEditList,
-  useGetListById,
-} from "@/database/useShoppingList";
+import { useCreateList, useEditList } from "@/database/useShoppingList";
 import { useEmojiStore } from "@/store/useEmojiStore";
 import { useListStore } from "@/store/useListStore";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, ToastAndroid, View } from "react-native";
 
 export default function ListCreateScreen() {
-  const { setList, list } = useListStore();
+  const { setList, list, clearList } = useListStore();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const isEdit = id !== undefined;
 
-  const { data } = useGetListById(id);
-
-  const { background, emoji: emojiSelected } = useEmojiStore();
+  const {
+    background,
+    emoji: emojiSelected,
+    setBackground,
+    setEmoji,
+  } = useEmojiStore();
 
   const { mutate: createList } = useCreateList();
   const { mutate: editList } = useEditList();
   const router = useRouter();
 
-  const [listName, setListName] = useState(data?.name || "");
+  const [listName, setListName] = useState(list?.name || "");
   const [listBudget, setListBudget] = useState<number | null>(
-    data?.budget || null
+    list?.budget || null
   );
 
   const handleCreateList = () => {
-    if (isEdit) {
+    if (list.id) {
       editList(
         {
           id: id,
@@ -49,6 +47,8 @@ export default function ListCreateScreen() {
         },
         {
           onSuccess: () => {
+            ToastAndroid.show("Lista atualizada", ToastAndroid.SHORT);
+            clearList();
             router.back();
           },
         }
@@ -70,6 +70,13 @@ export default function ListCreateScreen() {
       }
     );
   };
+
+  useEffect(() => {
+    if (list) {
+      setEmoji(list.icon || "🍔");
+      setBackground(list.color || "#FFC107");
+    }
+  }, [list]);
 
   return (
     <ThemedView colorName="background" style={styles.container}>
@@ -113,7 +120,7 @@ export default function ListCreateScreen() {
         }}
       >
         <Button fullWidth variant="solid" onPress={handleCreateList}>
-          {isEdit ? "Salvar" : "Criar lista"}
+          {list.id ? "Salvar" : "Criar lista"}
         </Button>
       </View>
     </ThemedView>
