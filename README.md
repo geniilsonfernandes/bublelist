@@ -1,4 +1,4 @@
-# Pango | Shopping List
+# bublelist | Shopping List
 
 <p align="center" id="menu">
   <a href="#about-the-project">About the Project</a> •
