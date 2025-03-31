@@ -1,7 +1,6 @@
 import { StyleSheet, Text, type TextProps } from "react-native";
 
-import { Colors } from "@/constants/Colors";
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { themeColors, useThemeColor } from "@/hooks/useThemeColor";
 
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
@@ -16,7 +15,7 @@ export type ThemedTextProps = TextProps & {
     | "body"
     | "title.2"
     | "title.3";
-  colorName?: keyof typeof Colors.light;
+  colorName?: themeColors;
   opacity?: number;
 };
 

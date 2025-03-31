@@ -13,6 +13,7 @@ export default function RootLayout() {
               ? Colors.dark.background
               : Colors.light.background,
         },
+        headerShown: false,
         headerShadowVisible: false,
       }}
     >
@@ -22,8 +23,27 @@ export default function RootLayout() {
           headerTitle: "Nova lista",
         }}
       />
-      <Stack.Screen name="show/[id]/index" />
-      <Stack.Screen name="edit" />
+      <Stack.Screen
+        name="show/[id]/index"
+        options={{
+          animation: "fade_from_bottom",
+        }}
+      />
+      <Stack.Screen
+        name="show/[id]/edit"
+        options={{
+          headerTitle: "Editar lista",
+          animation: "fade_from_bottom",
+        }}
+      />
+      <Stack.Screen
+        name="product"
+        options={{
+          headerTitle: "editar produto",
+          animation: "fade_from_bottom",
+          presentation: "transparentModal",
+        }}
+      />
     </Stack>
   );
 }

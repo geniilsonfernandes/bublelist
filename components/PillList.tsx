@@ -7,6 +7,7 @@ import {
 import { useConfigStore } from "@/store/useConfigStore";
 import { useModals } from "@/store/useModals";
 import { formatValue } from "@/utils/calculateTotal";
+import { useRouter } from "expo-router";
 import { useMemo } from "react";
 import {
   Pressable,
@@ -23,6 +24,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { Icon } from "./ui/Icon";
 import { ThemedText } from "./ui/ThemedText";
 import { ThemedView } from "./ui/ThemedView";
 
@@ -81,7 +83,6 @@ export const ProductBullet: React.FC<ProductProps> = ({
         onPressOut={() => {
           scale.value = withTiming(1);
         }}
-        style={animatedStyle}
       >
         <ProductContent
           name={name}
@@ -118,10 +119,16 @@ export const ProductContent: React.FC<ProductContentProps> = ({
 }) => {
   return (
     <ThemedView
-      colorName={checked ? "success" : "background.1"}
+      colorName={checked ? "success" : "transparent"}
+      borderColor={checked ? "success" : "background.1"}
       style={[styles.pill, style]}
     >
-      <ThemedText colorName="text.1" type="defaultSemiBold">
+      <Icon
+        name={checked ? "check" : "circle"}
+        size={16}
+        colorName={checked ? "gray.100" : "background.1"}
+      />
+      <ThemedText colorName="text.1" type="body">
         {name}
       </ThemedText>
 
@@ -164,7 +171,7 @@ export const PillList: React.FC<PillListProps> = ({
   const { mutate: deleteProduct } = useDeleteProduct();
   const { mutate: checkProduct } = useCheckProduct();
   const { setSelectedProduct } = useModals();
-
+  const router = useRouter();
   return (
     <ScrollView
       contentContainerStyle={styles.pillList}
@@ -179,7 +186,10 @@ export const PillList: React.FC<PillListProps> = ({
           onCheck={() =>
             checkProduct({ id: product.id, checked: !product.checked })
           }
-          onLongPress={() => setSelectedProduct(product)}
+          onLongPress={() => {
+            setSelectedProduct(product);
+            router.push("/(list)/product");
+          }}
           showQuantity={show_quantity}
           showValue={show_value}
         />
@@ -198,11 +208,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     paddingHorizontal: 16,
-    paddingBottom: 8,
+    paddingVertical: 8,
+    paddingBottom: 68,
     gap: 10,
   },
   pill: {
     paddingHorizontal: 10,
+    paddingLeft: 8,
     height: 38,
     borderRadius: 8,
     flexDirection: "row",

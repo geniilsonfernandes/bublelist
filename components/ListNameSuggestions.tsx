@@ -30,14 +30,13 @@ export const ListNameSuggestions: React.FC<ListNameSuggestionsProps> = ({
   onAcceptSuggestion,
 }) => {
   return (
-    <>
-      <ThemedText type="body" style={styles.suggestionTitle} colorName="text.4">
+    <View style={styles.container}>
+      <ThemedText type="body" colorName="text.4">
         Sugestões:
       </ThemedText>
       <FlatList
         data={LIST_NAME_SUGGESTIONS}
         horizontal
-        contentContainerStyle={styles.suggestionContainer}
         showsHorizontalScrollIndicator={false}
         keyboardShouldPersistTaps="always"
         ItemSeparatorComponent={() => <View style={styles.separator} />}
@@ -53,13 +52,11 @@ export const ListNameSuggestions: React.FC<ListNameSuggestionsProps> = ({
         )}
         keyExtractor={(item) => item}
       />
-    </>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  suggestionContainer: { marginTop: 8 },
-  suggestionTitle: { marginTop: 8 },
-
+  container: { gap: 8 },
   separator: { width: 8 },
 });

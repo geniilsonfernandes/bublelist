@@ -1,4 +1,4 @@
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { themeColors, useThemeColor } from "@/hooks/useThemeColor";
 import {
   Pressable,
   PressableProps,
@@ -6,14 +6,13 @@ import {
   StyleSheet,
   ViewStyle,
 } from "react-native";
-import Animated from "react-native-reanimated";
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
-type ActionButtonProps = {
+export type ActionButtonProps = {
   style?: StyleProp<ViewStyle>;
   variant?: "outline" | "solid" | "danger" | "ghost";
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xl" | "xxl" | "large";
+
+  bg?: themeColors;
 } & PressableProps;
 
 export const ActionButton: React.FC<ActionButtonProps> = ({
@@ -21,15 +20,19 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   variant = "ghost",
   style,
   size = "md",
+  bg = "background.1",
   ...props
 }) => {
-  const backgroundColor = useThemeColor({}, "background.1");
-  const borderColor = useThemeColor({}, "background.1");
+  const backgroundColor = useThemeColor({}, bg);
+  const borderColor = useThemeColor({}, bg);
 
   const sizeStyles: StyleProp<ViewStyle> = [
     size === "sm" && { height: 32 },
     size === "md" && { height: 40 },
     size === "lg" && { height: 48 },
+    size === "xl" && { height: 56, width: 56 },
+    size === "xxl" && { height: 64, width: 64 },
+    size === "large" && { height: 72, width: 72 },
   ];
 
   const variantStyles: StyleProp<ViewStyle> = [

@@ -1,7 +1,6 @@
 import * as Haptics from "expo-haptics";
-import { useState } from "react";
-import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
-import Animated, { Easing, FadeIn } from "react-native-reanimated";
+import { useMemo, useState } from "react";
+import { FlatList, TouchableOpacity } from "react-native";
 import { Chip } from "./Chip";
 
 type SuggestionsProps = {
@@ -9,10 +8,7 @@ type SuggestionsProps = {
   suggestions: string[];
 };
 
-export const Suggestions: React.FC<SuggestionsProps> = ({
-  onSelect,
-  suggestions,
-}) => {
+export const Suggestions: React.FC<SuggestionsProps> = ({ onSelect, suggestions }) => {
   const [mode, setMode] = useState<"horizontal" | "vertical">("horizontal");
 
   const handleSelect = (item: string) => {
@@ -24,63 +20,30 @@ export const Suggestions: React.FC<SuggestionsProps> = ({
     return null;
   }
 
+  const memoList = useMemo(() => suggestions, [suggestions]);
   // TODO: Add a button to switch between horizontal and vertical mode
 
   return (
-    <View style={{ gap: 8 }}>
-      {mode === "vertical" && (
-        <ScrollView>
-          <Animated.View
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              gap: 4,
-            }}
-          >
-            {suggestions.map((item, index) => (
-              <Animated.View
-                key={item}
-                entering={FadeIn.delay(index * 10)
-                  .duration(300)
-                  .easing(Easing.inOut(Easing.quad))}
-              >
-                <Chip label={item} />
-              </Animated.View>
-            ))}
-          </Animated.View>
-        </ScrollView>
-      )}
+    <>
       {mode === "horizontal" && (
-        <Animated.FlatList
+        <FlatList
+          key={memoList.length}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           keyboardShouldPersistTaps="always"
-          contentContainerStyle={{ paddingHorizontal: 8, gap: 8 }}
+          contentContainerStyle={{
+            gap: 8,
+          }}
           // layout={LinearTransition}
           keyExtractor={(item) => item}
-          data={suggestions}
-          renderItem={({ item, index }) => (
+          data={memoList}
+          renderItem={({ item }) => (
             <TouchableOpacity onPress={() => handleSelect(item)}>
               <Chip label={item} />
             </TouchableOpacity>
           )}
         />
       )}
-    </View>
+    </>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    borderRadius: 5,
-    alignItems: "center",
-    justifyContent: "center",
-    width: 16,
-    height: 16,
-    marginHorizontal: "auto",
-  },
-  text: {
-    color: "white",
-    fontWeight: "bold",
-  },
-});

@@ -7,12 +7,11 @@ import {
 import * as Font from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-
 import { StatusBar } from "expo-status-bar";
+import * as SystemUI from "expo-system-ui";
 import { useCallback, useEffect, useState } from "react";
 import "react-native-reanimated";
 
-import { Modals } from "@/components/Modals";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -44,6 +43,9 @@ export default function RootLayout() {
     async function prepare() {
       try {
         await Font.loadAsync(Entypo.font);
+        const color = await SystemUI.getBackgroundColorAsync();
+
+        console.log(color);
 
         await new Promise((resolve) => setTimeout(resolve, 2000));
       } catch (e) {
@@ -93,7 +95,10 @@ export default function RootLayout() {
                 }}
               />
 
-              <Stack.Screen name="(list)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="(list)"
+                options={{ headerShown: false, animation: "slide_from_right" }}
+              />
 
               <Stack.Screen
                 name="settings/delete-data"
@@ -114,10 +119,18 @@ export default function RootLayout() {
                   animation: "slide_from_right",
                 }}
               />
+              <Stack.Screen
+                name="emoji"
+                options={{
+                  headerTitle: "Emoji",
+                  animation: "fade_from_bottom",
+                  headerTitleAlign: "center",
+                  presentation: "transparentModal",
+                }}
+              />
 
               <Stack.Screen name="+not-found" />
             </Stack>
-            <Modals />
             <StatusBar style="auto" />
           </ThemeProvider>
         </BottomSheetModalProvider>

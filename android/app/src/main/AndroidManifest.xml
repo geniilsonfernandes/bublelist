@@ -27,6 +27,7 @@
         <data android:scheme="myapp"/>
         <data android:scheme="com.orriker.tlist"/>
         <data android:scheme="exp+tlist"/>
+        <data android:scheme="com.orriker.Bubblylist"/>
       </intent-filter>
     </activity>
   </application>

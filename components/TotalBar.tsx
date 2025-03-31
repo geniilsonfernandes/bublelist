@@ -18,7 +18,8 @@ export function TotalBar({ data, show, budget }: TotalBarProps) {
     return {
       budget: formatValue(budget || 0),
       total: formatValue(total),
-      checked: formatValue((budget || 0) - total),
+      checkedFormatted: formatValue((budget || 0) - total),
+      checked: (budget || 0) - total,
     };
   }, [data]);
 
@@ -36,17 +37,19 @@ export function TotalBar({ data, show, budget }: TotalBarProps) {
           gap: 24,
           borderRadius: 8,
           padding: 8,
-          marginBottom: 8,
-          marginHorizontal: 8,
           paddingHorizontal: 16,
+          margin: 8,
         }}
       >
         <View>
           <ThemedText type="defaultSemiBold" colorName="text.5">
             Orçamento:
           </ThemedText>
-          <ThemedText type="body" colorName="text.5">
-            {values.budget} / {values.checked}
+          <ThemedText
+            type="body"
+            colorName={values.checked < 0 ? "danger" : "text.5"}
+          >
+            {values.budget} / {values.checkedFormatted}
           </ThemedText>
         </View>
 

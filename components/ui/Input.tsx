@@ -3,24 +3,25 @@ import { Feather } from "@expo/vector-icons";
 import { forwardRef } from "react";
 import {
   Pressable,
-  StyleProp,
   StyleSheet,
   TextInput,
   TextInputProps,
-  View,
   ViewStyle,
 } from "react-native";
 import Animated, { FadeInLeft, FadeOutLeft } from "react-native-reanimated";
+import { ThemedView } from "./ThemedView";
+
+type InputSize = "sm" | "md" | "lg" | "xl";
 
 type InputProps = {
   onActionClick?: () => void;
+  leftIcon?: keyof typeof Feather.glyphMap;
   rightSection?: React.ReactNode;
   iconName?: keyof typeof Feather.glyphMap;
   showActions?: boolean;
   bg?: themeColors;
   fullWidth?: boolean;
-  cap?: "top" | "bottom";
-  size?: "md" | "lg" | "sm" | "xl";
+  size?: InputSize;
 } & TextInputProps;
 
 export const Input = forwardRef<TextInput, InputProps>(
@@ -31,67 +32,58 @@ export const Input = forwardRef<TextInput, InputProps>(
       iconName = "check",
       showActions = true,
       bg = "background",
-      cap,
       fullWidth,
       size = "xl",
+      leftIcon,
       ...rest
     },
     ref
   ) => {
     const textColor = useThemeColor({}, "text.2");
     const backgroundColor = useThemeColor({}, bg);
-    const placeholderTextColor = useThemeColor({}, "text.3");
+    const placeholderTextColor = useThemeColor({}, "text.4");
     const iconColor = useThemeColor({}, "primary.100");
 
-    const sizeStyles: StyleProp<ViewStyle> = [
-      size === "sm" && { height: 32 },
-      size === "md" && { height: 40 },
-      size === "lg" && { height: 48 },
-      size === "xl" && { height: 56 },
-    ];
+    const sizeStyles: Record<InputSize, ViewStyle> = {
+      sm: { height: 32 },
+      md: { height: 40 },
+      lg: { height: 48 },
+      xl: { height: 56 },
+    };
+
     return (
-      <View
+      <ThemedView
         style={[
           styles.container,
-          {
-            backgroundColor,
-            flex: fullWidth ? 1 : undefined,
-          },
-          sizeStyles,
+          { backgroundColor, flex: fullWidth ? 1 : undefined },
+          sizeStyles[size],
         ]}
       >
+        {leftIcon && <Feather name={leftIcon} size={16} color={textColor} />}
+
         <TextInput
           ref={ref}
-          style={[
-            styles.input,
-            {
-              color: textColor,
-            },
-          ]}
-          placeholderTextColor={placeholderTextColor + "80"}
+          style={[styles.input, { color: textColor }]}
+          placeholderTextColor={placeholderTextColor}
           {...rest}
         />
 
-        {rest.value && showActions && (
-          <Animated.View
-            entering={FadeInLeft.duration(200)}
-            exiting={FadeOutLeft.duration(200)} // Aqui está a correção
-          >
+        {rightSection}
+
+        {showActions && rest.value && (
+          <Animated.View entering={FadeInLeft} exiting={FadeOutLeft}>
             <Pressable
               onPress={onActionClick}
-              style={[
+              style={({ pressed }) => [
                 styles.icon,
-                {
-                  backgroundColor: iconColor,
-                },
+                { backgroundColor: iconColor, opacity: pressed ? 0.7 : 1 },
               ]}
-              disabled={!rest.value}
             >
               <Feather name={iconName} size={16} color="#fff" />
             </Pressable>
           </Animated.View>
         )}
-      </View>
+      </ThemedView>
     );
   }
 );
@@ -102,30 +94,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     borderRadius: 8,
-    height: 56,
-    backgroundColor: "#5B5B5B",
-    paddingHorizontal: 8,
+    paddingHorizontal: 4,
   },
   input: {
     flex: 1,
     fontSize: 16,
     height: "100%",
-    padding: 8,
-    borderRadius: 50,
   },
   icon: {
-    width: 40,
-    height: 40,
+    width: 36,
+    height: 36,
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
-  },
-  capBottom: {
-    borderBottomEndRadius: 8,
-    borderBottomStartRadius: 8,
-  },
-  capTop: {
-    borderTopEndRadius: 8,
-    borderTopStartRadius: 8,
   },
 });

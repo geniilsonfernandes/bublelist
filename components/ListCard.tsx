@@ -1,4 +1,6 @@
 import { type List } from "@/database/useShoppingList";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
@@ -38,7 +40,7 @@ export const ListCard: React.FC<ListProps> = ({
 
   const totalOfProducts = products.length || 0;
   const itemsChecked = products.filter((item) => item.checked).length;
-  const progress = Math.round((itemsChecked / totalOfProducts) * 100);
+  const bg = useThemeColor({}, "background.1");
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: withTiming(scale.value, { duration: 200 }) }],
@@ -77,12 +79,18 @@ export const ListCard: React.FC<ListProps> = ({
       onPressIn={() => (scale.value = 0.98)}
       onPressOut={() => (scale.value = 1)}
     >
-      <ThemedView backgroundColor="background.1" style={styles.container}>
+      <LinearGradient
+        start={{ x: 0, y: 0 }}
+        dither={false}
+        colors={["#cc565610", bg + 10]}
+        style={styles.container}
+      >
         <ThemedView
           style={{
             width: 56,
             height: 56,
             borderRadius: 8,
+            backgroundColor: "#cc565650",
           }}
           colorName="background.2"
         ></ThemedView>
@@ -118,7 +126,7 @@ export const ListCard: React.FC<ListProps> = ({
             </ActionButton>
           </Animated.View>
         ) : null} */}
-      </ThemedView>
+      </LinearGradient>
     </AnimatedPressable>
   );
 };
@@ -131,7 +139,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 16,
+    borderRadius: 8,
     backgroundColor: "transparent",
+    padding: 8,
   },
   headerContainer: {
     gap: 8,

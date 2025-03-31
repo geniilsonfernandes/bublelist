@@ -109,14 +109,14 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
+    gap: 8,
     borderRadius: 8,
-    paddingHorizontal: 16,
+    paddingHorizontal: 10,
     height: 56,
   },
   controls: {
     flexDirection: "row",
-    gap: 8,
+    gap: 10,
   },
   budgetButton: {
     width: 40,

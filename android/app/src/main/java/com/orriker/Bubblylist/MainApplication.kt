@@ -1,4 +1,4 @@
-package com.orriker.tlist
+package com.orriker.Bubblylist
 
 import android.app.Application
 import android.content.res.Configuration

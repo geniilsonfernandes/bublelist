@@ -11,8 +11,8 @@ type ChipProps = {
 export const Chip: React.FC<ChipProps> = ({ label, active }) => {
   return (
     <ThemedView
-      borderColor={active ? "background.4" : "background.1"}
-      colorName={active ? "background.3" : "background.1"}
+      borderColor={active ? "background.4" : "background.2"}
+      colorName={active ? "background.3" : "background.2"}
       style={styles.container}
     >
       <ThemedText colorName={active ? "text.1" : "text.4"} style={styles.label}>

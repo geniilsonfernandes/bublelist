@@ -1,7 +1,10 @@
-import { LIST_NAME_SUGGESTIONS, ListNameSuggestions } from "@/components/ListNameSuggestions";
+import { Emoji } from "@/app/emoji";
+import {
+  LIST_NAME_SUGGESTIONS,
+  ListNameSuggestions,
+} from "@/components/ListNameSuggestions";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
 import { ValueInput } from "@/components/ValueInput";
 import {
@@ -9,21 +12,22 @@ import {
   useEditList,
   useGetListById,
 } from "@/database/useShoppingList";
-import { useDisclosure } from "@/hooks/useDisclosure";
-import { Feather } from "@expo/vector-icons";
+import { useEmojiStore } from "@/store/useEmojiStore";
+import { useListStore } from "@/store/useListStore";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import Animated, { FadeInUp } from "react-native-reanimated";
 
 export default function ListCreateScreen() {
+  const { setList, list } = useListStore();
   const { id } = useLocalSearchParams<{ id: string }>();
   const isEdit = id !== undefined;
 
   const { data } = useGetListById(id);
 
-  const [showMore, { toggle: toggleShowMore }] = useDisclosure(isEdit);
+  const { background, emoji: emojiSelected } = useEmojiStore();
+
   const { mutate: createList } = useCreateList();
   const { mutate: editList } = useEditList();
   const router = useRouter();
@@ -56,7 +60,8 @@ export default function ListCreateScreen() {
       },
       {
         onSuccess: (data) => {
-          router.replace(`/(main)/lista/${data.id}`);
+          router.replace(`/(list)/show/${data.id}`);
+          setList(data);
         },
       }
     );
@@ -64,49 +69,36 @@ export default function ListCreateScreen() {
 
   return (
     <ThemedView colorName="background" style={styles.container}>
-      <View>
-        <ThemedText
-          type="body"
+      <View style={styles.content}>
+        <Emoji
+          color={background}
+          emoji={emojiSelected}
+          showButton
+          onPress={() => router.push("/emoji")}
+        />
+
+        <View
           style={{
-            marginVertical: 16,
+            gap: 4,
           }}
         >
-          Escolha um nome para a sua lista de compras
-        </ThemedText>
-        <Input
-          placeholder="Nome da lista"
-          value={listName}
-          onChangeText={setListName}
-          showActions={false}
-          cap="bottom"
+          <Input
+            placeholder="Nome da lista"
+            value={listName}
+            onChangeText={setListName}
+            showActions={false}
+            bg="background.1"
+          />
+          <ListNameSuggestions onAcceptSuggestion={setListName} />
+        </View>
+
+        <ValueInput
+          placeholder="Orçamento da lista"
+          controlButtons
+          value={listBudget}
+          onChangeValue={setListBudget}
           bg="background.1"
         />
-        <ListNameSuggestions onAcceptSuggestion={setListName} />
-
-        {showMore && (
-          <Animated.View
-            entering={FadeInUp.duration(300)}
-            style={styles.budgetContainer}
-          >
-            <ValueInput
-              placeholder="Orçamento da lista"
-              controlButtons
-              value={listBudget}
-              onChangeValue={setListBudget}
-              bg="background.1"
-            />
-          </Animated.View>
-        )}
-
-        {!showMore ? (
-          <Feather
-            name={showMore ? "chevron-up" : "chevron-down"}
-            size={24}
-            style={styles.icon}
-            onPress={toggleShowMore}
-            color="#C5C5C5"
-          />
-        ) : null}
       </View>
       <View
         style={{
@@ -115,9 +107,6 @@ export default function ListCreateScreen() {
           justifyContent: "space-between",
         }}
       >
-        <Button variant="outline" fullWidth onPress={() => router.back()}>
-          Cancelar
-        </Button>
         <Button fullWidth variant="solid" onPress={handleCreateList}>
           {isEdit ? "Salvar" : "Criar lista"}
         </Button>
@@ -132,6 +121,8 @@ const styles = StyleSheet.create({
     padding: 16,
     justifyContent: "space-between",
   },
+  content: { gap: 16 },
+
   header: { marginBottom: 16 },
   suggestionContainer: { marginTop: 8 },
   suggestionTitle: { marginTop: 8 },

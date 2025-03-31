@@ -1,11 +1,7 @@
 import { ThemedText } from "@/components/ui/ThemedText";
 import { themeColors, useThemeColor } from "@/hooks/useThemeColor";
-import {
-    Pressable,
-    StyleProp,
-    View,
-    ViewStyle
-} from "react-native";
+import { Pressable, StyleProp, View, ViewStyle } from "react-native";
+import { Icon, IconProps } from "./Icon";
 
 type SettingsButtonProps = {
   label: string | React.ReactNode;
@@ -14,6 +10,7 @@ type SettingsButtonProps = {
   onPress?: () => void;
   color?: themeColors;
   bg?: themeColors;
+  icon?: IconProps["name"];
 };
 
 export const SettingsButton: React.FC<SettingsButtonProps> = ({
@@ -23,6 +20,7 @@ export const SettingsButton: React.FC<SettingsButtonProps> = ({
   onPress,
   bg = "background.1",
   color,
+  icon,
 }) => {
   const backgroundColor = useThemeColor({}, bg);
   const styles: StyleProp<ViewStyle> = {
@@ -37,7 +35,7 @@ export const SettingsButton: React.FC<SettingsButtonProps> = ({
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: 8,
+          gap: 16,
           padding: 16,
           height: 56,
           borderRadius: 8,
@@ -48,7 +46,14 @@ export const SettingsButton: React.FC<SettingsButtonProps> = ({
       onPress={onPress}
       // bg="background.1"
     >
-      <ThemedText type="defaultSemiBold" colorName={color}>
+      {icon && <Icon name={icon} size={18} colorName="text.6" />}
+      <ThemedText
+        type="defaultSemiBold"
+        colorName={color}
+        style={{
+          flex: 1,
+        }}
+      >
         {label}
       </ThemedText>
       {rightComponent}

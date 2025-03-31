@@ -10,14 +10,13 @@ import { DeleteListSheet } from "@/components/sheets/DeleteListSheet";
 import { SettingsSheet } from "@/components/sheets/SettingsSheet";
 import { ShareListSheet } from "@/components/sheets/ShareListSheet";
 import { ActionButton } from "@/components/ui/ActionButton";
-import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
 
 import { Input } from "@/components/ui/Input";
 import { List, useGetList } from "@/database/useShoppingList";
-import { useKeyboard } from "@/hooks/useKeyboard";
+import { useListStore } from "@/store/useListStore";
 import { StatusBar } from "react-native";
 import Animated, {
   Easing,
@@ -31,7 +30,7 @@ dayjs.locale("pt-br");
 
 export default function HomeScreen() {
   const router = useRouter();
-  const keyboardVisible = useKeyboard();
+  const { setList } = useListStore();
   const { data } = useGetList();
   const [query, setQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -114,11 +113,14 @@ export default function HomeScreen() {
         contentContainerStyle={styles.list}
         data={data}
         keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+        ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
         renderItem={({ item }) => (
           <ListCard
             {...item}
-            onPress={() => router.push(`/(list)/show/${item.id}`)}
+            onPress={() => {
+              setList(item);
+              router.push(`/(list)/show/${item.id}`);
+            }}
             // onClickToEdit={() => router.push(`/list/${item.id}/edit`)}
             onClickToDelete={() => handleOpenDelete(item)}
             onClickToShare={() => handleOpenShare(item)}
@@ -126,13 +128,20 @@ export default function HomeScreen() {
         )}
       />
 
-      {!keyboardVisible && (
-        <View style={styles.buttonContainer}>
-          <Button onPress={() => router.push("/(list)/new")}>
-            Criar lista
-          </Button>
-        </View>
-      )}
+      <ActionButton
+        style={{
+          position: "absolute",
+          bottom: 16,
+          right: 16,
+          width: 56,
+          height: 56,
+        }}
+        onPress={() => router.push(`/(list)/new`)}
+        bg="primary.100"
+        variant="solid"
+      >
+        <Icon name="plus" size={24} colorName="text.1" />
+      </ActionButton>
 
       {/* Bottom Sheets */}
       <SettingsSheet
