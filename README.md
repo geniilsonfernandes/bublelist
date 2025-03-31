@@ -15,30 +15,30 @@ Buble List é um aplicativo moderno de lista de compras que combina simplicidade
 
 ## Tech Stack
 
-    •	Criação de listas de compras com nome, cor e ícone
-    •	Adição de produtos com nome, quantidade e valor
-    •	Edição rápida de produtos
-    •	Visual moderno com suporte a temas
-    •	Animações suaves para transições e interações
-    •	Suporte a emojis nos nomes das listas
+  - Criação de listas de compras com nome, cor e ícone
+  - Adição de produtos com nome, quantidade e valor
+  - Edição rápida de produtos
+  - Visual moderno com suporte a temas
+  - Animações suaves para transições e interações
+  - Suporte a emojis nos nomes das listas
 
-### Frontend
+###Frontend
 
-    •	React Native
-    •	Expo
-    •	React Navigation
-    •	Reanimated 3
-    •	Zustand (Gerenciamento de estado)
-    •	SQLite (via expo-sqlite)
+- React Native
+- Expo
+- React Navigation
+- Reanimated 3
+- Zustand (Gerenciamento de estado)
+- SQLite (via expo-sqlite)
 
 ### Backend
 
-    •	Local database com SQLite
-    •	Persistência offline
+- Local database com SQLite
+- Persistência offline
 
 ### Deployment
 
-    •	Disponível para Android via APK (em breve via Play Store)
+- Disponível para Android via APK (em breve via Play Store)
 
 ---
 
