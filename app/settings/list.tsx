@@ -83,7 +83,7 @@ export default function SettingsList() {
         label={
           <ThemedText type="defaultSemiBold">
             Ordenar por:{" "}
-            <ThemedText type="body" colorName="primary.200">
+            <ThemedText type="body" colorName="text.6">
               {orderByOptions.find((o) => o.value === order_by)?.label}
             </ThemedText>
           </ThemedText>

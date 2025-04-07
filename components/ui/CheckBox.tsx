@@ -1,5 +1,5 @@
 import { Pressable } from "react-native";
-import Animated, { BounceIn, BounceOut } from "react-native-reanimated";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { Icon } from "./Icon";
 import { ThemedView } from "./ThemedView";
 
@@ -22,20 +22,21 @@ export const CheckBox: React.FC<CheckBoxProps> = ({ onChange, value }) => {
       ]}
     >
       <ThemedView
-        borderColor={value ? "primary.100" : "background.3"}
-        bg={value ? "primary.100" : "background.2"}
+        borderColor={value ? "background.4" : "background.3"}
+        bg={value ? "background.3" : "background.2"}
         style={{
           width: 28,
           height: 28,
           borderRadius: 8,
           alignItems: "center",
           justifyContent: "center",
+          opacity: value ? 1 : 0.5,
         }}
       >
         {value ? (
           <Animated.View
-            entering={BounceIn.duration(300)}
-            exiting={BounceOut.duration(300)}
+            entering={FadeIn.duration(300)}
+            exiting={FadeOut.duration(300)}
           >
             <Icon name="check" size={16} colorName="gray.100" />
           </Animated.View>
