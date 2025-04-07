@@ -176,6 +176,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "bold",
+    marginBottom: 8,
   },
   quantity: {
     fontSize: 12,

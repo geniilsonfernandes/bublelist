@@ -19,10 +19,14 @@ import { useRouter } from "expo-router";
 const features = [
   "⚡ Adição rápida",
   "💸 Orçamento",
-  "🔔 Notificações",
-  "🤝 Compartilhamento",
+  // "🔔 Notificações",
+  // "🤝 Compartilhamento",
   "📈 Histórico de preço",
   "🛒 Modo compras",
+  // "👥 Compartilhamento de listas",
+  // "🛍️ Modo compras"
+  "🔒 Segurança",
+  "📊 Relatórios",
 ];
 
 export default function Onboarding() {
