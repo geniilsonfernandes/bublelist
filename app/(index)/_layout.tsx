@@ -31,6 +31,7 @@ export default function AppIndexLayout() {
           title: "Nova lista",
           animation: "slide_from_right",
           headerBackTitle: "Voltar",
+          presentation: "transparentModal",
         }}
       />
       <Stack.Screen
@@ -38,6 +39,10 @@ export default function AppIndexLayout() {
         options={{
           animation: "slide_from_right",
           headerBackTitle: "Voltar",
+          contentStyle: {
+            backgroundColor: "red",
+          },
+          presentation: "transparentModal",
         }}
       />
       <Stack.Screen
@@ -61,6 +66,7 @@ export default function AppIndexLayout() {
         options={{
           animation: "slide_from_right",
           headerBackTitle: "Voltar",
+          presentation: "transparentModal",
           title: "Apagar dados",
         }}
       />
@@ -69,14 +75,16 @@ export default function AppIndexLayout() {
         options={{
           animation: "slide_from_right",
           headerBackTitle: "Voltar",
+          presentation: "transparentModal",
           title: "Exportar dados",
         }}
       />
       <Stack.Screen
-        name="settings/index"
+        name="settings/geral"
         options={{
           animation: "slide_from_right",
           headerBackTitle: "Voltar",
+          presentation: "transparentModal",
           title: "Configurações",
         }}
       />

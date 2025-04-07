@@ -66,7 +66,7 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.actions}>
-          <ActionButton onPress={() => router.push("/(index)/settings")}>
+          <ActionButton onPress={() => router.push("/(index)/settings/geral")}>
             <Icon name="settings" size={24} colorName="text.2" />
           </ActionButton>
         </View>
