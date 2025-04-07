@@ -21,7 +21,7 @@ export const SettingsSheet = forwardRef<BottomSheet, SettingsSheetProps>(
     const router = useRouter();
 
     // variables
-    const snapPoints = useMemo(() => ["25%", "70%"], []);
+    const snapPoints = useMemo(() => ["35%"], []);
 
     // renders
     const renderBackdrop = useCallback(
@@ -54,35 +54,6 @@ export const SettingsSheet = forwardRef<BottomSheet, SettingsSheetProps>(
       >
         <BottomSheetScrollView>
           <View style={styles.container}>
-            <SectionTitle title="Lista:" />
-            <SettingsButton
-              onPress={() => router.push("/settings/list")}
-              icon="settings"
-              rightIcon="chevron-right"
-              label="Configurações da lista"
-            />
-            <SectionTitle title="Seus dados:" />
-            <Paper>
-              <SettingsButton
-                icon="upload"
-                onPress={() => {
-                  onClose();
-                  router.push("/settings/export-data");
-                }}
-                label="Exportar dados"
-                rightIcon="chevron-right"
-              />
-
-              <SettingsButton
-                onPress={() => {
-                  onClose();
-                  router.push("/settings/delete-data");
-                }}
-                icon="trash-2"
-                label="Apagar dados"
-                rightIcon="chevron-right"
-              />
-            </Paper>
             <SectionTitle title="Sobre o aplicativo:" />
 
             <SettingsButton

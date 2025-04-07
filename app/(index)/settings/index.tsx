@@ -1,5 +1,6 @@
 import { CheckBox } from "@/components/ui/CheckBox";
 import { Icon } from "@/components/ui/Icon";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 import { SettingsButton } from "@/components/ui/SettingsButton";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
@@ -11,10 +12,12 @@ import {
   BottomSheetModal,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
+import { useRouter } from "expo-router";
 import React, { useCallback, useRef } from "react";
 import { View } from "react-native";
 
-export default function SettingsList() {
+export default function Settings() {
+  const router = useRouter();
   const backgroundColorSheet = useThemeColor({}, "background.1");
   const sheetRef = useRef<BottomSheetModal>(null);
 
@@ -61,9 +64,7 @@ export default function SettingsList() {
   return (
     <ThemedView style={{ flex: 1, paddingHorizontal: 16, gap: 8 }}>
       {/* Seção: Visualização */}
-      <ThemedText type="defaultSemiBold" colorName="text.7">
-        Visualização
-      </ThemedText>
+      <SectionTitle title="Visualização:" />
 
       <SettingsButton
         label="Mostrar a valor"
@@ -94,9 +95,7 @@ export default function SettingsList() {
       />
 
       {/* Seção: Outros */}
-      <ThemedText type="defaultSemiBold" colorName="text.7">
-        Outros
-      </ThemedText>
+      <SectionTitle title="Outros:" />
 
       <SettingsButton
         label="Mostrar o total da lista"
@@ -110,6 +109,25 @@ export default function SettingsList() {
         rightComponent={renderSwitch(show_suggestions, () =>
           setConfig("show_suggestions", !show_suggestions)
         )}
+      />
+
+      <SectionTitle title="Seus dados:" />
+      <SettingsButton
+        icon="upload"
+        onPress={() => {
+          router.push("/settings/export-data");
+        }}
+        label="Exportar dados"
+        rightIcon="chevron-right"
+      />
+
+      <SettingsButton
+        onPress={() => {
+          router.push("/settings/delete-data");
+        }}
+        icon="trash-2"
+        label="Apagar dados"
+        rightIcon="chevron-right"
       />
 
       {/* Bottom Sheet - Ordenação */}

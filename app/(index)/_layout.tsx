@@ -8,8 +8,6 @@ export const unstable_settings = {
 
 export default function AppIndexLayout() {
   const backgroundColor = useThemeColor({}, "background");
-  //   const { user } = useUser();
-  //   const networkState = useNetworkState();
 
   return (
     <Stack
@@ -25,7 +23,6 @@ export default function AppIndexLayout() {
         options={{
           title: "Início",
           headerShown: false,
-          headerTransparent: true,
         }}
       />
       <Stack.Screen
@@ -57,6 +54,30 @@ export default function AppIndexLayout() {
           animation: "fade_from_bottom",
           presentation: "transparentModal",
           title: "Editar produto",
+        }}
+      />
+      <Stack.Screen
+        name="settings/delete-data"
+        options={{
+          animation: "slide_from_right",
+          headerBackTitle: "Voltar",
+          title: "Apagar dados",
+        }}
+      />
+      <Stack.Screen
+        name="settings/export-data"
+        options={{
+          animation: "slide_from_right",
+          headerBackTitle: "Voltar",
+          title: "Exportar dados",
+        }}
+      />
+      <Stack.Screen
+        name="settings/index"
+        options={{
+          animation: "slide_from_right",
+          headerBackTitle: "Voltar",
+          title: "Configurações",
         }}
       />
     </Stack>
