@@ -1,6 +1,13 @@
-import { Image, StatusBar, StyleSheet, View } from "react-native";
+import {
+  Image,
+  StatusBar,
+  StyleSheet,
+  useColorScheme,
+  View,
+} from "react-native";
 
-import onboard1 from "../assets/images/onboard_1_dark.png";
+import onboardDark from "../assets/images/onboard_1_dark.png";
+import onboardLight from "../assets/images/onboard_1_light.png";
 
 import { Button } from "@/components/ui/Button";
 import { ThemedText } from "@/components/ui/ThemedText";
@@ -21,6 +28,7 @@ const features = [
 export default function Onboarding() {
   const backgroundColor = useThemeColor({}, "background.1");
   const backgroundColor2 = useThemeColor({}, "background");
+  const colorScheme = useColorScheme();
 
   const router = useRouter();
   const { setHasSeenOnboarding } = useOnboardingStore();
@@ -40,7 +48,7 @@ export default function Onboarding() {
       {/* Imagem principal */}
       <View style={styles.imageContainer}>
         <Image
-          source={onboard1}
+          source={colorScheme === "light" ? onboardLight : onboardDark}
           style={styles.image}
           resizeMode="contain"
           fadeDuration={0}
@@ -57,7 +65,7 @@ export default function Onboarding() {
           {features.map((feature) => (
             <ThemedText
               key={feature}
-              colorName="text.6"
+              colorName="text.4"
               style={styles.feature}
               type="body"
             >
@@ -117,7 +125,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 20,
-    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    backgroundColor: "rgba(0, 0, 0, 00.1)",
     overflow: "hidden",
   },
   buttonContainer: {
