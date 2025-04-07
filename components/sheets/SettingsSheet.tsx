@@ -54,6 +54,13 @@ export const SettingsSheet = forwardRef<BottomSheet, SettingsSheetProps>(
       >
         <BottomSheetScrollView>
           <View style={styles.container}>
+            <SectionTitle title="Lista:" />
+            <SettingsButton
+              onPress={() => router.push("/settings/list")}
+              icon="settings"
+              rightIcon="chevron-right"
+              label="Configurações da lista"
+            />
             <SectionTitle title="Seus dados:" />
             <Paper>
               <SettingsButton
@@ -76,13 +83,6 @@ export const SettingsSheet = forwardRef<BottomSheet, SettingsSheetProps>(
                 rightIcon="chevron-right"
               />
             </Paper>
-            <SectionTitle title="Lista:" />
-            <SettingsButton
-              onPress={() => router.push("/settings/list")}
-              icon="settings"
-              rightIcon="chevron-right"
-              label="Configurações da lista"
-            />
             <SectionTitle title="Sobre o aplicativo:" />
 
             <SettingsButton

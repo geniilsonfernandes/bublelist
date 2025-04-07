@@ -82,13 +82,6 @@ export default function ListCreateScreen() {
   return (
     <ThemedView colorName="background" style={styles.container}>
       <View style={styles.content}>
-        {/* <Emoji
-          color={background}
-          emoji={emojiSelected}
-          showButton
-          onPress={() => router.push("/emoji")}
-        /> */}
-
         <View
           style={{
             gap: 4,
@@ -120,7 +113,13 @@ export default function ListCreateScreen() {
           justifyContent: "space-between",
         }}
       >
-        <Button fullWidth variant="solid" onPress={handleCreateList}>
+        <Button
+          bg="background.1"
+          leftIcon={isEdit ? "check" : "plus"}
+          fullWidth
+          variant="solid"
+          onPress={handleCreateList}
+        >
           {isEdit ? "Salvar" : "Criar lista"}
         </Button>
       </View>

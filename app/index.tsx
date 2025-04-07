@@ -135,11 +135,11 @@ export default function HomeScreen() {
           position: "absolute",
           bottom: 16,
           right: 16,
-          width: 56,
-          height: 56,
+          width: 48,
+          height: 48,
         }}
         onPress={() => router.push(`/(list)/new`)}
-        bg="primary.100"
+        bg="background.1"
         variant="solid"
       >
         <Icon name="plus" size={24} colorName="text.1" />

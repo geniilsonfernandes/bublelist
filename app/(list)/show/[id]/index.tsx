@@ -62,7 +62,7 @@ export default function ListShowScreen() {
     <ThemedView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
-          title: `${data?.icon} ${data?.name}`,
+          title: data?.name || "Lista",
 
           headerShown: true,
           headerRight: () => (

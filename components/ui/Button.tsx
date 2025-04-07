@@ -107,7 +107,7 @@ export const Button: React.FC<ButtonProps> = ({
         >
           {leftIcon && (
             <Icon
-              name="chevron-right"
+              name={leftIcon || "chevron-right"}
               size={24}
               colorName={variant === "solid" ? "gray.100" : "text.2"}
             />
