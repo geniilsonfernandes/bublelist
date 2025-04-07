@@ -15,11 +15,15 @@ import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
 
 import { List, useGetList } from "@/database/useShoppingList";
+import { useOnboardingStore } from "@/store/onboardingStore";
 import { useListStore } from "@/store/useListStore";
+import { Redirect } from "expo-router";
 
 dayjs.locale("pt-br");
 
 export default function HomeScreen() {
+  const hasSeenOnboarding = useOnboardingStore((s) => s.hasSeenOnboarding);
+
   const router = useRouter();
   const { setList } = useListStore();
   const { data } = useGetList();
@@ -44,6 +48,10 @@ export default function HomeScreen() {
       }}
     />
   );
+
+  if (!hasSeenOnboarding) {
+    return <Redirect href="/onboarding" />;
+  }
 
   return (
     <ThemedView colorName="background" style={styles.container}>
@@ -139,8 +147,6 @@ const styles = StyleSheet.create({
   },
 });
 
-
-
-/// criar switch 
+/// criar switch
 /// criar tela de onboaard
 /// cria logica para tela de onboaard

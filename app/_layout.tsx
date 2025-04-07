@@ -8,7 +8,6 @@ import * as Font from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import * as SystemUI from "expo-system-ui";
 import { useCallback, useEffect, useState } from "react";
 import "react-native-reanimated";
 
@@ -16,6 +15,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { Colors } from "@/constants/Colors";
+import { useOnboardingStore } from "@/store/onboardingStore";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
@@ -36,17 +36,20 @@ const queryClient = new QueryClient();
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const loadHasSeenOnboarding = useOnboardingStore(
+    (s) => s.loadHasSeenOnboarding
+  );
   const [appIsReady, setAppIsReady] = useState(false);
   const colorScheme = useColorScheme();
+  const [loaded] = Font.useFonts({
+    "PlayfairDisplay-SemiBold": require("../assets/fonts/PlayfairDisplay-SemiBold.ttf"),
+  });
 
   useEffect(() => {
     async function prepare() {
       try {
+        loadHasSeenOnboarding();
         await Font.loadAsync(Entypo.font);
-        const color = await SystemUI.getBackgroundColorAsync();
-        console.log(color);
-
-        await new Promise((resolve) => setTimeout(resolve, 2000));
       } catch (e) {
         console.warn(e);
       } finally {
@@ -59,7 +62,7 @@ export default function RootLayout() {
   }, []);
 
   const onLayoutRootView = useCallback(() => {
-    if (appIsReady) {
+    if (appIsReady && loaded) {
       SplashScreen.hide();
     }
   }, [appIsReady]);
@@ -88,6 +91,13 @@ export default function RootLayout() {
             >
               <Stack.Screen
                 name="index"
+                options={{
+                  animation: "fade_from_bottom",
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="onboarding"
                 options={{
                   animation: "fade_from_bottom",
                   headerShown: false,

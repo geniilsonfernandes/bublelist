@@ -37,7 +37,7 @@ export const CheckBox: React.FC<CheckBoxProps> = ({ onChange, value }) => {
             entering={BounceIn.duration(300)}
             exiting={BounceOut.duration(300)}
           >
-            <Icon name="check" size={16} colorName="text.1" />
+            <Icon name="check" size={16} colorName="gray.100" />
           </Animated.View>
         ) : null}
       </ThemedView>

@@ -3,7 +3,6 @@ import { Icon } from "@/components/ui/Icon";
 import { SettingsButton } from "@/components/ui/SettingsButton";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
-import { Colors } from "@/constants/Colors";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useConfigStore } from "@/store/useConfigStore";
 import {
@@ -13,7 +12,7 @@ import {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import React, { useCallback, useRef } from "react";
-import { Switch, View } from "react-native";
+import { View } from "react-native";
 
 export default function SettingsList() {
   const backgroundColorSheet = useThemeColor({}, "background.1");
@@ -55,15 +54,7 @@ export default function SettingsList() {
 
   const renderSwitch = (value: boolean, onToggle: () => void) => (
     <View>
-      <Switch
-        value={value}
-        onValueChange={onToggle}
-        thumbColor={value ? Colors.dark["primary.100"] : "#f4f3f4"}
-        trackColor={{
-          false: Colors.dark["background.2"],
-          true: Colors.dark["gray.800"],
-        }}
-      />
+      <CheckBox value={value} onChange={onToggle} />
     </View>
   );
 
@@ -116,21 +107,9 @@ export default function SettingsList() {
 
       <SettingsButton
         label="Mostrar sugestões de produtos"
-        rightComponent={
-          <Switch
-            value={show_suggestions}
-            onValueChange={() =>
-              setConfig("show_suggestions", !show_suggestions)
-            }
-            thumbColor={
-              show_suggestions ? Colors.dark["primary.100"] : "#f4f3f4"
-            }
-            trackColor={{
-              false: Colors.dark["background.2"],
-              true: Colors.dark["gray.800"],
-            }}
-          />
-        }
+        rightComponent={renderSwitch(show_suggestions, () =>
+          setConfig("show_suggestions", !show_suggestions)
+        )}
       />
 
       {/* Bottom Sheet - Ordenação */}

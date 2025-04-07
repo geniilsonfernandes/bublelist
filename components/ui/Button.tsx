@@ -108,21 +108,15 @@ export const Button: React.FC<ButtonProps> = ({
           {leftIcon && (
             <Icon
               name={leftIcon || "chevron-right"}
+              colorName="text.4"
               size={24}
-              colorName={variant === "solid" ? "gray.100" : "text.2"}
             />
           )}
-          <ThemedText colorName={variant === "solid" ? "gray.100" : "text.2"}>
+          <ThemedText colorName="text.4" type="defaultSemiBold">
             {children}
           </ThemedText>
 
-          {rightIcon && (
-            <Icon
-              name={rightIcon}
-              size={24}
-              colorName={variant === "solid" ? "gray.100" : "text.2"}
-            />
-          )}
+          {rightIcon && <Icon name={rightIcon} size={24} />}
         </View>
       )}
     </Pressable>

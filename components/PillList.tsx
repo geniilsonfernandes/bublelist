@@ -123,7 +123,11 @@ export const ProductContent: React.FC<ProductContentProps> = ({
       borderColor={checked ? "success" : "background.1"}
       style={[styles.pill, style]}
     >
-      <ThemedText colorName="text.1" type="body">
+      <ThemedText
+        colorName="text.1"
+        type="body"
+        lightColor={checked ? "#fff" : ""}
+      >
         {name}
       </ThemedText>
 
@@ -133,6 +137,7 @@ export const ProductContent: React.FC<ProductContentProps> = ({
           style={styles.valueText}
           opacity={0.7}
           type="defaultSemiBold"
+          lightColor={checked ? "#fff" : ""}
         >
           {quantity}
         </ThemedText>
@@ -144,6 +149,7 @@ export const ProductContent: React.FC<ProductContentProps> = ({
           style={styles.valueText}
           type="defaultSemiBold"
           opacity={0.7}
+          lightColor={checked ? "#fff" : ""}
         >
           {valueFormatted}
         </ThemedText>
@@ -214,7 +220,6 @@ const styles = StyleSheet.create({
   },
   pill: {
     paddingHorizontal: 8,
-
     height: 30,
     borderRadius: 6,
     flexDirection: "row",
