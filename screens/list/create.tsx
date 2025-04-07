@@ -1,4 +1,3 @@
-import { Emoji } from "@/app/emoji";
 import {
   LIST_NAME_SUGGESTIONS,
   ListNameSuggestions,
@@ -83,12 +82,12 @@ export default function ListCreateScreen() {
   return (
     <ThemedView colorName="background" style={styles.container}>
       <View style={styles.content}>
-        <Emoji
+        {/* <Emoji
           color={background}
           emoji={emojiSelected}
           showButton
           onPress={() => router.push("/emoji")}
-        />
+        /> */}
 
         <View
           style={{

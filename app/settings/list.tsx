@@ -54,11 +54,17 @@ export default function SettingsList() {
   );
 
   const renderSwitch = (value: boolean, onToggle: () => void) => (
-    <Switch
-      value={value}
-      onValueChange={onToggle}
-      thumbColor={value ? Colors.dark["primary.100"] : "#f4f3f4"}
-    />
+    <View>
+      <Switch
+        value={value}
+        onValueChange={onToggle}
+        thumbColor={value ? Colors.dark["primary.100"] : "#f4f3f4"}
+        trackColor={{
+          false: Colors.dark["background.2"],
+          true: Colors.dark["gray.800"],
+        }}
+      />
+    </View>
   );
 
   return (
@@ -110,9 +116,21 @@ export default function SettingsList() {
 
       <SettingsButton
         label="Mostrar sugestões de produtos"
-        rightComponent={renderSwitch(show_suggestions, () =>
-          setConfig("show_suggestions", !show_suggestions)
-        )}
+        rightComponent={
+          <Switch
+            value={show_suggestions}
+            onValueChange={() =>
+              setConfig("show_suggestions", !show_suggestions)
+            }
+            thumbColor={
+              show_suggestions ? Colors.dark["primary.100"] : "#f4f3f4"
+            }
+            trackColor={{
+              false: Colors.dark["background.2"],
+              true: Colors.dark["gray.800"],
+            }}
+          />
+        }
       />
 
       {/* Bottom Sheet - Ordenação */}

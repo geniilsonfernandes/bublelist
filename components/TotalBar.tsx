@@ -38,7 +38,7 @@ export function TotalBar({ data, show, budget }: TotalBarProps) {
           borderRadius: 8,
           padding: 8,
           paddingHorizontal: 16,
-          margin: 8,
+          marginBottom: 8,
         }}
       >
         <View>

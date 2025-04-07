@@ -14,7 +14,6 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import React, { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, { Easing, FadeIn, FadeOut } from "react-native-reanimated";
-
 // Constantes
 const OPTIONS = ["Todos", "Marcados", "Desmarcados"] as const;
 
@@ -137,14 +136,6 @@ export default function ListShowScreen() {
   );
 }
 
-// TODO
-// [x] Adicionar barra de pesquisa
-// [x] Adicionar barra de filtros
-// [x] Adicionar barra de total
-// [x] Adicionar barra de sugestão
-// [x] Adicionar barra de entrada de produtos
-// [] Adicionar barra de edição de produtos
-
 // Estilos
 const styles = StyleSheet.create({
   headerIcons: {
@@ -158,11 +149,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     padding: 16,
-  },
-  productEntryContainer: {
-    gap: 8,
-
-    borderTopRightRadius: 8,
-    borderTopLeftRadius: 8,
+    paddingVertical: 8,
   },
 });

@@ -44,7 +44,6 @@ export default function RootLayout() {
       try {
         await Font.loadAsync(Entypo.font);
         const color = await SystemUI.getBackgroundColorAsync();
-
         console.log(color);
 
         await new Promise((resolve) => setTimeout(resolve, 2000));

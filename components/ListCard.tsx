@@ -1,16 +1,15 @@
 import { type List } from "@/database/useShoppingList";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { ActionButton } from "./ui/ActionButton";
 import { Icon } from "./ui/Icon";
 import { ThemedText } from "./ui/ThemedText";
-import { ThemedView } from "./ui/ThemedView";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -20,9 +19,10 @@ type ListProps = {
   onClickToEdit?: () => void;
   onClickToShare?: () => void;
   onClickToOptions?: () => void;
+  style?: any;
 } & List;
 
-const HEIGHT = 80;
+const HEIGHT = 150;
 const HEIGHT_EXPANDED = 138;
 
 export const ListCard: React.FC<ListProps> = ({
@@ -35,6 +35,7 @@ export const ListCard: React.FC<ListProps> = ({
   onClickToEdit,
   onClickToShare,
   onClickToOptions,
+  style,
 }) => {
   const scale = useSharedValue(1);
   const height = useSharedValue(HEIGHT);
@@ -72,7 +73,15 @@ export const ListCard: React.FC<ListProps> = ({
 
   return (
     <AnimatedPressable
-      style={animatedStyle}
+      style={[
+        animatedStyle,
+        {
+          backgroundColor: bg,
+          marginBottom: 8,
+          marginHorizontal: 4,
+        },
+        styles.container,
+      ]}
       onPress={onPress}
       onLongPress={() => {
         console.log("long press");
@@ -82,97 +91,96 @@ export const ListCard: React.FC<ListProps> = ({
       onPressIn={() => (scale.value = 0.98)}
       onPressOut={() => (scale.value = 1)}
     >
-      <LinearGradient
-        start={{ x: 0, y: 0 }}
-        dither={false}
-        colors={[`${color || bg}50` || bg, bg + 40]}
-        style={styles.container}
-      >
-        <ThemedView
+      <View style={styles.header}>
+        <ThemedText style={styles.title}>{name}</ThemedText>
+
+        <View
           style={{
-            width: 56,
-            height: 56,
-            borderRadius: 8,
-            backgroundColor: color + "50",
+            flexDirection: "row",
+            flexWrap: "wrap",
+
+            overflow: "hidden",
           }}
-          colorName="background.2"
         >
-          <Text
-            style={{
-              textAlign: "center",
-              lineHeight: 56,
-              fontSize: 24,
-              color: "#fff",
-            }}
-          >
-            {icon || "📋"}
-          </Text>
-        </ThemedView>
+          {products.map((product, i) => (
+            <ThemedText
+              key={product.id}
+              type="body"
+              colorName="text.5"
+              style={{
+                textTransform: "capitalize",
+                fontSize: 10,
+                lineHeight: 14,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {product.name}
+              {i < products.length - 1 ? ", " : ""}
+            </ThemedText>
+          ))}
+        </View>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          paddingLeft: 8,
+        }}
+      >
+        <ThemedText type="body" colorName="text.5">
+          {totalOfProducts} itens
+        </ThemedText>
+
+        <ActionButton onPress={onClickToOptions} style={styles.button}>
+          <Icon name="more-vertical" size={18} />
+        </ActionButton>
+      </View>
+      {/* <Text
+          style={{
+            textAlign: "center",
+            lineHeight: 56,
+            fontSize: 32,
+            color: "#fff",
+            paddingLeft: 8,
+          }}
+        >
+          {icon || "📋"}
+        </Text>
         <View>
           <ThemedText style={styles.title}>{name}</ThemedText>
           <ThemedText type="body" colorName="text.5">
             {totalOfProducts} itens
           </ThemedText>
         </View>
-        <Icon
-          style={{ marginLeft: "auto" }}
-          name="chevron-right"
-          size={24}
-          colorName="text.6"
-        />
-        {/* {expanded ? (
-          <Animated.View
-            entering={FadeIn.duration(300)}
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-end",
-              gap: 8,
-            }}
-          >
-            <ActionButton onPress={onClickToEdit}>
-              <Icon name="edit" size={18} colorName="text.6" />
-            </ActionButton>
-            <ActionButton onPress={onClickToShare}>
-              <Icon name="share-2" size={18} colorName="text.6" />
-            </ActionButton>
-            <ActionButton onPress={onClickToDelete}>
-              <Icon name="trash" size={18} colorName="danger" />
-            </ActionButton>
-          </Animated.View>
-        ) : null} */}
-      </LinearGradient>
+        <ActionButton onPress={onClickToOptions} style={styles.button}>
+          <Icon name="more-vertical" size={18} />
+        </ActionButton> */}
     </AnimatedPressable>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
     gap: 16,
+    justifyContent: "space-between",
     borderRadius: 8,
-    backgroundColor: "transparent",
-    padding: 8,
   },
   headerContainer: {
     gap: 8,
   },
   header: {
-    justifyContent: "space-between",
-    flexDirection: "row",
+    padding: 8,
   },
   title: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
   },
   quantity: {
     fontSize: 12,
   },
   button: {
-    padding: 8,
-    borderRadius: 8,
+    marginLeft: "auto",
   },
 });

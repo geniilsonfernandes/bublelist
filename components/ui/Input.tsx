@@ -61,7 +61,14 @@ export const Input = forwardRef<TextInput, InputProps>(
           sizeStyles[size],
         ]}
       >
-        {leftIcon && <Feather name={leftIcon} size={16} color={textColor} />}
+        {leftIcon && (
+          <Feather
+            style={{ marginLeft: 4 }}
+            name={leftIcon}
+            size={16}
+            color={textColor}
+          />
+        )}
 
         <TextInput
           ref={ref}

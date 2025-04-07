@@ -1,11 +1,11 @@
 import BottomSheet from "@gorhom/bottom-sheet";
+import MasonryList from "@react-native-seoul/masonry-list";
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
 import { useRouter } from "expo-router";
-import { useRef } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { ReactElement, useRef } from "react";
+import { StyleSheet, View } from "react-native";
 
-import { ListCard } from "@/components/ListCard";
 import { ListSheet } from "@/components/sheets/ListSheet";
 import { SettingsSheet } from "@/components/sheets/SettingsSheet";
 import { ActionButton } from "@/components/ui/ActionButton";
@@ -13,8 +13,8 @@ import { Icon } from "@/components/ui/Icon";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
 
-import { EmptyList } from "@/components/EmptyList";
-import { useGetList } from "@/database/useShoppingList";
+import { ListCard } from "@/components/ListCard";
+import { List, useGetList } from "@/database/useShoppingList";
 import { useListStore } from "@/store/useListStore";
 import { StatusBar } from "react-native";
 
@@ -29,6 +29,22 @@ export default function HomeScreen() {
   const listSheet = useRef<BottomSheet>(null);
 
   const handleOpenSettings = () => settingsSheetRef.current?.snapToIndex(0);
+
+  const renderItem = ({ item, i }: { item: any; i: number }): ReactElement => {
+    return (
+      <ListCard
+        {...item}
+        onPress={() => {
+          setList(item);
+          router.push(`/(list)/show/${item.id}`);
+        }}
+        onClickToOptions={() => {
+          setList(item);
+          listSheet.current?.expand();
+        }}
+      />
+    );
+  };
 
   return (
     <ThemedView colorName="background" style={styles.container}>
@@ -55,10 +71,41 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      <SectionTitle title="Minhas listas" />
+      <MasonryList
+        data={data || []}
+        keyExtractor={(item: List) => item.id}
+        numColumns={2}
+        contentContainerStyle={styles.list}
+        renderItem={renderItem}
+      />
 
+      {/* <FlatList
+        columnWrapperStyle={{ justifyContent: "space-between", gap: 8 }}
+        contentContainerStyle={styles.list}
+        data={data}
+        keyExtractor={(item) => item.id}
+        horizontal={false}
+        numColumns={2}
+        renderItem={({ item }) => (
+          <ListCard
+            {...item}
+            onPress={() => {
+              setList(item);
+              router.push(`/(list)/show/${item.id}`);
+            }}
+            onClickToOptions={() => {
+              setList(item);
+              listSheet.current?.expand();
+            }}
+          />
+        )}
+      /> */}
+      {/* 
       <FlatList
         contentContainerStyle={styles.list}
+        ListHeaderComponent={() => (
+          <SectionTitle style={styles.sectionTitle} title="Minhas listas" />
+        )}
         data={data}
         keyExtractor={(item) => item.id}
         ListEmptyComponent={
@@ -75,14 +122,13 @@ export default function HomeScreen() {
               setList(item);
               router.push(`/(list)/show/${item.id}`);
             }}
-            onClickToEdit={() => {
+            onClickToOptions={() => {
               setList(item);
               listSheet.current?.expand();
             }}
-            // onClickToEdit={() => router.push(`/list/${item.id}/edit`)}
           />
         )}
-      />
+      /> */}
 
       <ActionButton
         style={{
@@ -106,17 +152,6 @@ export default function HomeScreen() {
       />
       <ListSheet ref={listSheet} onClose={() => listSheet.current?.close()} />
     </ThemedView>
-  );
-}
-
-// Componentização simples para os títulos de seção
-function SectionTitle({ title }: { title: string }) {
-  return (
-    <View style={styles.sectionTitle}>
-      <ThemedText type="defaultSemiBold" colorName="text.5">
-        {title}
-      </ThemedText>
-    </View>
   );
 }
 
@@ -156,12 +191,11 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   sectionTitle: {
-    marginHorizontal: 16,
     marginBottom: 16,
   },
   list: {
     paddingBottom: 72,
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
   },
   buttonContainer: {
     padding: 16,

@@ -123,11 +123,6 @@ export const ProductContent: React.FC<ProductContentProps> = ({
       borderColor={checked ? "success" : "background.1"}
       style={[styles.pill, style]}
     >
-      <Icon
-        name={checked ? "check" : "circle"}
-        size={16}
-        colorName={checked ? "gray.100" : "background.1"}
-      />
       <ThemedText colorName="text.1" type="body">
         {name}
       </ThemedText>
@@ -153,6 +148,11 @@ export const ProductContent: React.FC<ProductContentProps> = ({
           {valueFormatted}
         </ThemedText>
       )}
+      <Icon
+        name={checked ? "check" : "circle"}
+        size={16}
+        colorName={checked ? "gray.100" : "background.1"}
+      />
     </ThemedView>
   );
 };
@@ -210,13 +210,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     paddingBottom: 68,
-    gap: 10,
+    gap: 8,
   },
   pill: {
-    paddingHorizontal: 10,
-    paddingLeft: 8,
-    height: 38,
-    borderRadius: 8,
+    paddingHorizontal: 8,
+
+    height: 30,
+    borderRadius: 6,
     flexDirection: "row",
     alignItems: "center",
     gap: 6,

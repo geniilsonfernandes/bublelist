@@ -8,8 +8,8 @@ import { useRouter } from "expo-router";
 import { forwardRef, useCallback, useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import { Paper } from "../ui/Paper";
+import { SectionTitle } from "../ui/SectionTitle";
 import { SettingsButton } from "../ui/SettingsButton";
-import { ThemedText } from "../ui/ThemedText";
 
 type SettingsSheetProps = {
   onClose: () => void;
@@ -54,7 +54,7 @@ export const SettingsSheet = forwardRef<BottomSheet, SettingsSheetProps>(
       >
         <BottomSheetScrollView>
           <View style={styles.container}>
-            <ThemedText style={styles.sectionTitle}>Seus dados:</ThemedText>
+            <SectionTitle title="Seus dados:" />
             <Paper>
               <SettingsButton
                 icon="upload"
@@ -76,15 +76,14 @@ export const SettingsSheet = forwardRef<BottomSheet, SettingsSheetProps>(
                 rightIcon="chevron-right"
               />
             </Paper>
-
-            <ThemedText style={styles.sectionTitle}>Lista:</ThemedText>
+            <SectionTitle title="Lista:" />
             <SettingsButton
               onPress={() => router.push("/settings/list")}
               icon="settings"
               rightIcon="chevron-right"
               label="Configurações da lista"
             />
-            <ThemedText style={styles.sectionTitle}>Sobre nós:</ThemedText>
+            <SectionTitle title="Sobre o aplicativo:" />
 
             <SettingsButton
               icon="star"
