@@ -57,7 +57,7 @@ export default function ListShowScreen() {
     });
   }, [search, data?.products, filter, order_by]);
 
-  // Renderização da tela
+
   return (
     <ThemedView style={{ flex: 1 }}>
       <Stack.Screen

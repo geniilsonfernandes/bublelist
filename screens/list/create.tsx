@@ -65,7 +65,7 @@ export default function ListCreateScreen() {
       },
       {
         onSuccess: (data) => {
-          router.replace(`/(list)/show/${data.id}`);
+          router.replace(`/(index)/list/${data.id}`);
           setList(data);
         },
       }

@@ -1,11 +1,3 @@
-import BottomSheet from "@gorhom/bottom-sheet";
-import MasonryList from "@react-native-seoul/masonry-list";
-import dayjs from "dayjs";
-import "dayjs/locale/pt-br";
-import { useRouter } from "expo-router";
-import { ReactElement, useRef } from "react";
-import { StatusBar, StyleSheet, View } from "react-native";
-
 import { ListCard } from "@/components/ListCard";
 import { ListSheet } from "@/components/sheets/ListSheet";
 import { SettingsSheet } from "@/components/sheets/SettingsSheet";
@@ -13,6 +5,13 @@ import { ActionButton } from "@/components/ui/ActionButton";
 import { Icon } from "@/components/ui/Icon";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
+import BottomSheet from "@gorhom/bottom-sheet";
+import MasonryList from "@react-native-seoul/masonry-list";
+import dayjs from "dayjs";
+import "dayjs/locale/pt-br";
+import { useRouter } from "expo-router";
+import { ReactElement, useRef } from "react";
+import { StyleSheet, View } from "react-native";
 
 import { List, useGetList } from "@/database/useShoppingList";
 import { useOnboardingStore } from "@/store/onboardingStore";
@@ -40,7 +39,7 @@ export default function HomeScreen() {
       {...item}
       onPress={() => {
         setList(item);
-        router.push(`/(list)/show/${item.id}`);
+        router.push(`/(index)/list/${item.id}`);
       }}
       onClickToOptions={() => {
         setList(item);
@@ -112,7 +111,7 @@ export default function HomeScreen() {
 
       <ActionButton
         style={styles.floatingButton}
-        onPress={() => router.push(`/(list)/new`)}
+        onPress={() => router.push("/(index)/list/new")}
         bg="background.1"
         variant="solid"
       >
@@ -139,7 +138,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 16,
-    marginTop: StatusBar.currentHeight,
+
     paddingVertical: 16,
     flexDirection: "row",
     alignItems: "center",

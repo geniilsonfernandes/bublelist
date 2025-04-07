@@ -1,3 +1,4 @@
+import { useColorScheme } from "@/hooks/useColorScheme";
 import Entypo from "@expo/vector-icons/Entypo";
 import {
   DarkTheme,
@@ -5,16 +6,12 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import * as Font from "expo-font";
-import { Stack } from "expo-router";
+import { Slot } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useState } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 
-import { useColorScheme } from "@/hooks/useColorScheme";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-
-import { Colors } from "@/constants/Colors";
 import { useOnboardingStore } from "@/store/onboardingStore";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -78,71 +75,7 @@ export default function RootLayout() {
           <ThemeProvider
             value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
           >
-            <Stack
-              screenOptions={{
-                headerStyle: {
-                  backgroundColor:
-                    colorScheme === "dark"
-                      ? Colors.dark.background
-                      : Colors.light.background,
-                },
-                headerShadowVisible: false,
-              }}
-            >
-              <Stack.Screen
-                name="index"
-                options={{
-                  animation: "fade_from_bottom",
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="onboarding"
-                options={{
-                  animation: "fade_from_bottom",
-                  headerShown: false,
-                }}
-              />
-
-              <Stack.Screen
-                name="(list)"
-                options={{ headerShown: false, animation: "slide_from_right" }}
-              />
-
-              <Stack.Screen
-                name="settings/delete-data"
-                options={{
-                  headerTitle: "Deletar dados",
-                  animation: "slide_from_right",
-                }}
-              />
-              <Stack.Screen
-                name="settings/export-data"
-                options={{
-                  headerTitle: "Exportar dados",
-                  animation: "slide_from_right",
-                }}
-              />
-              <Stack.Screen
-                name="settings/list"
-                options={{
-                  headerTitle: "Configurações de listas",
-                  animation: "slide_from_right",
-                }}
-              />
-              <Stack.Screen
-                name="emoji"
-                options={{
-                  headerTitle: "Emoji",
-                  animation: "fade_from_bottom",
-                  headerTitleAlign: "center",
-                  presentation: "transparentModal",
-                }}
-              />
-
-              <Stack.Screen name="+not-found" />
-            </Stack>
-            <StatusBar style="auto" />
+            <Slot />
           </ThemeProvider>
         </BottomSheetModalProvider>
       </QueryClientProvider>

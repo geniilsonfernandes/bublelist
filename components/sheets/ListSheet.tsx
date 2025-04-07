@@ -76,7 +76,7 @@ export const ListSheet = forwardRef<BottomSheet, ListSheetProps>(
               bg="background.1"
               onPress={() => {
                 onClose();
-                router.push(`/(list)/edit/${list?.id}`);
+                router.push(`/(index)/list/${list?.id}/edit`);
               }}
             >
               <ThemedText>Editar esta lista</ThemedText>

@@ -194,7 +194,7 @@ export const PillList: React.FC<PillListProps> = ({
           }
           onLongPress={() => {
             setSelectedProduct(product);
-            router.push("/(list)/product");
+            router.push("/(index)/list/[id]/product");
           }}
           showQuantity={show_quantity}
           showValue={show_value}
