@@ -24,7 +24,7 @@ export const ListSheet = forwardRef<BottomSheet, ListSheetProps>(
     const backgroundColor = useThemeColor({}, "background");
     const router = useRouter();
 
-    const snapPoints = useMemo(() => ["20%"], []);
+    const snapPoints = useMemo(() => ["25%"], []);
 
     const renderBackdrop = useCallback(
       (props: BottomSheetBackdropProps) => (
@@ -74,6 +74,7 @@ export const ListSheet = forwardRef<BottomSheet, ListSheetProps>(
           <View style={styles.container}>
             <Button
               bg="background.1"
+              leftIcon="clipboard"
               onPress={() => {
                 onClose();
                 router.push(`/(index)/list/${list?.id}/edit`);
@@ -86,6 +87,7 @@ export const ListSheet = forwardRef<BottomSheet, ListSheetProps>(
 
             <Button
               bg="danger"
+              leftIcon="trash-2"
               onPress={() => {
                 onClose();
                 handleDeleteList();

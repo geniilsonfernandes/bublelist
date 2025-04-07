@@ -108,8 +108,8 @@ export const Button: React.FC<ButtonProps> = ({
           {leftIcon && (
             <Icon
               name={leftIcon || "chevron-right"}
-              colorName="text.4"
-              size={24}
+              colorName="text.2"
+              size={18}
             />
           )}
           <ThemedText colorName="text.4" type="defaultSemiBold">
