@@ -31,7 +31,6 @@ export default function AppIndexLayout() {
           title: "Nova lista",
           animation: "slide_from_right",
           headerBackTitle: "Voltar",
-          presentation: "transparentModal",
         }}
       />
       <Stack.Screen

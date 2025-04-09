@@ -24,13 +24,12 @@ const db = SQLite.openDatabaseSync("tlist.db");
 
 initializeDatabase(db);
 
-async function createList(
+export async function createList(
   data: Omit<List, "id" | "products">
 ): Promise<Omit<List, "products">> {
   const statement = await db.prepareAsync(
     `INSERT INTO list (name, budget, color, icon) VALUES ($name, $budget, $color, $icon)`
   );
-  console.log(data);
 
   try {
     const result = await statement.executeAsync({

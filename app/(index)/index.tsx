@@ -13,9 +13,12 @@ import { useRouter } from "expo-router";
 import { ReactElement, useRef } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { List, useGetList } from "@/database/useShoppingList";
+import { List } from "@/database/useShoppingList";
+
 import { useOnboardingStore } from "@/store/onboardingStore";
-import { useListStore } from "@/store/useListStore";
+
+import { useGetLists } from "@/hooks/useGetList";
+import { useActiveList } from "@/store/useActiveList";
 import { Redirect } from "expo-router";
 
 dayjs.locale("pt-br");
@@ -24,13 +27,12 @@ export default function HomeScreen() {
   const hasSeenOnboarding = useOnboardingStore((s) => s.hasSeenOnboarding);
 
   const router = useRouter();
-  const { setList } = useListStore();
-  const { data } = useGetList();
+
+  const { data } = useGetLists();
+  const { setActiveList } = useActiveList();
 
   const settingsSheetRef = useRef<BottomSheet>(null);
   const listSheetRef = useRef<BottomSheet>(null);
-
-  const handleOpenSettings = () => settingsSheetRef.current?.snapToIndex(0);
 
   const handleOpenListSheet = () => listSheetRef.current?.expand();
 
@@ -38,11 +40,10 @@ export default function HomeScreen() {
     <ListCard
       {...item}
       onPress={() => {
-        setList(item);
         router.push(`/(index)/list/${item.id}`);
       }}
       onClickToOptions={() => {
-        setList(item);
+        setActiveList(item);
         handleOpenListSheet();
       }}
     />
@@ -51,6 +52,8 @@ export default function HomeScreen() {
   if (!hasSeenOnboarding) {
     return <Redirect href="/onboarding" />;
   }
+
+  console.log(data);
 
   return (
     <ThemedView colorName="background" style={styles.container}>
@@ -66,7 +69,7 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.actions}>
-          <ActionButton onPress={() => router.push("/(index)/settings/geral")}>
+          <ActionButton onPress={() => router.push("/settings/geral")}>
             <Icon name="settings" size={24} colorName="text.2" />
           </ActionButton>
         </View>

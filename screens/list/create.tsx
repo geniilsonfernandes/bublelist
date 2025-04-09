@@ -6,16 +6,17 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { ThemedView } from "@/components/ui/ThemedView";
 import { ValueInput } from "@/components/ValueInput";
-import { useCreateList, useEditList } from "@/database/useShoppingList";
+import { useEditList } from "@/database/useShoppingList";
+import { useCreateList } from "@/hooks/useGetList";
+
 import { useEmojiStore } from "@/store/useEmojiStore";
-import { useListStore } from "@/store/useListStore";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, ToastAndroid, View } from "react-native";
 
 export default function ListCreateScreen() {
-  const { setList, list, clearList } = useListStore();
+  const create = useCreateList();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const {
@@ -27,16 +28,14 @@ export default function ListCreateScreen() {
 
   const isEdit = id;
 
-  const { mutate: createList } = useCreateList();
+  // const { mutate: createList } = useCreateList();
   const { mutate: editList } = useEditList();
   const router = useRouter();
 
-  const [listName, setListName] = useState(isEdit ? list?.name : "");
-  const [listBudget, setListBudget] = useState<number | null>(
-    isEdit ? list?.budget || null : null
-  );
+  const [listName, setListName] = useState("");
+  const [listBudget, setListBudget] = useState<number | null>(null);
 
-  const handleCreateList = () => {
+  const handleCreateList = async () => {
     if (isEdit) {
       editList(
         {
@@ -49,35 +48,35 @@ export default function ListCreateScreen() {
         {
           onSuccess: () => {
             ToastAndroid.show("Lista atualizada", ToastAndroid.SHORT);
-            clearList();
+            // clearList();
             router.back();
           },
         }
       );
       return;
     }
-    createList(
-      {
-        name: listName || LIST_NAME_SUGGESTIONS[0],
-        budget: Number(listBudget),
-        color: background,
-        icon: emojiSelected,
-      },
-      {
-        onSuccess: (data) => {
-          router.replace(`/(index)/list/${data.id}`);
-          setList(data);
-        },
-      }
-    );
-  };
 
-  useEffect(() => {
-    if (isEdit && list) {
-      setEmoji(list.icon || "🍔");
-      setBackground(list.color || "#FFC107");
-    }
-  }, [list]);
+    const data = {
+      id: Date.now().toString(),
+      name: listName || LIST_NAME_SUGGESTIONS[0],
+      budget: Number(listBudget),
+      color: background,
+      icon: emojiSelected,
+      products: [],
+    };
+    create.mutate({
+      id: data.id,
+      name: data.name,
+    });
+    // saveList(data);
+    // setList(data);
+    // router.replace({
+    //   pathname: "/list/[id]",
+    //   params: {
+    //     id: data.id,
+    //   },
+    // });
+  };
 
   return (
     <ThemedView colorName="background" style={styles.container}>

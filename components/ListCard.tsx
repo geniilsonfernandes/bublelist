@@ -36,12 +36,13 @@ export const ListCard: React.FC<ListProps> = ({
   onClickToShare,
   onClickToOptions,
   style,
+  id,
 }) => {
   const scale = useSharedValue(1);
   const height = useSharedValue(HEIGHT);
   const [expanded, setExpanded] = useState(false);
 
-  const totalOfProducts = products.length || 0;
+  const totalOfProducts = products?.length || 0;
   const bg = useThemeColor({}, "background.1");
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -102,7 +103,7 @@ export const ListCard: React.FC<ListProps> = ({
             overflow: "hidden",
           }}
         >
-          {products.map((product, i) => (
+          {products?.map((product, i) => (
             <ThemedText
               key={product.id}
               type="body"

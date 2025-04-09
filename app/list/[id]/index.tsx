@@ -7,13 +7,17 @@ import { Icon } from "@/components/ui/Icon";
 import { Input } from "@/components/ui/Input";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
-import { useGetListById } from "@/hooks/useGetListById";
-
+import { useGetListById } from "@/database/useShoppingList";
+import { db } from "@/lib/firebase";
 import { useListStore } from "@/store/useActiveList";
 import { useConfigStore } from "@/store/useConfigStore";
-import { sortAndFilterProducts } from "@/utils/sortAndFilterProducts";
+import {
+  SortAndFilterParams,
+  sortAndFilterProducts,
+} from "@/utils/sortAndFilterProducts";
 import { Stack, useLocalSearchParams } from "expo-router";
-import React, { useMemo, useState } from "react";
+import { doc, setDoc } from "firebase/firestore";
+import React, { useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, { Easing, FadeIn, FadeOut } from "react-native-reanimated";
 // Constantes
@@ -22,7 +26,7 @@ const OPTIONS = ["Todos", "Marcados", "Desmarcados"] as const;
 export default function ListShowScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { list } = useListStore();
-  const { data } = useGetListById(id);
+  const { data, isLoading } = useGetListById(id);
   const { show_suggestions, show_total, order_by, setConfig } =
     useConfigStore();
 
@@ -32,22 +36,34 @@ export default function ListShowScreen() {
   const [filter, setFilter] = useState<(typeof OPTIONS)[number]>("Todos");
 
   // Funções de ordenação e filtro
-  const orderedProducts = useMemo(
-    () =>
-      sortAndFilterProducts({
-        products: data?.products || [],
-        orderBy: order_by as "name" | "quantity" | "value",
-        search,
-        filter,
-      }),
-    [search, data?.products, filter, order_by]
-  );
+  const orderedProducts = useMemo(() => {
+    return sortAndFilterProducts({
+      products: data?.products || [],
+      orderBy: order_by as SortAndFilterParams["orderBy"],
+      search,
+      filter,
+    });
+  }, [search, data?.products, filter, order_by]);
+
+  useEffect(() => {
+    const sync = async () => {
+      await setDoc(
+        doc(db, "shoppingList", id),
+        {
+          ...list,
+        },
+        { merge: true }
+      );
+    };
+
+    sync();
+  }, [data]);
 
   return (
     <ThemedView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
-          title: list?.name || "Lista",
+          title: data?.name || "Lista",
 
           headerShown: true,
           headerRight: () => (

@@ -1,6 +1,7 @@
-import { useDeleteList } from "@/database/useShoppingList";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { useListStore } from "@/store/useListStore";
+
+import { useListStore } from "@/hooks/useGetList";
+import { useActiveList } from "@/store/useActiveList";
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
@@ -19,8 +20,9 @@ interface ListSheetProps {
 
 export const ListSheet = forwardRef<BottomSheet, ListSheetProps>(
   ({ onClose }, ref) => {
-    const { mutate: deleteList } = useDeleteList();
-    const { list } = useListStore();
+    // const { mutate: deleteList } = useDeleteList();
+    const { remove } = useListStore();
+    const { activeList } = useActiveList();
     const backgroundColor = useThemeColor({}, "background");
     const router = useRouter();
 
@@ -51,7 +53,8 @@ export const ListSheet = forwardRef<BottomSheet, ListSheetProps>(
           {
             text: "Excluir",
             onPress: () => {
-              deleteList(list?.id);
+              if (!activeList) return;
+              remove(activeList?.id);
             },
             style: "destructive",
           },
@@ -77,7 +80,7 @@ export const ListSheet = forwardRef<BottomSheet, ListSheetProps>(
               leftIcon="clipboard"
               onPress={() => {
                 onClose();
-                router.push(`/(index)/list/${list?.id}/edit`);
+                // router.push(`/(index)/list/${list?.id}/edit`);
               }}
             >
               <ThemedText>Editar esta lista</ThemedText>
