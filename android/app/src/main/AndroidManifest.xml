@@ -25,9 +25,8 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="myapp"/>
-        <data android:scheme="com.orriker.tlist"/>
-        <data android:scheme="exp+tlist"/>
         <data android:scheme="com.orriker.Bubblylist"/>
+        <data android:scheme="exp+buble"/>
       </intent-filter>
     </activity>
   </application>

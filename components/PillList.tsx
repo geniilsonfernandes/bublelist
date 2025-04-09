@@ -1,25 +1,21 @@
 // Imports
-import {
-  Product,
-  useCheckProduct,
-  useDeleteProduct,
-} from "@/database/useShoppingList";
+import { useListStore } from "@/state/use-list-store";
+import { Product } from "@/state/use-products-store";
 import { useConfigStore } from "@/store/useConfigStore";
-import { useModals } from "@/store/useModals";
 import { formatValue } from "@/utils/calculateTotal";
-import { useRouter } from "expo-router";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
+  ActivityIndicator,
   Pressable,
   ScrollView,
   StyleProp,
   StyleSheet,
+  View,
   ViewStyle,
 } from "react-native";
 import Animated, {
   Easing,
   FadeInUp,
-  LinearTransition,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -70,7 +66,6 @@ export const ProductBullet: React.FC<ProductProps> = ({
           position: "relative",
         },
       ]}
-      layout={LinearTransition}
     >
       <AnimatedPressable
         entering={FadeInUp.duration(200).easing(Easing.inOut(Easing.quad))}
@@ -173,34 +168,55 @@ export const PillList: React.FC<PillListProps> = ({
   data,
   ListEmptyComponent,
 }) => {
+  const [isReady, setIsReady] = useState(false);
   const { show_quantity, show_value } = useConfigStore();
-  const { mutate: deleteProduct } = useDeleteProduct();
-  const { mutate: checkProduct } = useCheckProduct();
-  const { setSelectedProduct } = useModals();
-  const router = useRouter();
+  const { updateProduct } = useListStore();
+  // const { setSelectedProduct } = useModals();
+  // const router = useRouter();
+
   return (
-    <ScrollView
-      contentContainerStyle={styles.pillList}
-      removeClippedSubviews={true}
+    <View
+      style={{
+        flex: 1,
+      }}
+      onLayout={() => {
+        setIsReady(true);
+      }}
     >
-      {data.length === 0 && ListEmptyComponent}
-      {data.map((product) => (
-        <ProductBullet
-          key={product.id}
-          {...product}
-          onRemove={() => deleteProduct(product.id)}
-          onCheck={() =>
-            checkProduct({ id: product.id, checked: !product.checked })
-          }
-          onLongPress={() => {
-            setSelectedProduct(product);
-            router.push("/(index)/list/[id]/product");
-          }}
-          showQuantity={show_quantity}
-          showValue={show_value}
-        />
-      ))}
-    </ScrollView>
+      {isReady ? (
+        <ScrollView
+          contentContainerStyle={styles.pillList}
+          removeClippedSubviews={true}
+          scrollEventThrottle={16}
+        >
+          {data.length === 0 && ListEmptyComponent}
+          {data.map((product) => (
+            <ProductBullet
+              key={product.id}
+              {...product}
+              // onRemove={() => deleteProduct(product.id)}
+              onCheck={() =>
+                updateProduct(product.id, {
+                  checked: !product.checked,
+                })
+              }
+              onLongPress={() => {
+                // setSelectedProduct(product);
+                // router.push("/(index)/list/[id]/product");
+              }}
+              showQuantity={show_quantity}
+              showValue={show_value}
+            />
+          ))}
+        </ScrollView>
+      ) : (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator color={"#FFF"} />
+        </View>
+      )}
+    </View>
   );
 };
 

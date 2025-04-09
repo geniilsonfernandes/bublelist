@@ -1,13 +1,9 @@
-import {
-  List,
-  useAddProduct,
-  useDeleteProduct,
-  useEditProduct,
-} from "@/database/useShoppingList";
+import { useDeleteProduct, useEditProduct } from "@/database/useShoppingList";
 import {
   filterProductsInList,
   useFilteredProducts,
 } from "@/hooks/useFilteredProducts";
+import { List, ListStore } from "@/state/use-list-store";
 import { useModals } from "@/store/useModals";
 import { formatValue } from "@/utils/calculateTotal";
 import { extractNumberAndClean } from "@/utils/extractNumberAndClean";
@@ -78,6 +74,7 @@ const INITIAL_QUANTITY = 1;
 type ProductEntryProps = {
   showSuggestions?: boolean;
   currentList?: List;
+  addProduct: ListStore["addProduct"];
 };
 
 export const ProductEditEntry = () => {
@@ -195,8 +192,8 @@ export const ProductEditEntry = () => {
 export const ProductEntry: React.FC<ProductEntryProps> = ({
   showSuggestions = false,
   currentList,
+  addProduct,
 }) => {
-  const { mutate: addProduct } = useAddProduct();
   const [productName, setProductName] = useState("");
   const [quantity, setQuantity] = useState(INITIAL_QUANTITY);
   const [price, setPrice] = useState<number | null>(null);
@@ -212,18 +209,20 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     const extractedProduct = extractNumberAndClean(productName);
 
-    addProduct(
-      {
-        list_id: currentList.id,
-        name: extractedProduct.name,
-        quantity: extractedProduct.quantity || quantity,
-        value: price || 0,
-        checked: false,
-      },
-      {
-        onSuccess: resetFields,
-      }
-    );
+    if (extractedProduct) {
+      addProduct(
+        {
+          name: extractedProduct.name,
+          quantity: extractedProduct.quantity || quantity,
+          id: Date.now().toString(),
+          value: price || 0,
+          listId: currentList.id,
+          checked: false,
+        },
+        currentList.id
+      );
+      resetFields();
+    }
   };
 
   const suggestedProducts = useFilteredProducts(productName, PRODUCT_DATA);

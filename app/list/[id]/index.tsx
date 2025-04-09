@@ -7,17 +7,16 @@ import { Icon } from "@/components/ui/Icon";
 import { Input } from "@/components/ui/Input";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
-import { useGetListById } from "@/database/useShoppingList";
-import { db } from "@/lib/firebase";
-import { useListStore } from "@/store/useActiveList";
+
+import { useFindListById, useListStore } from "@/state/use-list-store";
+// import { useListStore } from "@/store/useActiveList";
 import { useConfigStore } from "@/store/useConfigStore";
 import {
   SortAndFilterParams,
   sortAndFilterProducts,
 } from "@/utils/sortAndFilterProducts";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { doc, setDoc } from "firebase/firestore";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, { Easing, FadeIn, FadeOut } from "react-native-reanimated";
 // Constantes
@@ -25,10 +24,12 @@ const OPTIONS = ["Todos", "Marcados", "Desmarcados"] as const;
 
 export default function ListShowScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { list } = useListStore();
-  const { data, isLoading } = useGetListById(id);
-  const { show_suggestions, show_total, order_by, setConfig } =
-    useConfigStore();
+  const { addProduct } = useListStore();
+  const list = useFindListById(id);
+
+  const products = list?.products || [];
+
+  const { show_suggestions, show_total, order_by } = useConfigStore();
 
   // Estados
   const [search, setSearch] = useState("");
@@ -38,32 +39,18 @@ export default function ListShowScreen() {
   // Funções de ordenação e filtro
   const orderedProducts = useMemo(() => {
     return sortAndFilterProducts({
-      products: data?.products || [],
+      products: products,
       orderBy: order_by as SortAndFilterParams["orderBy"],
       search,
       filter,
     });
-  }, [search, data?.products, filter, order_by]);
-
-  useEffect(() => {
-    const sync = async () => {
-      await setDoc(
-        doc(db, "shoppingList", id),
-        {
-          ...list,
-        },
-        { merge: true }
-      );
-    };
-
-    sync();
-  }, [data]);
+  }, [search, filter, order_by, products]);
 
   return (
     <ThemedView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
-          title: data?.name || "Lista",
+          title: list?.name || "Lista",
 
           headerShown: true,
           headerRight: () => (
@@ -124,15 +111,16 @@ export default function ListShowScreen() {
       </View>
 
       {/* Lista de Produtos (Pills) */}
+
       <PillList data={orderedProducts} ListEmptyComponent={<EmptyList />} />
 
-      <TotalBar
-        data={data?.products || []}
-        show={show_total}
-        budget={data?.budget || 0}
-      />
+      <TotalBar data={[]} show={show_total} budget={0} />
 
-      <ProductEntry currentList={data} showSuggestions={show_suggestions} />
+      <ProductEntry
+        addProduct={addProduct}
+        currentList={list}
+        showSuggestions={show_suggestions}
+      />
     </ThemedView>
   );
 }

@@ -1,6 +1,8 @@
 // utils/sortAndFilterProducts.ts
 
-import { Product } from "@/database/useShoppingList";
+import { Product } from "@/state/use-products-store";
+
+
 
 
 

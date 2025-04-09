@@ -9,7 +9,7 @@ import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
 import { useGetListById } from "@/hooks/useGetListById";
 
-import { useListStore } from "@/store/useActiveList";
+// import { useListStore } from "@/store/useActiveList";
 import { useConfigStore } from "@/store/useConfigStore";
 import { sortAndFilterProducts } from "@/utils/sortAndFilterProducts";
 import { Stack, useLocalSearchParams } from "expo-router";
@@ -21,7 +21,7 @@ const OPTIONS = ["Todos", "Marcados", "Desmarcados"] as const;
 
 export default function ListShowScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { list } = useListStore();
+  // const { list } = useListStore();
   const { data } = useGetListById(id);
   const { show_suggestions, show_total, order_by, setConfig } =
     useConfigStore();
@@ -47,7 +47,7 @@ export default function ListShowScreen() {
     <ThemedView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
-          title: list?.name || "Lista",
+          title: "Lista",
 
           headerShown: true,
           headerRight: () => (

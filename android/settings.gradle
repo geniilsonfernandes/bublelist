@@ -21,7 +21,7 @@ extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
   }
 }
 
-rootProject.name = 'tlist'
+rootProject.name = 'buble'
 
 dependencyResolutionManagement {
   versionCatalogs {

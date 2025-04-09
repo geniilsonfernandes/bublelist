@@ -6,17 +6,16 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { ThemedView } from "@/components/ui/ThemedView";
 import { ValueInput } from "@/components/ValueInput";
-import { useEditList } from "@/database/useShoppingList";
-import { useCreateList } from "@/hooks/useGetList";
+import { useListStore } from "@/state/use-list-store";
 
 import { useEmojiStore } from "@/store/useEmojiStore";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet, ToastAndroid, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 export default function ListCreateScreen() {
-  const create = useCreateList();
+  const { create, setActiveList } = useListStore();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const {
@@ -28,34 +27,12 @@ export default function ListCreateScreen() {
 
   const isEdit = id;
 
-  // const { mutate: createList } = useCreateList();
-  const { mutate: editList } = useEditList();
   const router = useRouter();
 
   const [listName, setListName] = useState("");
   const [listBudget, setListBudget] = useState<number | null>(null);
 
   const handleCreateList = async () => {
-    if (isEdit) {
-      editList(
-        {
-          id: id,
-          name: listName || LIST_NAME_SUGGESTIONS[0],
-          budget: Number(listBudget),
-          color: background,
-          icon: emojiSelected,
-        },
-        {
-          onSuccess: () => {
-            ToastAndroid.show("Lista atualizada", ToastAndroid.SHORT);
-            // clearList();
-            router.back();
-          },
-        }
-      );
-      return;
-    }
-
     const data = {
       id: Date.now().toString(),
       name: listName || LIST_NAME_SUGGESTIONS[0],
@@ -64,18 +41,10 @@ export default function ListCreateScreen() {
       icon: emojiSelected,
       products: [],
     };
-    create.mutate({
-      id: data.id,
-      name: data.name,
-    });
-    // saveList(data);
-    // setList(data);
-    // router.replace({
-    //   pathname: "/list/[id]",
-    //   params: {
-    //     id: data.id,
-    //   },
-    // });
+
+    create(data);
+    setActiveList(data.id);
+    router.replace("/list/[id]");
   };
 
   return (

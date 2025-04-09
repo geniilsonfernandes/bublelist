@@ -1,7 +1,6 @@
 import { useThemeColor } from "@/hooks/useThemeColor";
 
-import { useListStore } from "@/hooks/useGetList";
-import { useActiveList } from "@/store/useActiveList";
+import { useListStore } from "@/state/use-list-store";
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
@@ -20,9 +19,8 @@ interface ListSheetProps {
 
 export const ListSheet = forwardRef<BottomSheet, ListSheetProps>(
   ({ onClose }, ref) => {
-    // const { mutate: deleteList } = useDeleteList();
-    const { remove } = useListStore();
-    const { activeList } = useActiveList();
+    const { remove, activeListId } = useListStore();
+
     const backgroundColor = useThemeColor({}, "background");
     const router = useRouter();
 
@@ -53,8 +51,11 @@ export const ListSheet = forwardRef<BottomSheet, ListSheetProps>(
           {
             text: "Excluir",
             onPress: () => {
-              if (!activeList) return;
-              remove(activeList?.id);
+              console.log("Excluindo lista", activeListId);
+
+              if (!activeListId) return;
+
+              remove(activeListId);
             },
             style: "destructive",
           },

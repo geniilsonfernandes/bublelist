@@ -2,9 +2,8 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 import { db } from "@/lib/firebase";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { doc, onSnapshot } from "firebase/firestore";
-import { useEffect } from "react";
+import { doc, onSnapshot, setDoc } from "firebase/firestore";
+import { useEffect, useRef } from "react";
 import { MMKV } from "react-native-mmkv";
 
 const mmkv = new MMKV();
@@ -64,18 +63,24 @@ export const useListStore = create<ListStore>()(
   )
 );
 
-const useCreateServerSynchronizerAndStart = (store: ListStore) => {
+export const useCreateServerSynchronizerAndStart = (lists: List[]) => {
+  const serverListsRef = useRef<List[] | null>(null);
+
   useEffect(() => {
-    console.log("faz o sync");
+    const docRef = doc(db, "lists", "111");
 
-    // const sync = async () => {
-    //   const docRef = doc(db, "lists", "111");
-    //   await setDoc(docRef, { lists: store.lists }, { merge: true });
-    //   console.log("🚀 Sincronizado com o servidor!");
-    // };
+    const interval = setInterval(async () => {
+      try {
+        console.log("⏰ Tentando sincronizar a cada 30s...");
+        await setDoc(docRef, { lists }, { merge: true });
+        console.log("🚀 Listas enviadas para o servidor!");
+      } catch (error) {
+        console.error("❌ Erro ao sincronizar:", error);
+      }
+    }, 30000); // 30 segundos
 
-    // sync();
-  }, [store.lists]);
+    return () => clearInterval(interval);
+  }, [lists]); // depende de lists
 
   useEffect(() => {
     const docRef = doc(db, "lists", "111");
@@ -85,8 +90,8 @@ const useCreateServerSynchronizerAndStart = (store: ListStore) => {
         const data = snapshot.data();
 
         if (data?.lists) {
-          store.sync(data.lists);
-
+          serverListsRef.current = data.lists;
+          saveLists(data.lists);
           console.log("🔥 Atualizado pelo servidor!");
         }
       }
@@ -103,57 +108,19 @@ const getLists = () => {
   return parsed.state.lists; // porque o persist salva assim
 };
 
-export const useGetLists = () => {
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    const ref = doc(db, "lists", "111");
-
-    const unsubscribe = onSnapshot(ref, (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.data();
-
-        if (data?.lists) {
-          queryClient.setQueryData(["lists"], data.lists);
-        }
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  return useQuery({
-    queryKey: ["lists"],
-    queryFn: () => getLists(),
-  });
+const createList = async (list: List) => {
+  mmkv.set(
+    "lists:state",
+    JSON.stringify({ state: { lists: [...getLists(), list] } })
+  );
 };
 
-const createList = async (list: List) => {
-    mmkv.set("lists:state", JSON.stringify({ state: { lists: [...getLists(), list] } }));
-}
-
-export const useCreateList = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: createList,
-    onSuccess: () => {
-        console.log("call");
-        
-      queryClient.invalidateQueries({
-        queryKey: ["lists"],
-      });
-    }
-  });
+const saveLists = async (lists: List[]) => {
+  mmkv.set("lists:state", JSON.stringify({ state: { lists } }));
 };
 
 export const useShoppingListsStore = () => {
   const store = useListStore();
 
-  useCreateServerSynchronizerAndStart(store);
-
-  //   const listener = mmkv.addOnValueChangedListener((changedKey) => {
-  //     const newValue = mmkv.getString(changedKey);
-  //     console.log(`"${changedKey}" new value: ${newValue}`);
-  //   });
   return store;
 };
