@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "buble",
-    "slug": "buble",
+    "slug": "tlist",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.orriker.Bubblylist"
+      "bundleIdentifier": "com.orriker.bublelist"
     },
     "splash": {
       "image": "./assets/images/splash-icon.png",
@@ -22,7 +22,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#1e1e1e"
       },
-      "package": "com.orriker.Bubblylist"
+      "package": "com.orriker.bublelist"
     },
     "web": {
       "bundler": "metro",
@@ -43,8 +43,7 @@
           "resizeMode": "contain",
           "backgroundColor": "#1e1e1e"
         }
-      ],
-      "expo-sqlite"
+      ]
     ],
     "experiments": {
       "typedRoutes": true
@@ -56,6 +55,7 @@
       "eas": {
         "projectId": "10375c22-6d5c-4300-9cff-1b8f64a720ff"
       }
-    }
+    },
+    "owner": "orriker"
   }
 }

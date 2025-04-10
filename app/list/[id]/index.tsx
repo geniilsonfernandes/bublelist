@@ -134,7 +134,7 @@ export default function ListShowScreen() {
 
       <PillList data={orderedProducts} ListEmptyComponent={<EmptyList />} />
 
-      <TotalBar data={products} show={show_total} budget={0} />
+      <TotalBar data={products} show={show_total} budget={list.budget || 0} />
 
       <ProductEntry
         addProduct={addProduct}
