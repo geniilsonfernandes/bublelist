@@ -1,4 +1,4 @@
-import { Product } from "@/database/useShoppingList";
+import { Product } from "@/state/use-products-store";
 
 export const formatValue = (value: number) => {
   if (!value) return "0";

@@ -1,20 +1,9 @@
 // store/useConfigStore.ts
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storage } from "@/lib/storage";
 import { create } from "zustand";
-import { persist, PersistStorage } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 
-export const zustandStorage: PersistStorage<any> = {
-  getItem: async (name) => {
-    const value = await AsyncStorage.getItem(name);
-    return value ? JSON.parse(value) : null;
-  },
-  setItem: async (name, value) => {    
-    await AsyncStorage.setItem(name, JSON.stringify(value));
-  },
-  removeItem: async (name) => {
-    await AsyncStorage.removeItem(name);
-  },
-};
+
 
 type ConfigState = {
   language: string;
@@ -27,6 +16,8 @@ type ConfigState = {
   theme: "light" | "dark";
   setConfig: (key: keyof Omit<ConfigState, "setConfig">, value: any) => void;
 };
+
+const KEY = "config";
 
 export const useConfigStore = create(
   persist<ConfigState>(
@@ -42,8 +33,23 @@ export const useConfigStore = create(
       setConfig: (key, value) => set((state) => ({ ...state, [key]: value })),
     }),
     {
-      name: "app-settings", // chave no AsyncStorage
-      storage: zustandStorage,
+      name: KEY,
+      storage: {
+        getItem: (name) => {
+          const value = storage.getString(name);
+          try {
+            return value ? JSON.parse(value) : null;
+          } catch {
+            return null;
+          }
+        },
+        setItem: (name, value) => {
+          storage.set(name, JSON.stringify(value));
+        },
+        removeItem: (name) => {
+          storage.delete(name);
+        },
+      },
     }
   )
 );

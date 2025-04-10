@@ -1,7 +1,6 @@
 import { List } from "@/database/useShoppingList";
 import { formatValue } from "@/utils/calculateTotal";
 import { StyleSheet, View } from "react-native";
-import Animated, { Easing, FadeInDown } from "react-native-reanimated";
 import { QuantitySelector } from "./QuantitySelector";
 import { Suggestions } from "./Suggestions";
 import { Input } from "./ui/Input";
@@ -23,10 +22,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
 }) => {
   const totalPrice = (price || 0) * quantity;
   return (
-    <Animated.View
-      entering={FadeInDown.duration(200).easing(Easing.inOut(Easing.quad))}
-      style={styles.detailsContainer}
-    >
+    <View style={styles.detailsContainer}>
       <ValueInput
         value={price}
         onChangeValue={onPriceChange}
@@ -39,7 +35,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
         size="sm"
         onChangeQuantity={onQuantityChange}
       />
-    </Animated.View>
+    </View>
   );
 };
 
@@ -102,9 +98,10 @@ const styles = StyleSheet.create({
   container: {
     gap: 8,
     paddingTop: 8,
-    borderTopEndRadius: 8,
-    borderTopStartRadius: 8,
+    borderRadius: 8,
     paddingHorizontal: 8,
+    marginHorizontal: 8,
+    marginBottom: 8,
   },
   detailsWrapper: {
     paddingBottom: 8,

@@ -1,53 +1,51 @@
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useState } from "react";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+
 import { ProductInput } from "@/components/ProductInput";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { Icon } from "@/components/ui/Icon";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
-import { useDeleteProduct, useEditProduct } from "@/database/useShoppingList";
-import { useModals } from "@/store/useModals";
-import { useRouter } from "expo-router";
-import { useState } from "react";
-import { StyleSheet, ToastAndroid, TouchableOpacity, View } from "react-native";
+
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { useGetProductById, useListStore } from "@/state/use-list-store";
 
 export default function Product() {
   const router = useRouter();
-  const { setSelectedProduct, selectedProduct } = useModals();
-  const { mutate: editProduct } = useEditProduct();
-  const { mutate: deleteProduct } = useDeleteProduct();
+  const bg = useThemeColor({}, "background");
 
-  const [productName, setProductName] = useState(selectedProduct?.name || "");
-  const [quantity, setQuantity] = useState(selectedProduct?.quantity || 1);
-  const [value, setValue] = useState(selectedProduct?.value || null);
+  const { updateProduct, removeProduct } = useListStore();
+  const { query, id } = useLocalSearchParams<{ query: string; id: string }>();
+  const product = useGetProductById(query, id);
+
+  // State
+  const [productName, setProductName] = useState(product?.name || "");
+  const [quantity, setQuantity] = useState(product?.quantity || 1);
+  const [value, setValue] = useState(product?.value || null);
 
   const handleEditProduct = () => {
-    if (!selectedProduct) return;
+    if (!product) return;
 
-    editProduct(
-      { ...selectedProduct, name: productName, quantity, value: value || 0 },
-      {
-        onSuccess: () => {
-          ToastAndroid.show("Produto atualizado", ToastAndroid.SHORT);
-          setSelectedProduct(null);
-          router.back();
-        },
-      }
-    );
+    updateProduct(product.id, {
+      name: productName,
+      quantity,
+      value: value || 0,
+    });
+
+    router.back();
   };
 
   const handleDeleteProduct = () => {
-    if (!selectedProduct) return;
+    if (!product) return;
 
-    deleteProduct(selectedProduct.id, {
-      onSuccess: () => {
-        ToastAndroid.show("Produto deletado", ToastAndroid.SHORT);
-        setSelectedProduct(null);
-        router.back();
-      },
-    });
+    removeProduct(product.id);
+
+    router.back();
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: bg + "f1" }]}>
       <TouchableOpacity onPress={router.back} style={styles.overlay} />
 
       <ThemedView style={styles.header} bg="background.1">
@@ -55,6 +53,7 @@ export default function Product() {
           <Icon name="shopping-cart" size={16} />
           <ThemedText type="default">{productName}</ThemedText>
         </View>
+
         <ActionButton onPress={handleDeleteProduct} variant="ghost" size="sm">
           <Icon name="trash" size={18} />
         </ActionButton>
@@ -77,7 +76,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "rgba(17, 17, 17, 0.69)",
     gap: 8,
   },
   overlay: {
@@ -85,13 +83,12 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   header: {
-    padding: 8,
-    
-    
-    borderRadius: 8,
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
+    padding: 8,
     marginHorizontal: 8,
+    borderRadius: 8,
   },
   titleContainer: {
     flexDirection: "row",

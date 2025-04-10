@@ -1,6 +1,7 @@
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
-import { Product } from "@/database/useShoppingList";
+import { Product } from "@/state/use-products-store";
+
 import { calculateTotal, formatValue } from "@/utils/calculateTotal";
 import { useMemo } from "react";
 import { View } from "react-native";
@@ -28,6 +29,9 @@ export function TotalBar({ data, show, budget }: TotalBarProps) {
   return (
     <Animated.View
       entering={FadeInDown.duration(200).easing(Easing.inOut(Easing.quad))}
+      style={{
+        marginHorizontal: 8,
+      }}
     >
       <ThemedView
         bg="background.1"

@@ -7,29 +7,47 @@ import { Icon } from "@/components/ui/Icon";
 import { Input } from "@/components/ui/Input";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
+import { useConfigStore } from "@/state/use-config-store";
 
 import { useFindListById, useListStore } from "@/state/use-list-store";
 // import { useListStore } from "@/store/useActiveList";
-import { useConfigStore } from "@/store/useConfigStore";
+
 import {
   SortAndFilterParams,
   sortAndFilterProducts,
 } from "@/utils/sortAndFilterProducts";
 import { Stack, useLocalSearchParams } from "expo-router";
 import React, { useMemo, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import Animated, { Easing, FadeIn, FadeOut } from "react-native-reanimated";
+import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import Animated, {
+  AnimatedStyle,
+  Easing,
+  FadeIn,
+  FadeOut,
+} from "react-native-reanimated";
 // Constantes
 const OPTIONS = ["Todos", "Marcados", "Desmarcados"] as const;
 
+const FadeInView: React.FC<{
+  children: React.ReactNode;
+  style?: StyleProp<AnimatedStyle<StyleProp<ViewStyle>>>;
+}> = ({ children, style }) => (
+  <Animated.View
+    entering={FadeIn.duration(200).easing(Easing.inOut(Easing.quad))}
+    exiting={FadeOut.duration(200).easing(Easing.inOut(Easing.quad))}
+    style={style}
+  >
+    {children}
+  </Animated.View>
+);
+
 export default function ListShowScreen() {
+  const { show_suggestions, show_total, order_by } = useConfigStore();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { addProduct } = useListStore();
   const list = useFindListById(id);
 
   const products = list?.products || [];
-
-  const { show_suggestions, show_total, order_by } = useConfigStore();
 
   // Estados
   const [search, setSearch] = useState("");
@@ -71,10 +89,12 @@ export default function ListShowScreen() {
       {/* Barra de Ações (Pesquisa + Filtros) */}
       <View style={styles.actionBar}>
         {!showSearch && (
-          <Animated.View
-            style={{ flexDirection: "row", gap: 8 }}
-            entering={FadeIn.duration(200).easing(Easing.inOut(Easing.quad))}
-            exiting={FadeOut.duration(200).easing(Easing.inOut(Easing.quad))}
+          <FadeInView
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 8,
+            }}
           >
             {OPTIONS.map((value) => (
               <ActionButton
@@ -85,13 +105,15 @@ export default function ListShowScreen() {
                 <ThemedText type="body">{value}</ThemedText>
               </ActionButton>
             ))}
-          </Animated.View>
+          </FadeInView>
         )}
         {showSearch && (
-          <Animated.View
-            style={{ flex: 1, flexDirection: "row", gap: 8 }}
-            entering={FadeIn.duration(200).easing(Easing.inOut(Easing.quad))}
-            exiting={FadeOut.duration(200).easing(Easing.inOut(Easing.quad))}
+          <FadeInView
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 8,
+            }}
           >
             <Input
               value={search}
@@ -106,15 +128,13 @@ export default function ListShowScreen() {
             <ActionButton variant="solid" onPress={() => setShowSearch(false)}>
               <ThemedText type="body">Fechar</ThemedText>
             </ActionButton>
-          </Animated.View>
+          </FadeInView>
         )}
       </View>
 
-      {/* Lista de Produtos (Pills) */}
-
       <PillList data={orderedProducts} ListEmptyComponent={<EmptyList />} />
 
-      <TotalBar data={[]} show={show_total} budget={0} />
+      <TotalBar data={products} show={show_total} budget={0} />
 
       <ProductEntry
         addProduct={addProduct}

@@ -5,7 +5,8 @@ import { SettingsButton } from "@/components/ui/SettingsButton";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { useConfigStore } from "@/store/useConfigStore";
+import { useConfigStore } from "@/state/use-config-store";
+
 import {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,

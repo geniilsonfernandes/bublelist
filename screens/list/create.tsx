@@ -8,8 +8,6 @@ import { ThemedView } from "@/components/ui/ThemedView";
 import { ValueInput } from "@/components/ValueInput";
 import { useListStore } from "@/state/use-list-store";
 
-import { useEmojiStore } from "@/store/useEmojiStore";
-
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -17,13 +15,6 @@ import { StyleSheet, View } from "react-native";
 export default function ListCreateScreen() {
   const { create, setActiveList } = useListStore();
   const { id } = useLocalSearchParams<{ id: string }>();
-
-  const {
-    background,
-    emoji: emojiSelected,
-    setBackground,
-    setEmoji,
-  } = useEmojiStore();
 
   const isEdit = id;
 
@@ -37,8 +28,8 @@ export default function ListCreateScreen() {
       id: Date.now().toString(),
       name: listName || LIST_NAME_SUGGESTIONS[0],
       budget: Number(listBudget),
-      color: background,
-      icon: emojiSelected,
+      color: "",
+      icon: "",
       products: [],
     };
 

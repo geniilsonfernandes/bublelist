@@ -1,4 +1,4 @@
-import { storage } from "@/lib/storage";
+import { zustandStorage } from "@/lib/storage";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -41,26 +41,7 @@ export const useProductsStore = create<ProductsStore>()(
     }),
     {
       name: KEY, // chave que vai salvar no storage
-      storage: {
-        getItem: (name) => {
-          const value = storage.getString(name);
-          return value ? JSON.parse(value) : null;
-        },
-        setItem: (name, value) => {
-          storage.set(name, JSON.stringify(value));
-        },
-        removeItem: (name) => {
-          storage.delete(name);
-        },
-      },
+      storage: zustandStorage,
     }
   )
 );
-
-
-export const useFilterProductsByListId = (listId: string) => {
-  const products = useProductsStore((state) => state.products);
-  console.log(products.length);
-  
-  return products.filter((product) => product.listId === listId);
-};

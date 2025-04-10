@@ -1,4 +1,4 @@
-import { storage } from "@/lib/storage";
+import { zustandStorage } from "@/lib/storage";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Product } from "./use-products-store";
@@ -14,11 +14,15 @@ export type ListStore = {
   lists: Record<string, List>; // 👈 mudou aqui
   activeListId?: string; // 👈 guarda só o id
   setActiveList: (listId: string) => void;
+  getList: (listId: string) => List;
   create: (list: List) => void;
   remove: (listId: string) => void;
   update: (listId: string, updates: Partial<List>) => void;
   addProduct: (product: Product, listId: string) => void;
   updateProduct: (productId: string, updates: Partial<Product>) => void;
+  removeProduct: (productId: string) => void;
+
+  clear: () => void;
 };
 
 const KEY = "lists:store:v1";
@@ -48,6 +52,10 @@ export const useListStore = create<ListStore>()(
           },
         })),
 
+      getList: (listId) => {
+        return get().lists[listId];
+      },
+
       setActiveList: (listId) => set({ activeListId: listId }),
 
       addProduct: (product, listId) =>
@@ -64,12 +72,43 @@ export const useListStore = create<ListStore>()(
           };
         }),
 
+      clear: () => set({ lists: {}, activeListId: undefined }),
+
+      removeProduct: (productId) => {
+        return set((state) => {
+          const activeListId = state.activeListId;
+          if (!activeListId) {
+            return {};
+          }
+
+          const list = state.lists[activeListId];
+          if (!list) {
+            console.log("Nenhuma lista encontrada");
+            return {};
+          }
+
+          const updatedProducts = list.products?.filter(
+            (p) => p.id !== productId
+          );
+
+          return {
+            lists: {
+              ...state.lists,
+              [activeListId]: {
+                ...list,
+                products: updatedProducts,
+              },
+            },
+          };
+        });
+      },
+
       updateProduct: (productId, updates) =>
         set((state) => {
           const activeListId = state.activeListId;
           if (!activeListId) {
             console.log("Sem lista ativa");
-            
+
             return {};
           }
 
@@ -96,41 +135,18 @@ export const useListStore = create<ListStore>()(
     }),
     {
       name: KEY,
-      // onRehydrateStorage: () => {},
-      // merge: (persistedState, currentState) => ({
-      //   ...persistedState,
-      //   ...currentState,
-      // }),
-      // skipHydration: true,
-      // migrate: (persistedState, currentState) => ({
-      //   ...persistedState,
-      //   ...currentState,
-      // }),
-      storage: {
-        getItem: (name) => {
-          const value = storage.getString(name);
-          try {
-            return value ? JSON.parse(value) : null;
-          } catch {
-            return null;
-          }
-        },
-        setItem: (name, value) => {
-          storage.set(name, JSON.stringify(value));
-        },
-        removeItem: (name) => {
-          storage.delete(name);
-        },
-      },
+      storage: zustandStorage,
     }
   )
 );
 
-console.log(useListStore.getState());
-
-// tranform list into array
 export const useLists = () => Object.values(useListStore.getState().lists);
 
+export const useGetProductById = (id: string, listId: string) => {
+  return useListStore((state) =>
+    state.lists[listId]?.products?.find((p) => p.id === id)
+  );
+};
 export const useFindListById = (id: string) => {
   return useListStore((state) => state.lists[id]);
 };

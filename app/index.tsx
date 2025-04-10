@@ -1,73 +1,28 @@
 import { ListCard } from "@/components/ListCard";
 import { ListSheet } from "@/components/sheets/ListSheet";
-import { SettingsSheet } from "@/components/sheets/SettingsSheet";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { Icon } from "@/components/ui/Icon";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
 import BottomSheet from "@gorhom/bottom-sheet";
 import MasonryList from "@react-native-seoul/masonry-list";
-import dayjs from "dayjs";
-import "dayjs/locale/pt-br";
-import { useRouter } from "expo-router";
-import { ReactElement, useEffect, useMemo, useRef } from "react";
+
+import { Redirect, useRouter } from "expo-router";
+import { ReactElement, useMemo, useRef } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { List } from "@/database/useShoppingList";
-import { db } from "@/lib/firebase";
-import { useListStore } from "@/state/use-list-store";
-import { doc, onSnapshot, setDoc } from "firebase/firestore";
-import debounce from "lodash.debounce";
-import isEqual from "lodash.isequal";
-
-dayjs.locale("pt-br");
-
-export function useSyncWithFirebase(lists: any) {
-  const previousData = useRef<any>(null);
-
-  const sync = useMemo(
-    () =>
-      debounce(async (lists: any) => {
-        if (previousData.current && isEqual(previousData.current, lists)) {
-          return;
-        }
-
-        const docRef = doc(db, "lists", "user_id");
-        await setDoc(docRef, lists);
-
-        previousData.current = lists;
-      }, 10000),
-    []
-  );
-
-  useEffect(() => {
-    sync(lists);
-  }, [lists, sync]);
-
-  useEffect(() => {
-    const docRef = doc(db, "lists", "user_id");
-
-    const unsubscribe = onSnapshot(docRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.data();
-        previousData.current = data;
-        useListStore.setState({ lists: data });
-      }
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-}
+import { useOnboardingStore } from "@/state/use-boarding-store";
+import { List, useListStore } from "@/state/use-list-store";
 
 export default function HomeScreen() {
+  const { lists, setActiveList } = useListStore();
+  const { hasSeenOnboarding } = useOnboardingStore();
   const router = useRouter();
 
-  const { lists, setActiveList } = useListStore();
-  useSyncWithFirebase(lists);
+  if (!hasSeenOnboarding) {
+    return <Redirect href="/onboarding" />;
+  }
 
-  const settingsSheetRef = useRef<BottomSheet>(null);
   const listSheetRef = useRef<BottomSheet>(null);
 
   const handleOpenListSheet = () => listSheetRef.current?.expand();
@@ -86,8 +41,6 @@ export default function HomeScreen() {
     />
   );
 
-  // useSyncLists(listsService, doc(db, "lists", "111"));
-
   const listsTransformed = useMemo(() => {
     return Object.values(lists);
   }, [lists]);
@@ -95,16 +48,9 @@ export default function HomeScreen() {
   return (
     <ThemedView colorName="background" style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.title}>
-          <ThemedText type="title.3" style={styles.dayText} colorName="text.1">
-            {dayjs().format("ddd")}.
-            <ThemedText type="body" style={styles.dateText} colorName="text.6">
-              {" "}
-              {dayjs().format("DD")}
-            </ThemedText>
-          </ThemedText>
-        </View>
-
+        <ThemedText type="title.2" colorName="text.1">
+          Minhas Listas
+        </ThemedText>
         <View style={styles.actions}>
           <ActionButton onPress={() => router.push("/settings/geral")}>
             <Icon name="settings" size={24} colorName="text.2" />
@@ -159,10 +105,6 @@ export default function HomeScreen() {
       </ActionButton>
 
       {/* Bottom Sheets */}
-      <SettingsSheet
-        ref={settingsSheetRef}
-        onClose={() => settingsSheetRef.current?.close()}
-      />
 
       <ListSheet
         ref={listSheetRef}

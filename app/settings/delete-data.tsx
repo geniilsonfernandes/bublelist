@@ -1,12 +1,13 @@
 import { SettingsButton } from "@/components/ui/SettingsButton";
 import { ThemedView } from "@/components/ui/ThemedView";
-import { useDeleteAllLists } from "@/database/useShoppingList";
+import { useListStore } from "@/state/use-list-store";
+// import { useDeleteAllLists } from "@/database/useShoppingList";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Alert } from "react-native";
 
 export default function DeleteData() {
-  const { mutate: deleteAllLists } = useDeleteAllLists();
+  const { clear } = useListStore();
   const router = useRouter();
   const createThreeButtonAlert = () =>
     Alert.alert(
@@ -21,7 +22,7 @@ export default function DeleteData() {
         {
           text: "OK",
           onPress: () => {
-            deleteAllLists();
+            clear();
             router.back();
             console.log("Dados apagados com sucesso");
           },

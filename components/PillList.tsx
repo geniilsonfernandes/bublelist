@@ -1,8 +1,11 @@
 // Imports
+import { Colors } from "@/constants/Colors";
+import { useConfigStore } from "@/state/use-config-store";
 import { useListStore } from "@/state/use-list-store";
 import { Product } from "@/state/use-products-store";
-import { useConfigStore } from "@/store/useConfigStore";
 import { formatValue } from "@/utils/calculateTotal";
+import Checkbox from "expo-checkbox";
+import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -20,7 +23,6 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { Icon } from "./ui/Icon";
 import { ThemedText } from "./ui/ThemedText";
 import { ThemedView } from "./ui/ThemedView";
 
@@ -114,10 +116,21 @@ export const ProductContent: React.FC<ProductContentProps> = ({
 }) => {
   return (
     <ThemedView
-      colorName={checked ? "success" : "transparent"}
-      borderColor={checked ? "success" : "background.1"}
+      colorName={checked ? "background.1" : "transparent"}
+      borderColor={checked ? "background.1" : "background.1"}
       style={[styles.pill, style]}
     >
+      <Checkbox
+        pointerEvents="none"
+        style={{
+          borderRadius: 6,
+          width: 16,
+          height: 16,
+          borderWidth: 1,
+        }}
+        value={checked}
+        color={Colors.light["gray.900"]}
+      />
       <ThemedText
         colorName="text.1"
         type="body"
@@ -149,11 +162,6 @@ export const ProductContent: React.FC<ProductContentProps> = ({
           {valueFormatted}
         </ThemedText>
       )}
-      <Icon
-        name={checked ? "check" : "circle"}
-        size={16}
-        colorName={checked ? "gray.100" : "background.1"}
-      />
     </ThemedView>
   );
 };
@@ -171,8 +179,7 @@ export const PillList: React.FC<PillListProps> = ({
   const [isReady, setIsReady] = useState(false);
   const { show_quantity, show_value } = useConfigStore();
   const { updateProduct } = useListStore();
-  // const { setSelectedProduct } = useModals();
-  // const router = useRouter();
+  const router = useRouter();
 
   return (
     <View
@@ -183,6 +190,42 @@ export const PillList: React.FC<PillListProps> = ({
         setIsReady(true);
       }}
     >
+      {/* <FlatList
+        data={data}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View
+            style={{
+              position: "relative",
+              marginHorizontal: 16,
+              marginTop: 8,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <Checkbox
+              style={{
+                borderRadius: 8,
+                width: 24,
+                height: 24,
+                borderWidth: 1,
+                borderColor: Colors.light["gray.700"],
+              }}
+              value={item.checked}
+              onValueChange={() => {
+                updateProduct(item.id, {
+                  checked: !item.checked,
+                });
+              }}
+              color={Colors.light.success}
+            />
+            <ThemedText colorName="text.1" type="default">
+              {item.name}
+            </ThemedText>
+          </View>
+        )}
+      /> */}
       {isReady ? (
         <ScrollView
           contentContainerStyle={styles.pillList}
@@ -201,8 +244,9 @@ export const PillList: React.FC<PillListProps> = ({
                 })
               }
               onLongPress={() => {
-                // setSelectedProduct(product);
-                // router.push("/(index)/list/[id]/product");
+                router.push(
+                  `/list/${product.listId}/product?query=${product.id}`
+                );
               }}
               showQuantity={show_quantity}
               showValue={show_value}

@@ -1,37 +1,25 @@
-import {
-  Image,
-  StatusBar,
-  StyleSheet,
-  useColorScheme,
-  View,
-} from "react-native";
+import { StatusBar, StyleSheet, useColorScheme, View } from "react-native";
 
 import onboardDark from "../assets/images/onboard_1_dark.png";
 import onboardLight from "../assets/images/onboard_1_light.png";
 
 import { Button } from "@/components/ui/Button";
 import { ThemedText } from "@/components/ui/ThemedText";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { useOnboardingStore } from "@/store/onboardingStore";
-import { LinearGradient } from "expo-linear-gradient";
+import { ThemedView } from "@/components/ui/ThemedView";
+
+import { useOnboardingStore } from "@/state/use-boarding-store";
 import { useRouter } from "expo-router";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 const features = [
   "⚡ Adição rápida",
   "💸 Orçamento",
-  // "🔔 Notificações",
-  // "🤝 Compartilhamento",
   "📈 Histórico de preço",
-  "🛒 Modo compras",
-  // "👥 Compartilhamento de listas",
-  // "🛍️ Modo compras"
+  // "🛒 Modo compras",
   "🔒 Segurança",
-  "📊 Relatórios",
 ];
 
 export default function Onboarding() {
-  const backgroundColor = useThemeColor({}, "background.1");
-  const backgroundColor2 = useThemeColor({}, "background");
   const colorScheme = useColorScheme();
 
   const router = useRouter();
@@ -43,49 +31,54 @@ export default function Onboarding() {
   }
 
   return (
-    <LinearGradient
-      colors={[backgroundColor, backgroundColor2]}
-      style={styles.container}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-    >
+    <ThemedView bg="background" style={styles.container}>
       {/* Imagem principal */}
       <View style={styles.imageContainer}>
-        <Image
+        <Animated.Image
           source={colorScheme === "light" ? onboardLight : onboardDark}
           style={styles.image}
           resizeMode="contain"
           fadeDuration={0}
+          entering={FadeInDown.duration(1000).delay(200)}
         />
       </View>
 
-      {/* Título e Features */}
-      <View style={styles.content}>
+      {/* Título */}
+      <Animated.View
+        entering={FadeInDown.duration(1000).delay(500)}
+        style={styles.content}
+      >
         <ThemedText style={styles.title}>
           Modo avançado de criar listas de compras
         </ThemedText>
 
+        {/* Features */}
         <View style={styles.featuresContainer}>
-          {features.map((feature) => (
-            <ThemedText
+          {features.map((feature, index) => (
+            <Animated.View
               key={feature}
-              colorName="text.4"
-              style={styles.feature}
-              type="body"
+              entering={FadeInDown.duration(800).delay(700 + index * 150)}
             >
-              {feature}
-            </ThemedText>
+              <ThemedText colorName="text.4" style={styles.feature} type="body">
+                {feature}
+              </ThemedText>
+            </Animated.View>
           ))}
         </View>
-      </View>
+      </Animated.View>
 
       {/* Botão */}
-      <View style={styles.buttonContainer}>
-        <Button onPress={handleStart} bg="background.1">
+      <Animated.View
+        entering={FadeInDown.duration(1000).delay(
+          700 + features.length * 150 + 200
+        )}
+        style={styles.buttonContainer}
+      >
+        <Button onPress={handleStart} bg="background.2">
           Começar
         </Button>
-      </View>
-    </LinearGradient>
+      </Animated.View>
+    </ThemedView>
   );
 }
 
@@ -129,7 +122,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 20,
-    backgroundColor: "rgba(0, 0, 0, 00.1)",
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
     overflow: "hidden",
   },
   buttonContainer: {

@@ -1,4 +1,4 @@
-import { Product } from "@/state/use-list-store";
+import { Product } from "@/state/use-products-store";
 import { useMemo } from "react";
 
 export function filterProductsByName(product: string, productData: string[]) {

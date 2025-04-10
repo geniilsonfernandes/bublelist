@@ -44,7 +44,7 @@ export const Input = forwardRef<TextInput, InputProps>(
     const textColor = useThemeColor({}, "text.2");
     const backgroundColor = useThemeColor({}, bg);
     const placeholderTextColor = useThemeColor({}, "text.4");
-    const iconColor = useThemeColor({}, "primary.100");
+    const iconColor = useThemeColor({}, "background.2");
 
     const sizeStyles: Record<InputSize, ViewStyle> = {
       sm: { height: 32 },
