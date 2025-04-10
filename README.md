@@ -36,7 +36,7 @@ Buble List é um aplicativo moderno de lista de compras que combina simplicidade
 
 ### Deployment
 
-- Disponível para Android via APK (em breve via Play Store)
+[![App Banner](https://res.cloudinary.com/dbpayojb3/image/upload/v1744326748/cfetae6yiinh6p7toxfb.png)](https://play.google.com/store/apps/details?id=com.orriker.Bubblylist)
 
 ---
 
