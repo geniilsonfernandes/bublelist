@@ -2,7 +2,7 @@
 
 Política de Privacidade
 
-Última atualização: 2025-11-04
+Última atualização: 2025-04-10
 
 1. Informações Coletadas
 
