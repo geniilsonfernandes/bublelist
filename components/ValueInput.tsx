@@ -53,7 +53,7 @@ export const ValueInput: React.FC<ValueInputProps> = ({
   };
 
   const height = {
-    sm: 42,
+    sm: 40,
     md: 56,
     lg: 64,
   } as Record<"sm" | "md" | "lg", number>;

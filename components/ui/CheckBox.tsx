@@ -23,7 +23,7 @@ export const CheckBox: React.FC<CheckBoxProps> = ({ onChange, value }) => {
     >
       <ThemedView
         borderColor={value ? "background.4" : "background.3"}
-        bg={value ? "background.3" : "background.2"}
+        bg={value ? "background.3" : "background.5"}
         style={{
           width: 28,
           height: 28,
@@ -38,7 +38,11 @@ export const CheckBox: React.FC<CheckBoxProps> = ({ onChange, value }) => {
             entering={FadeIn.duration(300)}
             exiting={FadeOut.duration(300)}
           >
-            <Icon name="check" size={16} colorName="gray.100" />
+            <Icon
+              name="check"
+              size={16}
+              colorName={value ? "text.3" : "background.5"}
+            />
           </Animated.View>
         ) : null}
       </ThemedView>

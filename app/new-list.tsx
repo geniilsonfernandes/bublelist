@@ -86,9 +86,11 @@ export default function NewList() {
 
           headerRight: () => (
             <View>
-              <ActionButton onPress={handleDeleteList} size="sm">
-                <Icon name="trash" size={18} />
-              </ActionButton>
+              {isEdit && (
+                <ActionButton onPress={handleDeleteList} size="sm">
+                  <Icon name="trash" size={18} />
+                </ActionButton>
+              )}
             </View>
           ),
         }}

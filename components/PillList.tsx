@@ -2,8 +2,9 @@
 import { Colors } from "@/constants/Colors";
 import { useConfigStore } from "@/state/use-config-store";
 import { useListStore } from "@/state/use-list-store";
-import { Product } from "@/state/use-products-store";
+import { Product, useProductsStore } from "@/state/use-products-store";
 import { formatValue } from "@/utils/calculateTotal";
+import dayjs from "dayjs";
 import Checkbox from "expo-checkbox";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
@@ -179,6 +180,7 @@ export const PillList: React.FC<PillListProps> = ({
   const [isReady, setIsReady] = useState(false);
   const { show_quantity, show_value } = useConfigStore();
   const { updateProduct } = useListStore();
+  const { addToHistory } = useProductsStore();
   const router = useRouter();
 
   return (
@@ -238,11 +240,18 @@ export const PillList: React.FC<PillListProps> = ({
               key={product.id}
               {...product}
               // onRemove={() => deleteProduct(product.id)}
-              onCheck={() =>
+              onCheck={() => {
                 updateProduct(product.id, {
                   checked: !product.checked,
-                })
-              }
+                });
+                addToHistory({
+                  ...product,
+                  checked: !product.checked,
+                  purchasedAt: !product.checked
+                    ? dayjs().format("YYYY-MM-DD")
+                    : undefined,
+                });
+              }}
               onLongPress={() => {
                 router.push(
                   `/list/${product.listId}/product?query=${product.id}`

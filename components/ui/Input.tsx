@@ -86,6 +86,10 @@ export const Input = forwardRef<TextInput, InputProps>(
               style={({ pressed }) => [
                 styles.icon,
                 { backgroundColor: iconColor, opacity: pressed ? 0.7 : 1 },
+                {
+                  width: 38,
+                  height: 38,
+                },
               ]}
             >
               <Feather name={iconName} size={16} color="#000" />

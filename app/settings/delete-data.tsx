@@ -1,6 +1,7 @@
 import { SettingsButton } from "@/components/ui/SettingsButton";
 import { ThemedView } from "@/components/ui/ThemedView";
 import { useListStore } from "@/state/use-list-store";
+import { useProductsStore } from "@/state/use-products-store";
 // import { useDeleteAllLists } from "@/database/useShoppingList";
 import { useRouter } from "expo-router";
 import React from "react";
@@ -8,6 +9,7 @@ import { Alert } from "react-native";
 
 export default function DeleteData() {
   const { clear } = useListStore();
+  const { clearHistory } = useProductsStore();
   const router = useRouter();
   const createThreeButtonAlert = () =>
     Alert.alert(
@@ -23,6 +25,7 @@ export default function DeleteData() {
           text: "OK",
           onPress: () => {
             clear();
+            clearHistory();
             router.back();
             console.log("Dados apagados com sucesso");
           },

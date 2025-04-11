@@ -34,7 +34,7 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
   };
 
   const height = {
-    sm: 42,
+    sm: 40,
     md: 56,
     lg: 64,
   } as Record<"sm" | "md" | "lg", number>;
@@ -44,7 +44,11 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
       <Pressable
         style={({ pressed }) => [
           styles.button,
-          { backgroundColor, height: height[size] },
+          {
+            backgroundColor,
+            height: height[size],
+            width: height[size],
+          },
           pressed && { opacity: 0.5 },
         ]}
         onPress={handleDecrease}
@@ -73,7 +77,7 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
       <Pressable
         style={({ pressed }) => [
           styles.button,
-          { backgroundColor, height: height[size] },
+          { backgroundColor, height: height[size], width: height[size] },
           pressed && { opacity: 0.5 },
         ]}
         onPress={handleIncrease}
