@@ -158,6 +158,22 @@ export default function RootLayout() {
                 headerTitle: "Exportar dados",
               }}
             />
+            <Stack.Screen
+              name="settings/privacy-policy"
+              options={{
+                animation: "slide_from_right",
+                headerBackTitle: "Voltar",
+                headerTitle: "Politica de privacidade",
+              }}
+            />
+            <Stack.Screen
+              name="settings/feedback"
+              options={{
+                animation: "slide_from_right",
+                headerBackTitle: "Voltar",
+                headerTitle: "Fale com o desenvolvedor",
+              }}
+            />
           </Stack>
           {/* <StatusBar style="dark" translucent /> */}
         </ThemeProvider>

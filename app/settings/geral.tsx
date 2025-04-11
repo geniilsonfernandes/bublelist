@@ -1,9 +1,9 @@
+import { BodyScrollView } from "@/components/ui/BodyScrollView";
 import { CheckBox } from "@/components/ui/CheckBox";
 import { Icon } from "@/components/ui/Icon";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { SettingsButton } from "@/components/ui/SettingsButton";
 import { ThemedText } from "@/components/ui/ThemedText";
-import { ThemedView } from "@/components/ui/ThemedView";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useConfigStore } from "@/state/use-config-store";
 
@@ -15,11 +15,13 @@ import {
 } from "@gorhom/bottom-sheet";
 import { useRouter } from "expo-router";
 import React, { useCallback, useRef } from "react";
-import { View } from "react-native";
+import { Linking, View } from "react-native";
 
+const APP_LINK =
+  "https://play.google.com/store/apps/details?id=com.orriker.Bubblylist";
 export default function Settings() {
   const router = useRouter();
-  const backgroundColorSheet = useThemeColor({}, "background.1");
+  const backgroundColorSheet = useThemeColor({}, "background");
   const sheetRef = useRef<BottomSheetModal>(null);
 
   const {
@@ -63,73 +65,107 @@ export default function Settings() {
   );
 
   return (
-    <ThemedView style={{ flex: 1, paddingHorizontal: 16, gap: 8 }}>
+    <BodyScrollView
+      style={{
+        padding: 16,
+        backgroundColor: backgroundColorSheet,
+      }}
+    >
       {/* Seção: Visualização */}
       <SectionTitle title="Visualização:" />
+      <View style={{ gap: 8, paddingVertical: 16 }}>
+        <SettingsButton
+          label="Mostrar a valor"
+          rightComponent={renderSwitch(show_value, () =>
+            setConfig("show_value", !show_value)
+          )}
+        />
+        <SettingsButton
+          label="Mostrar a quantidade"
+          rightComponent={renderSwitch(show_quantity, () =>
+            setConfig("show_quantity", !show_quantity)
+          )}
+        />
 
-      <SettingsButton
-        label="Mostrar a valor"
-        rightComponent={renderSwitch(show_value, () =>
-          setConfig("show_value", !show_value)
-        )}
-      />
-      <SettingsButton
-        label="Mostrar a quantidade"
-        rightComponent={renderSwitch(show_quantity, () =>
-          setConfig("show_quantity", !show_quantity)
-        )}
-      />
-
-      <SettingsButton
-        onPress={() => sheetRef.current?.present()}
-        label={
-          <ThemedText type="defaultSemiBold">
-            Ordenar por:{" "}
-            <ThemedText type="body" colorName="text.6">
-              {orderByOptions.find((o) => o.value === order_by)?.label}
+        <SettingsButton
+          onPress={() => sheetRef.current?.present()}
+          label={
+            <ThemedText type="defaultSemiBold">
+              Ordenar por:{" "}
+              <ThemedText type="body" colorName="text.6">
+                {orderByOptions.find((o) => o.value === order_by)?.label}
+              </ThemedText>
             </ThemedText>
-          </ThemedText>
-        }
-        rightComponent={
-          <Icon name="chevron-down" size={18} colorName="text.5" />
-        }
-      />
+          }
+          rightComponent={
+            <Icon name="chevron-down" size={18} colorName="text.5" />
+          }
+        />
 
-      {/* Seção: Outros */}
-      <SectionTitle title="Outros:" />
+        <SettingsButton
+          label="Mostrar o total da lista"
+          rightComponent={renderSwitch(show_total, () =>
+            setConfig("show_total", !show_total)
+          )}
+        />
 
-      <SettingsButton
-        label="Mostrar o total da lista"
-        rightComponent={renderSwitch(show_total, () =>
-          setConfig("show_total", !show_total)
-        )}
-      />
+        <SettingsButton
+          label="Mostrar sugestões de produtos"
+          rightComponent={renderSwitch(show_suggestions, () =>
+            setConfig("show_suggestions", !show_suggestions)
+          )}
+        />
+      </View>
 
-      <SettingsButton
-        label="Mostrar sugestões de produtos"
-        rightComponent={renderSwitch(show_suggestions, () =>
-          setConfig("show_suggestions", !show_suggestions)
-        )}
-      />
+      <View style={{ gap: 8, paddingVertical: 16 }}>
+        <SectionTitle title="Seus dados:" />
+        <SettingsButton
+          icon="upload"
+          onPress={() => {
+            router.push("/settings/export-data");
+          }}
+          label="Exportar dados"
+          rightIcon="chevron-right"
+        />
 
-      <SectionTitle title="Seus dados:" />
-      <SettingsButton
-        icon="upload"
-        onPress={() => {
-          router.push("/settings/export-data");
-        }}
-        label="Exportar dados"
-        rightIcon="chevron-right"
-      />
+        <SettingsButton
+          onPress={() => {
+            router.push("/settings/delete-data");
+          }}
+          icon="trash-2"
+          label="Apagar dados"
+          rightIcon="chevron-right"
+        />
+      </View>
 
-      <SettingsButton
-        onPress={() => {
-          router.push("/settings/delete-data");
-        }}
-        icon="trash-2"
-        label="Apagar dados"
-        rightIcon="chevron-right"
-      />
+      <View style={{ gap: 8, paddingVertical: 16, paddingBottom: 100 }}>
+        <SectionTitle title="Informações do app:" />
+        <SettingsButton
+          onPress={() => {
+            router.push("/settings/privacy-policy");
+          }}
+          icon="info"
+          label="Politica de privacidade"
+          rightIcon="chevron-right"
+        />
+
+        <SettingsButton
+          onPress={() => {
+            router.push("/settings/feedback");
+          }}
+          icon="github"
+          label="Conversar com o desenvolvedor"
+          rightIcon="chevron-right"
+        />
+        <SettingsButton
+          onPress={() => {
+            Linking.openURL(APP_LINK);
+          }}
+          icon="star"
+          label="Avaliar o app"
+          rightIcon="external-link"
+        />
+      </View>
 
       {/* Bottom Sheet - Ordenação */}
       <BottomSheetModal
@@ -175,6 +211,6 @@ export default function Settings() {
           </View>
         </BottomSheetScrollView>
       </BottomSheetModal>
-    </ThemedView>
+    </BodyScrollView>
   );
 }
