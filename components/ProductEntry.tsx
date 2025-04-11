@@ -88,6 +88,7 @@ export const ProductEntry: React.FC<ProductEntryProps> = ({
     if (!currentList?.id) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     const extractedProduct = extractNumberAndClean(productName);
+console.log(productName);
 
     if (extractedProduct) {
       addProduct(

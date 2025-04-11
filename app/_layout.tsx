@@ -107,8 +107,7 @@ export default function RootLayout() {
             <Stack.Screen
               name="list/[id]/summary"
               options={{
-                animation: "none",
-                presentation: "transparentModal",
+                animation: "fade_from_bottom",
                 headerTitle: "Resumo",
               }}
             />

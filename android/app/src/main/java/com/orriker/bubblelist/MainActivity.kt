@@ -1,4 +1,4 @@
-package com.orriker.bublelist
+package com.orriker.bubblelist
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

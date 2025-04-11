@@ -184,8 +184,6 @@ export const ListCard: React.FC<ListProps> = ({
         style={{
           borderRadius: 8,
           padding: 8,
-          flexWrap: "wrap",
-          flexDirection: "row",
           gap: 8,
         }}
       >

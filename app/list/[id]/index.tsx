@@ -107,6 +107,7 @@ export default function ListShowScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { addProduct } = useListStore();
   const list = useFindListById(id);
+console.log(id);
 
   const products = list?.products || [];
 

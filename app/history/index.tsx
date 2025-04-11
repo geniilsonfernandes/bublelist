@@ -2,13 +2,14 @@ import { ThemedText } from "@/components/ui/ThemedText";
 import { ThemedView } from "@/components/ui/ThemedView";
 import { Product, useProductsStore } from "@/state/use-products-store";
 import { formatValue } from "@/utils/calculateTotal";
-import { SectionList, StyleSheet, Text, View } from "react-native";
+import { SectionList, StyleSheet, View } from "react-native";
 
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
 
 dayjs.locale("pt-br");
 
+import { EmptyList } from "@/components/EmptyList";
 import isToday from "dayjs/plugin/isToday";
 import isYesterday from "dayjs/plugin/isYesterday";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -59,11 +60,12 @@ export default function History() {
         flex: 1,
       }}
     >
-      
       <SectionList
-        
         sections={sections}
         keyExtractor={(item) => item.id}
+        ListEmptyComponent={() => (
+          <EmptyList message="Nenhuma compra encontrada" subMessage="" />
+        )}
         renderItem={({ item: product }) => (
           <ThemedView style={styles.productItem}>
             <ThemedText
@@ -80,9 +82,9 @@ export default function History() {
         )}
         renderSectionHeader={({ section: { title } }) => (
           <View style={styles.headerContainer}>
-            <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+            <ThemedText style={{ fontSize: 18, fontWeight: "bold" }}>
               {formatDateLabel(title)}
-            </Text>
+            </ThemedText>
           </View>
         )}
         renderSectionFooter={({ section: { data } }) => (
