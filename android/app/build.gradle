@@ -86,9 +86,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.orriker.Bubblylist'
+    namespace 'com.orriker.bublelist'
     defaultConfig {
-        applicationId 'com.orriker.Bubblylist'
+        applicationId 'com.orriker.bublelist'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
