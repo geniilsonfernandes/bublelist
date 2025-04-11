@@ -66,7 +66,6 @@ export const ValueInput: React.FC<ValueInputProps> = ({
         { backgroundColor, height: height[size || "md"], paddingLeft: pl },
       ]}
     >
-      <Feather name="dollar-sign" size={18} color={textColor} />
       <CurrencyInput
         placeholder={placeholder}
         placeholderTextColor={textColor}

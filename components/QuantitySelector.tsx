@@ -15,7 +15,7 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
   onChangeQuantity,
   size = "md",
 }) => {
-  const backgroundColor = useThemeColor({}, "background.2");
+  const backgroundColor = useThemeColor({}, "background");
   const color = useThemeColor({}, "text");
 
   const handleDecrease = () => {

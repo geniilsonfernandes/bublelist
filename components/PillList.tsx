@@ -116,8 +116,8 @@ export const ProductContent: React.FC<ProductContentProps> = ({
 }) => {
   return (
     <ThemedView
-      colorName={checked ? "background.1" : "transparent"}
-      borderColor={checked ? "background.1" : "background.1"}
+      colorName={checked ? "success" : "transparent"}
+      borderColor={checked ? "success" : "background.1"}
       style={[styles.pill, style]}
     >
       <Checkbox
@@ -129,7 +129,7 @@ export const ProductContent: React.FC<ProductContentProps> = ({
           borderWidth: 1,
         }}
         value={checked}
-        color={Colors.light["gray.900"]}
+        color={Colors.light.success}
       />
       <ThemedText
         colorName="text.1"

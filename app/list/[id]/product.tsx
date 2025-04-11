@@ -51,7 +51,9 @@ export default function Product() {
       <ThemedView style={styles.header} bg="background.1">
         <View style={styles.titleContainer}>
           <Icon name="shopping-cart" size={16} />
-          <ThemedText type="default">{productName}</ThemedText>
+          <ThemedText type="default" style={{ maxWidth: "80%" }}>
+            {productName}
+          </ThemedText>
         </View>
 
         <ActionButton onPress={handleDeleteProduct} variant="ghost" size="sm">

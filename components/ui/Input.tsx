@@ -44,7 +44,7 @@ export const Input = forwardRef<TextInput, InputProps>(
     const textColor = useThemeColor({}, "text.2");
     const backgroundColor = useThemeColor({}, bg);
     const placeholderTextColor = useThemeColor({}, "text.4");
-    const iconColor = useThemeColor({}, "background.2");
+    const iconColor = useThemeColor({}, "gray.100");
 
     const sizeStyles: Record<InputSize, ViewStyle> = {
       sm: { height: 32 },
@@ -63,7 +63,7 @@ export const Input = forwardRef<TextInput, InputProps>(
       >
         {leftIcon && (
           <Feather
-            style={{ marginLeft: 4 }}
+            style={{ marginLeft: 8 }}
             name={leftIcon}
             size={16}
             color={textColor}
@@ -88,7 +88,7 @@ export const Input = forwardRef<TextInput, InputProps>(
                 { backgroundColor: iconColor, opacity: pressed ? 0.7 : 1 },
               ]}
             >
-              <Feather name={iconName} size={16} color="#fff" />
+              <Feather name={iconName} size={16} color="#000" />
             </Pressable>
           </Animated.View>
         )}
@@ -103,7 +103,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     borderRadius: 8,
-    paddingHorizontal: 4,
   },
   input: {
     flex: 1,

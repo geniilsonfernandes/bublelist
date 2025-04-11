@@ -4,16 +4,16 @@ import { Product } from "@/state/use-products-store";
 
 import { calculateTotal, formatValue } from "@/utils/calculateTotal";
 import { useMemo } from "react";
-import { View } from "react-native";
-import Animated, { Easing, FadeInDown } from "react-native-reanimated";
+import { Pressable, View } from "react-native";
 
 type TotalBarProps = {
   data: Product[];
   budget: number;
   show?: boolean;
+  onPress?: () => void;
 };
 
-export function TotalBar({ data, show, budget }: TotalBarProps) {
+export function TotalBar({ data, show, budget, onPress }: TotalBarProps) {
   const values = useMemo(() => {
     const total = calculateTotal(data || []);
     return {
@@ -27,11 +27,13 @@ export function TotalBar({ data, show, budget }: TotalBarProps) {
   if (!show) return null;
 
   return (
-    <Animated.View
-      entering={FadeInDown.duration(200).easing(Easing.inOut(Easing.quad))}
-      style={{
+    <Pressable
+      style={(props) => ({
+        opacity: props.pressed ? 0.5 : 1,
+        transform: [{ scale: props.pressed ? 0.95 : 1 }],
         marginHorizontal: 8,
-      }}
+      })}
+      onPress={onPress}
     >
       <ThemedView
         bg="background.1"
@@ -66,6 +68,6 @@ export function TotalBar({ data, show, budget }: TotalBarProps) {
           </ThemedText>
         </View>
       </ThemedView>
-    </Animated.View>
+    </Pressable>
   );
 }

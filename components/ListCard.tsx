@@ -1,15 +1,15 @@
-import { type List } from "@/database/useShoppingList";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import React, { useEffect, useState } from "react";
+import { type List } from "@/state/use-list-store";
+import React, { useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { ActionButton } from "./ui/ActionButton";
 import { Icon } from "./ui/Icon";
 import { ThemedText } from "./ui/ThemedText";
+import { ThemedView } from "./ui/ThemedView";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -25,12 +25,97 @@ type ListProps = {
 const HEIGHT = 150;
 const HEIGHT_EXPANDED = 138;
 
+const s = {
+  debug: {
+    borderWidth: 1,
+  },
+  mb_sm: {
+    marginBottom: 8,
+  },
+  mb_md: {
+    marginBottom: 16,
+  },
+  mb_lg: {
+    marginBottom: 24,
+  },
+  p_xs: {
+    padding: 4,
+  },
+  p_sm: {
+    padding: 8,
+  },
+  p_md: {
+    padding: 16,
+  },
+  p_lg: {
+    padding: 24,
+  },
+  radius_xs: {
+    borderRadius: 4,
+  },
+  radius_sm: {
+    borderRadius: 8,
+  },
+
+  flex: {
+    display: "flex",
+  },
+  flex_col: {
+    flexDirection: "column",
+  },
+  flex_row: {
+    flexDirection: "row",
+  },
+  flex_col_reverse: {
+    flexDirection: "column-reverse",
+  },
+  flex_row_reverse: {
+    flexDirection: "row-reverse",
+  },
+  flex_wrap: {
+    flexWrap: "wrap",
+  },
+  flex_nowrap: {
+    flexWrap: "nowrap",
+  },
+
+  justify_start: {
+    justifyContent: "flex-start",
+  },
+  justify_end: {
+    justifyContent: "flex-end",
+  },
+  justify_center: {
+    justifyContent: "center",
+  },
+  justify_between: {
+    justifyContent: "space-between",
+  },
+  justify_around: {
+    justifyContent: "space-around",
+  },
+
+  items_start: {
+    alignItems: "flex-start",
+  },
+  items_end: {
+    alignItems: "flex-end",
+  },
+  items_center: {
+    alignItems: "center",
+  },
+  items_baseline: {
+    alignItems: "baseline",
+  },
+  items_stretch: {
+    alignItems: "stretch",
+  },
+} as const;
+
 export const ListCard: React.FC<ListProps> = ({
   name,
   products,
   onPress,
-  icon,
-  color,
   onClickToDelete,
   onClickToEdit,
   onClickToShare,
@@ -72,117 +157,95 @@ export const ListCard: React.FC<ListProps> = ({
     };
   }, [expanded]);
 
+  const listProducts = useMemo(() => {
+    const productNames = products?.slice(0, 15).map((p) => p.name) || [];
+
+    return productNames.join(", ");
+  }, [products]);
+
   return (
     <AnimatedPressable
       style={[
         animatedStyle,
         {
           backgroundColor: bg,
-          marginBottom: 8,
           marginHorizontal: 4,
         },
+        s.mb_sm,
         styles.container,
       ]}
       onPress={onPress}
-      onLongPress={() => {
-        console.log("long press");
-
-        onClickToEdit && onClickToEdit();
-      }}
+      onLongPress={onClickToOptions}
       onPressIn={() => (scale.value = 0.98)}
       onPressOut={() => (scale.value = 1)}
     >
-      <View style={styles.header}>
-        <ThemedText style={styles.title}>{name}</ThemedText>
-
-        <View
-          style={{
-            flexDirection: "row",
-            flexWrap: "wrap",
-
-            overflow: "hidden",
-          }}
-        >
-          {products?.map((product, i) => (
-            <ThemedText
-              key={product.id}
-              type="body"
-              colorName="text.5"
-              style={{
-                textTransform: "capitalize",
-                fontSize: 10,
-                lineHeight: 14,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {product.name}
-              {i < products.length - 1 ? ", " : ""}
-            </ThemedText>
-          ))}
-        </View>
-      </View>
-      <View
+      <ThemedView
+        bg="background.2"
         style={{
+          borderRadius: 8,
+          padding: 8,
+          flexWrap: "wrap",
           flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          paddingLeft: 8,
+          gap: 8,
         }}
       >
-        <ThemedText type="body" colorName="text.5">
-          {totalOfProducts} itens
-        </ThemedText>
-
-        <ActionButton onPress={onClickToOptions} style={styles.button}>
-          <Icon name="more-vertical" size={18} />
-        </ActionButton>
-      </View>
-      {/* <Text
+        <ThemedText style={styles.title}>{name}</ThemedText>
+        <ThemedText
+          type="body"
+          colorName="text.5"
           style={{
-            textAlign: "center",
-            lineHeight: 56,
-            fontSize: 32,
-            color: "#fff",
-            paddingLeft: 8,
+            textTransform: "capitalize",
+            fontSize: 10,
+            lineHeight: 14,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
           }}
         >
-          {icon || "📋"}
-        </Text>
-        <View>
-          <ThemedText style={styles.title}>{name}</ThemedText>
+          {listProducts}
+        </ThemedText>
+      </ThemedView>
+
+      <View
+        style={{
+          gap: 8,
+        }}
+      >
+        <View
+          style={[
+            s.p_xs,
+            s.radius_xs,
+            s.flex_row,
+            s.justify_between,
+            s.items_center,
+          ]}
+        >
           <ThemedText type="body" colorName="text.5">
             {totalOfProducts} itens
           </ThemedText>
+          <Pressable onPress={onClickToOptions}>
+            <Icon name="more-vertical" size={16} />
+          </Pressable>
         </View>
-        <ActionButton onPress={onClickToOptions} style={styles.button}>
-          <Icon name="more-vertical" size={18} />
-        </ActionButton> */}
+      </View>
     </AnimatedPressable>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    gap: 16,
     justifyContent: "space-between",
     borderRadius: 8,
+    padding: 4,
   },
   headerContainer: {
     gap: 8,
   },
-  header: {
-    padding: 8,
-  },
+
   title: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 8,
   },
   quantity: {
     fontSize: 12,
-  },
-  button: {
-    marginLeft: "auto",
   },
 });

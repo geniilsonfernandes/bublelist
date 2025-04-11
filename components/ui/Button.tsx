@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/Colors";
 import { themeColors, useThemeColor } from "@/hooks/useThemeColor";
 import { Feather } from "@expo/vector-icons";
 import React from "react";
@@ -6,6 +7,7 @@ import {
   Pressable,
   StyleProp,
   StyleSheet,
+  TextStyle,
   View,
   ViewStyle,
 } from "react-native";
@@ -61,7 +63,7 @@ export const Button: React.FC<ButtonProps> = ({
     styles.container,
     variant === "outline" && { borderColor, ...styles.outline },
     variant === "solid" && {
-      backgroundColor,
+      backgroundColor: Colors.light["gray.200"],
     },
     variant === "danger" && {
       backgroundColor: "#F2334C",
@@ -75,6 +77,16 @@ export const Button: React.FC<ButtonProps> = ({
       borderBottomWidth: 0,
     },
   ];
+  const textStyle: StyleProp<TextStyle> = [
+    variant === "solid" && { color: Colors.light["gray.900"] },
+  ];
+
+  const iconColor = {
+    solid: Colors.light["gray.700"],
+    outline: Colors.light["gray.900"],
+    ghost: Colors.light["gray.900"],
+    danger: Colors.light["gray.900"],
+  };
 
   return (
     <Pressable
@@ -108,11 +120,11 @@ export const Button: React.FC<ButtonProps> = ({
           {leftIcon && (
             <Icon
               name={leftIcon || "chevron-right"}
-              colorName="text.2"
-              size={18}
+              color={iconColor[variant]}
+              size={16}
             />
           )}
-          <ThemedText colorName="text.4" type="defaultSemiBold">
+          <ThemedText style={textStyle} type="defaultSemiBold">
             {children}
           </ThemedText>
 

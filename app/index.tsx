@@ -7,12 +7,11 @@ import { ThemedView } from "@/components/ui/ThemedView";
 import BottomSheet from "@gorhom/bottom-sheet";
 import MasonryList from "@react-native-seoul/masonry-list";
 
+import { useOnboardingStore } from "@/state/use-boarding-store";
+import { List, useListStore } from "@/state/use-list-store";
 import { Redirect, useRouter } from "expo-router";
 import { ReactElement, useMemo, useRef } from "react";
 import { StyleSheet, View } from "react-native";
-
-import { useOnboardingStore } from "@/state/use-boarding-store";
-import { List, useListStore } from "@/state/use-list-store";
 
 export default function HomeScreen() {
   const { lists, setActiveList } = useListStore();
@@ -117,6 +116,13 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  top: {
+    height: 156,
+    position: "absolute",
+    backgroundColor: "#4E4E4E",
+    width: "100%",
+    top: 0,
   },
   header: {
     paddingHorizontal: 16,

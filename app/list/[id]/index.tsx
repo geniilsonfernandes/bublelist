@@ -10,13 +10,14 @@ import { ThemedView } from "@/components/ui/ThemedView";
 import { useConfigStore } from "@/state/use-config-store";
 
 import { useFindListById, useListStore } from "@/state/use-list-store";
-
+import { Product } from "@/state/use-products-store";
+import { formatValue } from "@/utils/calculateTotal";
 
 import {
   SortAndFilterParams,
   sortAndFilterProducts,
 } from "@/utils/sortAndFilterProducts";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
 import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import Animated, {
@@ -41,7 +42,67 @@ const FadeInView: React.FC<{
   </Animated.View>
 );
 
+const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
+  return (
+    <ThemedView
+      style={{
+        borderRadius: 8,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: 8,
+
+        gap: 16,
+      }}
+      bg="background.1"
+    >
+      <ThemedView
+        bg="background.2"
+        style={{
+          borderRadius: 6,
+          width: 48,
+          height: 48,
+        }}
+      />
+      <View
+        style={{
+          flexDirection: "column",
+          alignItems: "flex-start",
+
+          flex: 1,
+        }}
+      >
+        <ThemedText
+          style={{
+            fontSize: 18,
+          }}
+        >
+          {product.name}
+        </ThemedText>
+
+        <ThemedText
+          colorName="text.5"
+          style={{
+            fontSize: 12,
+          }}
+        >
+          {formatValue(product.value)}
+        </ThemedText>
+      </View>
+
+      <ThemedText
+        style={{
+          fontSize: 24,
+        }}
+      >
+        {product.quantity}
+      </ThemedText>
+    </ThemedView>
+  );
+};
+
 export default function ListShowScreen() {
+  const router = useRouter();
   const { show_suggestions, show_total, order_by } = useConfigStore();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { addProduct } = useListStore();
@@ -64,6 +125,10 @@ export default function ListShowScreen() {
     });
   }, [search, filter, order_by, products]);
 
+  const handleShowSearch = () => {
+    setShowSearch(!showSearch);
+  };
+
   return (
     <ThemedView style={{ flex: 1 }}>
       <Stack.Screen
@@ -75,7 +140,7 @@ export default function ListShowScreen() {
             <View style={styles.headerIcons}>
               <ActionButton
                 style={styles.headerIcons}
-                onPress={() => setShowSearch(!showSearch)}
+                onPress={handleShowSearch}
                 variant={showSearch ? "solid" : "ghost"}
                 size="sm"
               >
@@ -132,9 +197,25 @@ export default function ListShowScreen() {
         )}
       </View>
 
+      {/* <FlashList
+        data={orderedProducts}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <ProductCard key={item.id} product={item} />}
+        estimatedItemSize={50}
+        contentContainerStyle={{ paddingHorizontal: 16 }}
+        ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
+        ListEmptyComponent={<EmptyList />}
+      /> */}
       <PillList data={orderedProducts} ListEmptyComponent={<EmptyList />} />
 
-      <TotalBar data={products} show={show_total} budget={list?.budget || 0} />
+      <TotalBar
+        data={products}
+        show={show_total}
+        budget={list?.budget || 0}
+        onPress={() => {
+          router.push(`/list/${id}/summary`);
+        }}
+      />
 
       <ProductEntry
         addProduct={addProduct}

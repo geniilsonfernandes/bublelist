@@ -70,6 +70,7 @@ export default function RootLayout() {
                 headerShown: false,
 
                 animation: "fade_from_bottom",
+                headerTransparent: true,
               }}
             />
             <Stack.Screen
@@ -83,6 +84,14 @@ export default function RootLayout() {
             <Stack.Screen
               name="list/[id]/index"
               options={{ animation: "slide_from_right" }}
+            />
+            <Stack.Screen
+              name="list/[id]/summary"
+              options={{
+                animation: "none",
+                presentation: "transparentModal",
+                headerTitle: "Resumo",
+              }}
             />
             <Stack.Screen
               name="list/[id]/product"
@@ -124,6 +133,7 @@ export default function RootLayout() {
               }}
             />
           </Stack>
+          {/* <StatusBar style="dark" translucent /> */}
         </ThemeProvider>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>

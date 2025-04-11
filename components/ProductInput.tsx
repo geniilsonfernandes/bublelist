@@ -1,4 +1,4 @@
-import { List } from "@/database/useShoppingList";
+import { List } from "@/state/use-list-store";
 import { formatValue } from "@/utils/calculateTotal";
 import { StyleSheet, View } from "react-native";
 import { QuantitySelector } from "./QuantitySelector";
@@ -6,38 +6,6 @@ import { Suggestions } from "./Suggestions";
 import { Input } from "./ui/Input";
 import { ThemedView } from "./ui/ThemedView";
 import { ValueInput } from "./ValueInput";
-
-type ProductDetailsProps = {
-  price: number | null;
-  quantity: number;
-  onQuantityChange: (value: number) => void;
-  onPriceChange: (value: number | null) => void;
-};
-
-const ProductDetails: React.FC<ProductDetailsProps> = ({
-  price,
-  quantity,
-  onQuantityChange,
-  onPriceChange,
-}) => {
-  const totalPrice = (price || 0) * quantity;
-  return (
-    <View style={styles.detailsContainer}>
-      <ValueInput
-        value={price}
-        onChangeValue={onPriceChange}
-        rightLabel={formatValue(totalPrice)}
-        style={{ flex: 1 }}
-        size="sm"
-      />
-      <QuantitySelector
-        quantity={quantity}
-        size="sm"
-        onChangeQuantity={onQuantityChange}
-      />
-    </View>
-  );
-};
 
 type ProductInputProps = {
   showSuggestions?: boolean;
@@ -81,13 +49,22 @@ export const ProductInput: React.FC<ProductInputProps> = ({
         onChangeText={setProductName}
         onActionClick={handleAddProduct}
         size="md"
+        pl={4}
       />
-      <View style={styles.detailsWrapper}>
-        <ProductDetails
-          price={price}
+      <View style={styles.detailsContainer}>
+        <ValueInput
+          value={price}
+          onChangeValue={setPrice}
+          rightLabel={formatValue(price || 0)}
+          size="sm"
+          style={{
+            flexGrow: 1,
+          }}
+        />
+        <QuantitySelector
           quantity={quantity}
-          onQuantityChange={setQuantity}
-          onPriceChange={setPrice}
+          size="sm"
+          onChangeQuantity={setQuantity}
         />
       </View>
     </ThemedView>
@@ -96,19 +73,24 @@ export const ProductInput: React.FC<ProductInputProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    gap: 8,
+    gap: 4,
     paddingTop: 8,
     borderRadius: 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: 4,
     marginHorizontal: 8,
     marginBottom: 8,
+    paddingBottom: 4,
   },
   detailsWrapper: {
     paddingBottom: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   detailsContainer: {
     flexDirection: "row",
-    gap: 8,
+    gap: 4,
+    alignItems: "center",
     justifyContent: "space-between",
   },
 });
