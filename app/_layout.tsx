@@ -107,6 +107,22 @@ export default function RootLayout() {
                 headerTitle: "Configurações",
               }}
             />
+            <Stack.Screen
+              name="settings/export-data"
+              options={{
+                animation: "slide_from_right",
+                headerBackTitle: "Voltar",
+                headerTitle: "Exportar dados",
+              }}
+            />
+            <Stack.Screen
+              name="settings/delete-data"
+              options={{
+                animation: "slide_from_right",
+                headerBackTitle: "Voltar",
+                headerTitle: "Exportar dados",
+              }}
+            />
           </Stack>
         </ThemeProvider>
       </BottomSheetModalProvider>

@@ -10,7 +10,7 @@ import { ThemedView } from "@/components/ui/ThemedView";
 import { useConfigStore } from "@/state/use-config-store";
 
 import { useFindListById, useListStore } from "@/state/use-list-store";
-// import { useListStore } from "@/store/useActiveList";
+
 
 import {
   SortAndFilterParams,
@@ -134,7 +134,7 @@ export default function ListShowScreen() {
 
       <PillList data={orderedProducts} ListEmptyComponent={<EmptyList />} />
 
-      <TotalBar data={products} show={show_total} budget={list.budget || 0} />
+      <TotalBar data={products} show={show_total} budget={list?.budget || 0} />
 
       <ProductEntry
         addProduct={addProduct}
